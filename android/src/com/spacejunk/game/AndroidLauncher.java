@@ -14,6 +14,6 @@ public class AndroidLauncher extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useAccelerometer = false;
 		config.useCompass = false;
-		initialize(new SpaceJunk(), config);
+		initialize(new SpaceJunk(SpaceJunk.DIFFICULTY_LEVEL.EASY), config);
 	}
 }
