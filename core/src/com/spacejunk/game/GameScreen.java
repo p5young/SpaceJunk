@@ -1,51 +1,45 @@
 package com.spacejunk.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Random;
 
-import sun.jvm.hotspot.memory.Space;
 
 public class GameScreen implements Screen {
 
-	int xMax, yMax;
-	int initialY;
-
-	int currentX, currentY;
-	int targetY;
-
 	SpriteBatch canvas;
 	Texture background;
-	ShapeRenderer shapeRenderer;
+
 	int gameScore;
 	int scoringTube;
 	BitmapFont font;
 
 	Texture gameOver;
 
-	Texture[] birds;
+	Texture[] astronauts;
 	Boolean flapState = false;
 	Boolean isGameActive = false;
 	Boolean isCrashed = false;
 	float velocity = 0;
-	float gravity = 2;
-	Circle birdCircle;
+	Ellipse astronautShape;
 
 	Texture topTube;
 	Texture bottomTube;
 	Rectangle[] topRectangles;
 	Rectangle[] bottomRectangles;
+
 	float gap;
 	float maxTubeOffset;
 	Random randomGenerator;
@@ -56,28 +50,26 @@ public class GameScreen implements Screen {
 	float distanceBetweenTubes;
 
 	OrthographicCamera camera;
-	final SpaceJunk game;
+	final SpaceJunk spaceJunk;
 
 	static private int WIDTH = 800;
 	static private int HEIGHT = 480;
 
+	Animation<TextureRegion> astronautAnimation;
+	float stateTime;
+
+
 	public GameScreen(final SpaceJunk game) {
-		this.game = game;
+		this.spaceJunk = game;
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WIDTH, HEIGHT);
+
+		create();
 	}
 
 
-	@Override
 	public void create () {
-
-		xMax = Gdx.graphics.getWidth();
-		yMax = Gdx.graphics.getHeight();
-
-		Gdx.app.log("applog", String.valueOf(xMax));
-		Gdx.app.log("applog", String.valueOf(yMax));
-
 
 		canvas = new SpriteBatch();
 		background = new Texture("space_background.jpg");
@@ -86,16 +78,15 @@ public class GameScreen implements Screen {
 		font = new BitmapFont();
 		font.setColor(Color.WHITE);
 		font.getData().setScale(10);
-//		shapeRenderer = new ShapeRenderer();
 
 		gameOver = new Texture("gameover.png");
 
 		//BIRDS
-		birdCircle = new Circle();
-		birds = new Texture[2];
-		birds[0] = new Texture("bird.png");
-		birds[1] = new Texture("bird2.png");
-
+		astronautShape = new Ellipse();
+		astronauts = new Texture[3];
+		astronauts[0] = new Texture("astronaut_texture_1.png");
+		astronauts[1] = new Texture("astronaut_texture_2.png");
+		astronauts[2] = new Texture("astronaut_texture_3.png");
 
 
 		//TUBES
@@ -108,14 +99,13 @@ public class GameScreen implements Screen {
 		randomGenerator = new Random();
 		distanceBetweenTubes = Gdx.graphics.getWidth() * 2/3;
 
+		stateTime = 0f;
+
 		startGame();
 	}
 
 
 	public void startGame() {
-
-		initialY = Gdx.graphics.getHeight() / 2 - birds[1].getWidth() / 2;
-		currentY = initialY;
 
 		for(int i = 0; i < numberOfTubes; i++) {
 			tubeOffset[i] = (randomGenerator.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 100);
@@ -125,95 +115,36 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	private void moveAstronaut() {
-
-		int y = Gdx.input.getY();
-
-
-		// Top half of screen tapped
-		if (y > (yMax / 2)) {
-			// Making sure we don't go up a platform while already at the top most
-			if (currentY != initialY - (yMax / 3)) {
-				this.targetY = currentY - yMax / 3;
-			}
-		}
-		// Bottom half is tapped
-		else {
-			// Making sure we don't go up a platform while already at the top most
-			if (currentY != initialY + (yMax / 3)) {
-				this.targetY +=  currentY + yMax / 3;
-			}
-		}
-
-	}
-
-
-	private void moveAstronautUpOnePlatform(int targetY) {
-		if(currentY < targetY) {
-			currentY += 1;
-		}
-	}
-
-	private void renderAstronaut() {
-
-		if(this.currentY < this.targetY) {
-			this.currentY += 1;
-		}
-		else if (this.currentY > this.targetY){
-			this.currentY -= 1;
-		}
-
-		if(this.flapState) {
-			this.canvas.draw(birds[0], Gdx.graphics.getWidth() / 2 - birds[1].getWidth() / 2, currentY);
-			this.flapState = false;
-		}
-		else {
-			this.flapState = true;
-			this.canvas.draw(birds[1], Gdx.graphics.getWidth() / 2 - birds[0].getWidth() / 2, currentY);
-		}
-	}
-
-	@Override
-	public void show() {
-
-	}
-
-
-	@Override
-	public void resize(int width, int height) {
-
-	}
-
-	@Override
-	public void pause() {
-
-	}
-
-	@Override
-	public void resume() {
-
-	}
-
-	@Override
-	public void hide() {
-
-	}
-
 	@Override
 	public void dispose () {
 		canvas.dispose();
 //		img.dispose();
 	}
 
+
+	private void renderAstronaut() {
+
+		spaceJunk.updateAstronautPosition();
+		this.canvas.draw(astronauts[0], spaceJunk.getInitialX(), spaceJunk.getCurrentY());
+
+//		if(this.flapState) {
+//			this.flapState = false;
+//		}
+//		else {
+//			this.flapState = true;
+//			this.canvas.draw(astronauts[1], spaceJunk.getInitialX(), spaceJunk.getCurrentY());
+//		}
+	}
+
 	@Override
-	public void render (float delta) {
+	public void render(float delta) {
 
 		canvas.begin();
 		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		if(isGameActive && !isCrashed) {
 
-			if(birdCircle.x > tubeX[scoringTube]) {
+			if(astronautShape.x > tubeX[scoringTube]) {
 				gameScore++;
 				if(scoringTube < numberOfTubes-1) {
 					scoringTube++;
@@ -221,11 +152,10 @@ public class GameScreen implements Screen {
 				else {
 					scoringTube = 0;
 				}
-				Gdx.app.log("Score", Integer.toString(gameScore));
 			}
 
 			if(Gdx.input.justTouched()) {
-				moveAstronaut();
+				spaceJunk.moveAstronaut(Gdx.input.getY());
 			}
 
 
@@ -279,18 +209,48 @@ public class GameScreen implements Screen {
 
 
 		//SETTING BIRD SHAPE
-		birdCircle.set(Gdx.graphics.getWidth() / 2, currentY + birds[0].getHeight() / 2, birds[0].getWidth() / 2); //XY Coordinate and radius
+		astronautShape.set(spaceJunk.getInitialX(), spaceJunk.getCurrentY(),
+				astronauts[0].getWidth() / 2, astronauts[0].getHeight() / 2); //XY Coordinate and radius
 
 		//SETTING BOTTOM TUBE SHAPE
 		for(int i = 0; i < numberOfTubes; i++) {
 
 			//CHECK FOR COLLISION
-			if(Intersector.overlaps(birdCircle, topRectangles[i]) || Intersector.overlaps(birdCircle, bottomRectangles[i])) {
-				//GAME OVER AFTER COLLISION
-				isCrashed = true;
-			}
+//			if(Intersector.overlaps(astronautShape, topRectangles[i]) || Intersector.overlaps(astronautShape, bottomRectangles[i])) {
+//				GAME OVER AFTER COLLISION
+//				isCrashed = true;
+//			}
 
 		}
 
 	}
+
+
+	// Auto generated method stubs
+	@Override
+	public void show() {
+
+	}
+
+
+	@Override
+	public void resize(int width, int height) {
+
+	}
+
+	@Override
+	public void pause() {
+
+	}
+
+	@Override
+	public void resume() {
+
+	}
+
+	@Override
+	public void hide() {
+
+	}
+
 }
