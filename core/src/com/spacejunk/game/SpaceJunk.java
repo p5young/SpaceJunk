@@ -152,9 +152,14 @@ public class SpaceJunk extends Game {
         return this.currentY;
     }
 
+    public int getCurrentX() {
+        return this.currentX;
+    }
+
     public int getInitialX() {
         return this.initialX;
     }
+
 
 
 }

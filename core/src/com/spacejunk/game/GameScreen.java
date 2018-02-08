@@ -9,9 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Ellipse;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Random;
@@ -35,16 +33,19 @@ public class GameScreen implements Screen {
 	float velocity = 0;
 	Ellipse astronautShape;
 
-	Texture topTube;
-	Texture bottomTube;
+	Texture topTubeTexture;
+	Texture bottomTubeTexture;
+
 	Rectangle[] topRectangles;
 	Rectangle[] bottomRectangles;
 
 	float gap;
 	float maxTubeOffset;
 	Random randomGenerator;
-	float tubeVelocity = 5;
+
+	float tubeVelocity = 8;
 	int numberOfTubes = 4;
+
 	float[] tubeX = new float[numberOfTubes];
 	float[] tubeOffset = new float[numberOfTubes];
 	float distanceBetweenTubes;
@@ -92,11 +93,12 @@ public class GameScreen implements Screen {
 		//TUBES
 		topRectangles = new Rectangle[numberOfTubes];
 		bottomRectangles = new Rectangle[numberOfTubes];
-		topTube = new Texture("toptube.png");
-		bottomTube = new Texture("bottomtube.png");
+		topTubeTexture = new Texture("toptube.png");
+		bottomTubeTexture = new Texture("bottomtube.png");
 		gap = 500;
-		maxTubeOffset = Gdx.graphics.getHeight()/2 - gap/2 - 100;
 		randomGenerator = new Random();
+
+		maxTubeOffset = Gdx.graphics.getHeight()/2 - gap/2 - 100;
 		distanceBetweenTubes = Gdx.graphics.getWidth() * 2/3;
 
 		stateTime = 0f;
@@ -109,7 +111,7 @@ public class GameScreen implements Screen {
 
 		for(int i = 0; i < numberOfTubes; i++) {
 			tubeOffset[i] = (randomGenerator.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 100);
-			tubeX[i] = Gdx.graphics.getWidth()/2 - topTube.getWidth()/2 + (i *distanceBetweenTubes) + Gdx.graphics.getWidth();
+			tubeX[i] = Gdx.graphics.getWidth()/2 - topTubeTexture.getWidth()/2 + (i * distanceBetweenTubes) + Gdx.graphics.getWidth();
 			topRectangles[i] = new Rectangle();
 			bottomRectangles[i] = new Rectangle();
 		}
@@ -126,14 +128,29 @@ public class GameScreen implements Screen {
 
 		spaceJunk.updateAstronautPosition();
 		this.canvas.draw(astronauts[0], spaceJunk.getInitialX(), spaceJunk.getCurrentY());
+	}
 
-//		if(this.flapState) {
-//			this.flapState = false;
-//		}
-//		else {
-//			this.flapState = true;
-//			this.canvas.draw(astronauts[1], spaceJunk.getInitialX(), spaceJunk.getCurrentY());
-//		}
+	private void renderObstacles() {
+
+		for(int i = 0; i < numberOfTubes; i++) {
+//			Gdx.app.log("testlog", "Initially, i is " + i + " and tubeX is " + tubeX[i]);
+			if(tubeX[i] < -topTubeTexture.getWidth()) {
+				Gdx.app.log("testlog", "Finally, i is " + i + " and tubeX is " + tubeX[i]);
+				tubeX[i] += numberOfTubes * distanceBetweenTubes;
+				Gdx.app.log("testlog", "The other thing is " + topTubeTexture.getWidth());
+				tubeOffset[i] = (randomGenerator.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 100);
+			}
+			else {
+				tubeX[i] = tubeX[i] - tubeVelocity;
+			}
+
+			canvas.draw(topTubeTexture, tubeX[i], Gdx.graphics.getHeight() / 2 + gap / 2 + tubeOffset[i]);
+			canvas.draw(bottomTubeTexture, tubeX[i], Gdx.graphics.getHeight() / 2 - bottomTubeTexture.getHeight() - gap / 2 + tubeOffset[i]);
+
+			//SETTING TOP TUBE SHAPE
+			topRectangles[i].set(tubeX[i], Gdx.graphics.getHeight() / 2 + gap/2 + tubeOffset[i], topTubeTexture.getWidth(), topTubeTexture.getHeight());
+			bottomRectangles[i].set(tubeX[i], Gdx.graphics.getHeight() / 2 - bottomTubeTexture.getHeight() - gap / 2 + tubeOffset[i], topTubeTexture.getWidth(), topTubeTexture.getHeight());
+		}
 	}
 
 	@Override
@@ -158,25 +175,8 @@ public class GameScreen implements Screen {
 				spaceJunk.moveAstronaut(Gdx.input.getY());
 			}
 
+			renderObstacles();
 
-
-			for(int i = 0; i < numberOfTubes; i++) {
-				if(tubeX[i] < -topTube.getWidth()) {
-					tubeX[i] += numberOfTubes * distanceBetweenTubes;
-					tubeOffset[i] = (randomGenerator.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 100);
-				}
-				else {
-					tubeX[i] = tubeX[i] - tubeVelocity;
-				}
-
-				canvas.draw(topTube, tubeX[i], Gdx.graphics.getHeight() / 2 + gap / 2 + tubeOffset[i]);
-				canvas.draw(bottomTube, tubeX[i], Gdx.graphics.getHeight() / 2 - bottomTube.getHeight() - gap / 2 + tubeOffset[i]);
-
-				//SETTING TOP TUBE SHAPE
-				topRectangles[i].set(tubeX[i], Gdx.graphics.getHeight() / 2 + gap/2 + tubeOffset[i], topTube.getWidth(), topTube.getHeight());
-				bottomRectangles[i].set(tubeX[i], Gdx.graphics.getHeight() / 2 - bottomTube.getHeight() - gap / 2 + tubeOffset[i], topTube.getWidth(), topTube.getHeight());
-
-			}
 
 		}
 		else if(!isGameActive && !isCrashed){
