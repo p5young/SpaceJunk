@@ -2,9 +2,11 @@ package com.spacejunk.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.spacejunk.game.characters.Astronaut;
+import com.spacejunk.game.characters.Character;
+import com.spacejunk.game.levels.Level;
 
 /**
  * Created by vidxyz on 2/4/18.
@@ -17,35 +19,36 @@ public class SpaceJunk extends Game {
 
 
     public enum DIFFICULTY_LEVEL {EASY, MEDIUM, HARD};
-    public enum PLATFORM {TOP, MIDDLE, BOTTOM}
+
 
     private int currentYposition;
     private DIFFICULTY_LEVEL currentDifficultyLevel;
-    private PLATFORM currentPlatform;
 
     // Canvas size
     int xMax, yMax;
 
-    // Positional identifiers
-    int currentX, currentY;
-    int initialY, initialX;
-    int targetY;
+    private double currentGameScore;
 
-    int topPlatformY, middlePlatformY, bottomPlatformY;
 
     private SpriteBatch canvas;
     private BitmapFont font;
 
+    private Level level;
+    private Character character;
+
+
 
     public SpaceJunk(DIFFICULTY_LEVEL level) {
         this.currentDifficultyLevel = level;
-        this.currentPlatform = PLATFORM.MIDDLE;
+        // This can be chnaged as needed
+        this.character = new Astronaut(this);
+        this.currentGameScore = 0;
+
     }
 
 
     @Override
     public void create () {
-
 
         canvas = new SpriteBatch();
         // Use libGDX's default Arial font
@@ -54,26 +57,24 @@ public class SpaceJunk extends Game {
         xMax = Gdx.graphics.getWidth();
         yMax = Gdx.graphics.getHeight();
 
-        Gdx.app.log("applog", "create method of SpaceJunk.java called here " + String.valueOf(xMax));
-        Gdx.app.log("applog", "yMax is " + String.valueOf(yMax));
+        Gdx.app.log("applog", "create method of SpaceJunk called here");
+        Gdx.app.log("applog", "xMax is " + xMax);
+        Gdx.app.log("applog", "yMax is " + yMax);
 
+        character.create();
 
-        Texture[] astronauts = new Texture[3];
-        astronauts[0] = new Texture("astronaut_texture_1.png");
-        astronauts[1] = new Texture("astronaut_texture_2.png");
-        astronauts[2] = new Texture("astronaut_texture_3.png");
-
-        initialY = Gdx.graphics.getHeight() / 2 - astronauts[0].getWidth() / 2;
-        initialX = Gdx.graphics.getWidth() / 2;
-
-        topPlatformY = yMax / 6;
-        middlePlatformY = topPlatformY + yMax / 3;
-        bottomPlatformY = middlePlatformY + yMax / 3;
-
-        currentY = initialY;
-        targetY = middlePlatformY;
 
         this.setScreen(new GameScreen(this));
+
+        // Updating the values needed from within the level class
+        this.level = new Level(this);
+
+
+        // We subtract 1/6th of the screen here to make up for the offset we caused earlier
+        this.level.setPlatformCoordinates(0, Gdx.graphics.getHeight() / 3, 2 * Gdx.graphics.getHeight() / 3);
+        this.level.setMaxCoordinates(xMax, yMax);
+        this.level.generateInitialObstacles();
+
     }
 
     @Override
@@ -87,75 +88,29 @@ public class SpaceJunk extends Game {
     }
 
 
-    private void updatePlatform(boolean isGoingUp) {
-        if(isGoingUp) {
-            if(this.currentPlatform == PLATFORM.BOTTOM) {
-                this.currentPlatform = PLATFORM.MIDDLE;
-                this.targetY = middlePlatformY;
-            }
-            else if (this.currentPlatform == PLATFORM.MIDDLE) {
-                this.currentPlatform = PLATFORM.TOP;
-                this.targetY = topPlatformY;
-            }
-            // Else we are already on the top platform, so no point going up anymore
-        }
-        else {
-            if(this.currentPlatform == PLATFORM.TOP) {
-                this.currentPlatform = PLATFORM.MIDDLE;
-                this.targetY = middlePlatformY;
-            }
-            else if(this.currentPlatform == PLATFORM.MIDDLE) {
-                this.currentPlatform = PLATFORM.BOTTOM;
-                this.targetY = bottomPlatformY;
-            }
-            // Else we already at the bottom, no point going futher down
-        }
+    public Level getLevel() {
+        return this.level;
     }
 
-    public void moveAstronaut(int y) {
-
-
-        Gdx.app.log("applog", String.valueOf(y));
-
-        // Bottom half of screen tapped
-        if (y < (yMax / 2)) {
-            updatePlatform(false);
-        }
-        // Top half is tapped
-        else {
-            updatePlatform(true);
-            // Making sure we don't go up a platform while already at the top most
-        }
+    public int getxMax() {
+        return this.xMax;
     }
 
-    public void updateAstronautPosition() {
-
-        if(this.currentY < this.targetY) {
-            if(this.currentY + 10 < this.targetY) {
-                this.currentY += 10;
-            }
-            else {
-                this.currentY = this.targetY;
-            }
-        }
-        else if (this.currentY > this.targetY){
-            if(this.currentY - 10 > this.targetY) {
-                this.currentY -= 10;
-            }
-            else {
-                this.currentY = this.targetY;
-            }
-        }
+    public int getyMax() {
+        return this.yMax;
     }
 
-    public int getCurrentY() {
-        return this.currentY;
-    }
-
-    public int getInitialX() {
-        return this.initialX;
+    public Character getCharacter() {
+        return this.character;
     }
 
 
+    public double getCurrentGameScore() {
+        return currentGameScore;
+    }
+
+    public void incrementGameScore() {
+        this.currentGameScore += this.level.getScoringRate();
+    }
 }
 
