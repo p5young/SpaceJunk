@@ -27,8 +27,6 @@ public class GameScreen implements Screen {
 	SpriteBatch canvas;
 	Texture background;
 
-	int gameScore;
-	int scoringTube;
 	BitmapFont font;
 
 	Texture gameOver;
@@ -37,29 +35,17 @@ public class GameScreen implements Screen {
 
 	Boolean isGameActive = false;
 	Boolean isCrashed = false;
-	float velocity = 0;
 	Ellipse astronautShape;
 
 	Rectangle[] topRectangles;
 	Rectangle[] bottomRectangles;
 
-	float gap;
-	float maxTubeOffset;
 	Random randomGenerator;
 
-	float tubeVelocity = 8;
-	int numberOfTubes = 4;
 
-	float[] tubeX = new float[numberOfTubes];
-	float distanceBetweenTubes;
-
-	OrthographicCamera camera;
 	final SpaceJunk spaceJunk;
 
-	static private int WIDTH = 800;
-	static private int HEIGHT = 480;
 
-	Animation<TextureRegion> astronautAnimation;
 	float stateTime;
 
 	private State state;
@@ -69,9 +55,6 @@ public class GameScreen implements Screen {
 		this.spaceJunk = game;
 		this.state =  State.RUN;
 
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, WIDTH, HEIGHT);
-
 		create();
 	}
 
@@ -80,8 +63,6 @@ public class GameScreen implements Screen {
 
 		canvas = new SpriteBatch();
 		background = new Texture("space_background.jpg");
-		gameScore = 0;
-		scoringTube = 0;
 		font = new BitmapFont();
 		font.setColor(Color.WHITE);
 		font.getData().setScale(10);
@@ -97,13 +78,9 @@ public class GameScreen implements Screen {
 
 
 		//TUBES
-		topRectangles = new Rectangle[numberOfTubes];
-		bottomRectangles = new Rectangle[numberOfTubes];
-		gap = 500;
+		topRectangles = new Rectangle[4];
+		bottomRectangles = new Rectangle[4];
 		randomGenerator = new Random();
-
-		maxTubeOffset = Gdx.graphics.getHeight()/2 - gap/2 - 100;
-		distanceBetweenTubes = Gdx.graphics.getWidth() * 2/3;
 
 		stateTime = 0f;
 
@@ -194,7 +171,7 @@ public class GameScreen implements Screen {
 				astronauts[0].getWidth() / 2, astronauts[0].getHeight() / 2); //XY Coordinate and radius
 
 		//SETTING BOTTOM TUBE SHAPE
-		for(int i = 0; i < numberOfTubes; i++) {
+		for(int i = 0; i < 4; i++) {
 
 			//CHECK FOR COLLISION
 //			if(Intersector.overlaps(astronautShape, topRectangles[i]) || Intersector.overlaps(astronautShape, bottomRectangles[i])) {
@@ -257,9 +234,6 @@ public class GameScreen implements Screen {
 		if(Gdx.input.justTouched()) {
 			isGameActive = true;
 			isCrashed = false;
-			gameScore = 0;
-			scoringTube = 0;
-			velocity = 0;
 
 		}
 	}

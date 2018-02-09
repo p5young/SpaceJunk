@@ -21,7 +21,7 @@ public class Level {
     public static final int MAX_NUMBER_OF_OBSTACLES = 5;
     public static final int MAX_PLATFORMS = 3;
     public static final int VELOCITY = 8;
-    public static final double SCORING_RATE = 0.5;
+    public static final double SCORING_RATE = 0.25;
 
     private ArrayList<Obstacle> obstaclesList;
     private Random randomGenerator;
