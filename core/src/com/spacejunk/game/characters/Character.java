@@ -126,4 +126,7 @@ public abstract class Character {
         return this.initialX;
     }
 
+    public Texture[] getCharacterTextures() {
+        return characterTextures;
+    }
 }

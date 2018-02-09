@@ -16,6 +16,8 @@ import java.util.Random;
 
 public class GameScreen implements Screen {
 
+	public static final int PADDING = 20;
+
 	public enum State
 	{
 		PAUSE,
@@ -26,12 +28,13 @@ public class GameScreen implements Screen {
 
 	SpriteBatch canvas;
 	Texture background;
+	Controller controller;
 
 	BitmapFont font;
 
 	Texture gameOver;
 
-	Texture[] astronauts;
+	Texture[] remainingLivesTextures;
 
 	Boolean isGameActive = false;
 	Boolean isCrashed = false;
@@ -54,12 +57,15 @@ public class GameScreen implements Screen {
 	public GameScreen(final SpaceJunk game) {
 		this.spaceJunk = game;
 		this.state =  State.RUN;
+		this.controller = new Controller(this.spaceJunk);
 
 		create();
 	}
 
 
 	public void create () {
+
+		Gdx.app.log("applog", "Create method of gamescreen.java called");
 
 		canvas = new SpriteBatch();
 		background = new Texture("space_background.jpg");
@@ -71,10 +77,14 @@ public class GameScreen implements Screen {
 
 		//BIRDS
 		astronautShape = new Ellipse();
-		astronauts = new Texture[3];
-		astronauts[0] = new Texture("astronaut_texture_1.png");
-		astronauts[1] = new Texture("astronaut_texture_2.png");
-		astronauts[2] = new Texture("astronaut_texture_3.png");
+
+		// Must use spaceJunk.getLevel().getMaxLives() here
+		remainingLivesTextures = new Texture[3];
+
+		for(int i = 0; i < 3; i++) {
+			remainingLivesTextures[i] = new Texture("heart.png");
+		}
+
 
 
 		//TUBES
@@ -99,8 +109,9 @@ public class GameScreen implements Screen {
 	private void renderAstronaut() {
 		spaceJunk.getCharacter().updateCharacterPosition();
 
-		this.canvas.draw(astronauts[0], spaceJunk.getCharacter().getInitialX() - astronauts[0].getWidth() / 2,
-				spaceJunk.getCharacter().getCurrentY() - astronauts[0].getHeight() / 2);
+		this.canvas.draw(spaceJunk.getCharacter().getCharacterTextures()[0],
+				spaceJunk.getCharacter().getInitialX() - spaceJunk.getCharacter().getCharacterTextures()[0].getWidth() / 2,
+				spaceJunk.getCharacter().getCurrentY() - spaceJunk.getCharacter().getCharacterTextures()[0].getHeight() / 2);
 	}
 
 	private void renderObstacles() {
@@ -138,7 +149,7 @@ public class GameScreen implements Screen {
 				break;
 			case PAUSE:
 				Gdx.app.log("applog", "In pause state now");
-				if(Gdx.input.justTouched() &&  playPauseButtonisPressed()) {
+				if(controller.isTouched() &&  controller.playPauseButtonisPressed()) {
 					resume();
 				}
 				break;
@@ -148,10 +159,6 @@ public class GameScreen implements Screen {
 
 	}
 
-
-	private boolean playPauseButtonisPressed() {
-		return Gdx.input.getX() >= 0 && Gdx.input.getX() <= 81 && Gdx.input.getY() >= 0 && Gdx.input.getY() <= 81;
-	}
 
 	private void renderScreen() {
 		canvas.begin();
@@ -168,7 +175,8 @@ public class GameScreen implements Screen {
 
 		//SETTING BIRD SHAPE
 		astronautShape.set(spaceJunk.getCharacter().getInitialX(), spaceJunk.getCharacter().getCurrentY(),
-				astronauts[0].getWidth() / 2, astronauts[0].getHeight() / 2); //XY Coordinate and radius
+				spaceJunk.getCharacter().getCharacterTextures()[0].getWidth() / 2,
+				spaceJunk.getCharacter().getCharacterTextures()[0].getHeight() / 2); //XY Coordinate and radius
 
 		//SETTING BOTTOM TUBE SHAPE
 		for(int i = 0; i < 4; i++) {
@@ -183,11 +191,15 @@ public class GameScreen implements Screen {
 	}
 
 	private void renderController() {
-
+		controller.render(canvas);
 	}
 
 	private void renderRemainingLives() {
 
+		for(int i = 0; i < 3; i++) {
+			canvas.draw(remainingLivesTextures[i], Gdx.graphics.getWidth() - ((i + 1) * remainingLivesTextures[i].getWidth()) - PADDING,
+					Gdx.graphics.getHeight() - remainingLivesTextures[i].getHeight() - PADDING);
+		}
 	}
 
 	private void eventLoop() {
@@ -195,8 +207,8 @@ public class GameScreen implements Screen {
 
 			spaceJunk.incrementGameScore();
 
-			if(Gdx.input.justTouched()) {
-				if(playPauseButtonisPressed()) {
+			if(controller.isTouched()) {
+				if(controller.playPauseButtonisPressed()) {
 					Gdx.app.log("applog", "PAUSE BUTTON PRESSED");
 					pause();
 				}

@@ -64,7 +64,6 @@ public class SpaceJunk extends Game {
         character.create();
 
 
-
         this.setScreen(new GameScreen(this));
 
         // Updating the values needed from within the level class
