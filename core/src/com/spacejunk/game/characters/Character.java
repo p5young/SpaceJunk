@@ -1,18 +1,20 @@
-package com.spacejunk.game;
+package com.spacejunk.game.characters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.spacejunk.game.SpaceJunk;
 
 /**
  * Created by vidxyz on 2/9/18.
  */
 
-public class Astronaut  {
+public abstract class Character {
+
 
     public enum PLATFORM {TOP, MIDDLE, BOTTOM}
 
-    private PLATFORM currentPlatform;
-    private SpaceJunk currentGame;
+    PLATFORM currentPlatform;
+    SpaceJunk currentGame;
 
     // Positional identifiers
     int currentX, currentY;
@@ -21,24 +23,13 @@ public class Astronaut  {
 
     int topPlatformY, middlePlatformY, bottomPlatformY;
 
-    Texture[] astronautTextures = new Texture[3];
+    Texture[] characterTextures = new Texture[3];
 
-
-    public Astronaut(PLATFORM platform, SpaceJunk game) {
-        this.currentPlatform = PLATFORM.MIDDLE;
-        this.currentGame = game;
-
-    }
 
     public void create() {
 
-
-        astronautTextures[0] = new Texture("astronaut_texture_1.png");
-        astronautTextures[1] = new Texture("astronaut_texture_2.png");
-        astronautTextures[2] = new Texture("astronaut_texture_3.png");
-
-        initialY = Gdx.graphics.getHeight() / 2 - astronautTextures[0].getWidth() / 2;
-        initialX = Gdx.graphics.getWidth() / 2;
+        initialY = Gdx.graphics.getHeight() / 2 - characterTextures[0].getWidth() / 2;
+        initialX = Gdx.graphics.getWidth() / 9;
 
         topPlatformY = currentGame.getyMax() / 6;
         middlePlatformY = topPlatformY + currentGame.getyMax() / 3;
@@ -52,7 +43,7 @@ public class Astronaut  {
         targetY = middlePlatformY;
     }
 
-    public void moveAstronaut(int y) {
+    public void moveCharacter(int y) {
 
         // Bottom half of screen tapped
         if (y < (currentGame.getyMax() / 2)) {
@@ -65,7 +56,7 @@ public class Astronaut  {
         }
     }
 
-    public void updateAstronautPosition() {
+    public void updateCharacterPosition() {
 
         if(this.currentY < this.targetY) {
             if(this.currentY + 10 < this.targetY) {
@@ -110,8 +101,6 @@ public class Astronaut  {
         }
     }
 
-
-
     public int getTopPlatformY() {
         return topPlatformY;
     }
@@ -123,6 +112,7 @@ public class Astronaut  {
     public int getBottomPlatformY() {
         return bottomPlatformY;
     }
+
 
     public int getCurrentY() {
         return this.currentY;

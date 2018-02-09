@@ -2,9 +2,10 @@ package com.spacejunk.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.spacejunk.game.characters.Astronaut;
+import com.spacejunk.game.characters.Character;
 import com.spacejunk.game.levels.Level;
 
 /**
@@ -26,18 +27,23 @@ public class SpaceJunk extends Game {
     // Canvas size
     int xMax, yMax;
 
+    private double currentGameScore;
 
 
     private SpriteBatch canvas;
     private BitmapFont font;
 
     private Level level;
-    private Astronaut astronaut;
+    private Character character;
+
 
 
     public SpaceJunk(DIFFICULTY_LEVEL level) {
         this.currentDifficultyLevel = level;
-        this.astronaut = new Astronaut(Astronaut.PLATFORM.MIDDLE, this);
+        // This can be chnaged as needed
+        this.character = new Astronaut(this);
+        this.currentGameScore = 0;
+
     }
 
 
@@ -55,7 +61,7 @@ public class SpaceJunk extends Game {
         Gdx.app.log("applog", "xMax is " + xMax);
         Gdx.app.log("applog", "yMax is " + yMax);
 
-        astronaut.create();
+        character.create();
 
 
 
@@ -95,9 +101,17 @@ public class SpaceJunk extends Game {
         return this.yMax;
     }
 
-    public Astronaut getAstronaut() {
-        return this.astronaut;
+    public Character getCharacter() {
+        return this.character;
     }
 
+
+    public double getCurrentGameScore() {
+        return currentGameScore;
+    }
+
+    public void incrementGameScore() {
+        this.currentGameScore += this.level.getScoringRate();
+    }
 }
 

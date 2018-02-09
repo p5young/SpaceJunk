@@ -120,10 +120,10 @@ public class GameScreen implements Screen {
 	 * Prepares an astronaut for rendering. Moves it 'forward' one frame and then draws the result on the canvas
 	 * */
 	private void renderAstronaut() {
-		spaceJunk.getAstronaut().updateAstronautPosition();
+		spaceJunk.getCharacter().updateCharacterPosition();
 
-		this.canvas.draw(astronauts[0], spaceJunk.getAstronaut().getInitialX() - astronauts[0].getWidth() / 2,
-				spaceJunk.getAstronaut().getCurrentY() - astronauts[0].getHeight() / 2);
+		this.canvas.draw(astronauts[0], spaceJunk.getCharacter().getInitialX() - astronauts[0].getWidth() / 2,
+				spaceJunk.getCharacter().getCurrentY() - astronauts[0].getHeight() / 2);
 	}
 
 	private void renderObstacles() {
@@ -180,8 +180,9 @@ public class GameScreen implements Screen {
 		canvas.begin();
 
 		drawBackground();
+		renderController();
 		eventLoop();
-
+		renderRemainingLives();
 		renderAstronaut();
 		displayScore();
 
@@ -189,7 +190,7 @@ public class GameScreen implements Screen {
 
 
 		//SETTING BIRD SHAPE
-		astronautShape.set(spaceJunk.getAstronaut().getInitialX(), spaceJunk.getAstronaut().getCurrentY(),
+		astronautShape.set(spaceJunk.getCharacter().getInitialX(), spaceJunk.getCharacter().getCurrentY(),
 				astronauts[0].getWidth() / 2, astronauts[0].getHeight() / 2); //XY Coordinate and radius
 
 		//SETTING BOTTOM TUBE SHAPE
@@ -204,10 +205,18 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	private void renderController() {
+
+	}
+
+	private void renderRemainingLives() {
+
+	}
+
 	private void eventLoop() {
 		if(isGameActive && !isCrashed) {
 
-			gameScore++;
+			spaceJunk.incrementGameScore();
 
 			if(Gdx.input.justTouched()) {
 				if(playPauseButtonisPressed()) {
@@ -215,7 +224,7 @@ public class GameScreen implements Screen {
 					pause();
 				}
 
-				spaceJunk.getAstronaut().moveAstronaut(Gdx.input.getY());
+				spaceJunk.getCharacter().moveCharacter(Gdx.input.getY());
 			}
 
 			renderObstacles();
@@ -238,6 +247,7 @@ public class GameScreen implements Screen {
 
 	}
 
+
 	private void drawBackground() {
 		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
@@ -255,7 +265,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void displayScore() {
-		font.draw(canvas, String.valueOf(gameScore), 100, 200);
+		font.draw(canvas, String.valueOf(spaceJunk.getCurrentGameScore()), 100, 200);
 	}
 
 

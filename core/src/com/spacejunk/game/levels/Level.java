@@ -21,6 +21,7 @@ public class Level {
     public static final int MAX_NUMBER_OF_OBSTACLES = 5;
     public static final int MAX_PLATFORMS = 3;
     public static final int VELOCITY = 8;
+    public static final double SCORING_RATE = 0.5;
 
     private ArrayList<Obstacle> obstaclesList;
     private Random randomGenerator;
@@ -39,12 +40,15 @@ public class Level {
     int velocity;
     int minimumDistanceBetweenObstacles;
 
+    private double scoringRate;
+
     private SpaceJunk currentGame;
 
     public Level(SpaceJunk currentGame) {
         this.obstaclesList = new ArrayList<Obstacle>();
         this.randomGenerator = new Random();
         this.velocity = VELOCITY;
+        this.scoringRate = SCORING_RATE;
 
         this.currentGame = currentGame;
         this.minimumDistanceBetweenObstacles = currentGame.getxMax() / 4;
@@ -196,4 +200,7 @@ public class Level {
         return this.yMax;
     }
 
+    public double getScoringRate() {
+        return this.scoringRate;
+    }
 }
