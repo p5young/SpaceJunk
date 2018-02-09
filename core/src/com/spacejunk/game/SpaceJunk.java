@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.spacejunk.game.levels.Level;
 
 /**
  * Created by vidxyz on 2/4/18.
@@ -36,8 +37,11 @@ public class SpaceJunk extends Game {
     private SpriteBatch canvas;
     private BitmapFont font;
 
+    private Level level;
+
 
     public SpaceJunk(DIFFICULTY_LEVEL level) {
+
         this.currentDifficultyLevel = level;
         this.currentPlatform = PLATFORM.MIDDLE;
     }
@@ -46,7 +50,6 @@ public class SpaceJunk extends Game {
     @Override
     public void create () {
 
-
         canvas = new SpriteBatch();
         // Use libGDX's default Arial font
         font = new BitmapFont();
@@ -54,8 +57,7 @@ public class SpaceJunk extends Game {
         xMax = Gdx.graphics.getWidth();
         yMax = Gdx.graphics.getHeight();
 
-        Gdx.app.log("applog", "create method of SpaceJunk.java called here " + String.valueOf(xMax));
-        Gdx.app.log("applog", "yMax is " + String.valueOf(yMax));
+        Gdx.app.log("applog", "create method of SpaceJunk called here " + String.valueOf(xMax));
 
 
         Texture[] astronauts = new Texture[3];
@@ -74,6 +76,14 @@ public class SpaceJunk extends Game {
         targetY = middlePlatformY;
 
         this.setScreen(new GameScreen(this));
+
+        // Updating the values needed from within the level class
+        this.level = new Level();
+
+        this.level.setPlatformCoordinates(topPlatformY, middlePlatformY, bottomPlatformY);
+        this.level.setMaxCoordinates(xMax, yMax);
+        this.level.generateInitialObstacles();
+
     }
 
     @Override
@@ -160,7 +170,9 @@ public class SpaceJunk extends Game {
         return this.initialX;
     }
 
-
+    public Level getLevel() {
+        return this.level;
+    }
 
 }
 
