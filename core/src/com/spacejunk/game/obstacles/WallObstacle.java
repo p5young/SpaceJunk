@@ -21,6 +21,15 @@ public class WallObstacle extends Obstacle {
     @Override
     public void moveLeft() {
         this.x = this.x - this.level.getVelocity();
+
+        // We now wrap around over here
+        if(x < 0) {
+            int[] coordinates = this.level.getNextCoordinates();
+            coordinates[0] -= this.level.getXMax();
+            this.setCoordinates(coordinates[0], coordinates[1]);
+        }
+
+
     }
 
     @Override

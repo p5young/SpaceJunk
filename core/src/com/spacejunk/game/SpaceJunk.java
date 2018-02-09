@@ -57,7 +57,9 @@ public class SpaceJunk extends Game {
         xMax = Gdx.graphics.getWidth();
         yMax = Gdx.graphics.getHeight();
 
-        Gdx.app.log("applog", "create method of SpaceJunk called here " + String.valueOf(xMax));
+        Gdx.app.log("applog", "create method of SpaceJunk called here");
+        Gdx.app.log("applog", "xMax is " + xMax);
+        Gdx.app.log("applog", "yMax is " + yMax);
 
 
         Texture[] astronauts = new Texture[3];
@@ -71,6 +73,10 @@ public class SpaceJunk extends Game {
         topPlatformY = yMax / 6;
         middlePlatformY = topPlatformY + yMax / 3;
         bottomPlatformY = middlePlatformY + yMax / 3;
+
+        Gdx.app.log("applog", "Top platform y is " + topPlatformY);
+        Gdx.app.log("applog", "Middle platform y is " + middlePlatformY);
+        Gdx.app.log("applog", "Bottom platform y is " + bottomPlatformY);
 
         currentY = initialY;
         targetY = middlePlatformY;
@@ -123,9 +129,6 @@ public class SpaceJunk extends Game {
     }
 
     public void moveAstronaut(int y) {
-
-
-        Gdx.app.log("applog", String.valueOf(y));
 
         // Bottom half of screen tapped
         if (y < (yMax / 2)) {

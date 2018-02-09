@@ -8,8 +8,9 @@ import com.badlogic.gdx.graphics.Texture;
 
 public abstract class Obstacle {
 
-    int x;
-    int y;
+    // Initial dummy setting
+    int x = -1;
+    int y = -1;
 
 
     public void setCoordinates(int x, int y) {

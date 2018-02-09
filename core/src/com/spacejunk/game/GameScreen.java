@@ -11,7 +11,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Rectangle;
+import com.spacejunk.game.obstacles.Obstacle;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class GameScreen implements Screen {
@@ -65,8 +67,6 @@ public class GameScreen implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WIDTH, HEIGHT);
 
-		Gdx.app.log("applog", "GAMESCREEN IS BEING INITAILIZED HERE");
-
 		create();
 	}
 
@@ -104,26 +104,12 @@ public class GameScreen implements Screen {
 
 		stateTime = 0f;
 
-		startGame();
 	}
 
-
-	public void startGame() {
-
-//		this.spaceJunk.getLevel().
-//
-//		for(int i = 0; i < numberOfTubes; i++) {
-//			tubeOffset[i] = (randomGenerator.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 100);
-//			tubeX[i] = Gdx.graphics.getWidth()/2 - topTubeTexture.getWidth()/2 + (i * distanceBetweenTubes) + Gdx.graphics.getWidth();
-//			topRectangles[i] = new Rectangle();
-//			bottomRectangles[i] = new Rectangle();
-//		}
-	}
 
 	@Override
 	public void dispose () {
 		canvas.dispose();
-//		img.dispose();
 	}
 
 
@@ -136,6 +122,7 @@ public class GameScreen implements Screen {
 	private void renderObstacles() {
 
 		this.spaceJunk.getLevel().renderObstacles(canvas);
+
 
 //		for(int i = 0; i < numberOfTubes; i++) {
 ////			Gdx.app.log("testlog", "Initially, i is " + i + " and tubeX is " + tubeX[i]);
@@ -201,7 +188,6 @@ public class GameScreen implements Screen {
 				gameScore = 0;
 				scoringTube = 0;
 				velocity = 0;
-				startGame();
 
 			}
 		}

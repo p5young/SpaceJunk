@@ -18,9 +18,6 @@ public class AndroidLauncher extends AndroidApplication {
 		config.useAccelerometer = false;
 		config.useCompass = false;
 
-
-		Log.i("applog", "SPACEJUNK IS BEING INITAILIZED HERE");
-
 		initialize(new SpaceJunk(SpaceJunk.DIFFICULTY_LEVEL.EASY), config);
 	}
 }

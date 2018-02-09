@@ -1,5 +1,7 @@
 package com.spacejunk.game.levels;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.spacejunk.game.obstacles.Obstacle;
 import com.spacejunk.game.obstacles.WallObstacle;
@@ -71,36 +73,54 @@ public class Level {
             o.setCoordinates(coordinates[0], coordinates[1]);
         }
 
-
     }
 
-    private int[] getNextCoordinates() {
+    /**
+     * Returns 'True' if @param:x is not present as x-coordinate for any other obstacle
+     * */
+    private boolean isXCoordinateAcceptable(int x) {
+
+        for (Obstacle o : obstaclesList) {
+            if(o.getX() == x) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int[] getNextCoordinates() {
 
         int[] coordinates = new int[2];
 
         int x = randomGenerator.nextInt(Math.abs(this.xMax));
+
+        // Generate new x coordinate until all x coordinates are different
+        while(!this.isXCoordinateAcceptable(x)) {
+            Gdx.app.log("applog", "MISMATCH: REGENERATING x value");
+            x = randomGenerator.nextInt(Math.abs(this.xMax));
+        }
+
+
         int y = 0;
         int temp = randomGenerator.nextInt(MAX_PLATFORMS);
 
         switch (temp) {
             case 0:
-                y = topPlatformY;
+                y = this.topPlatformY;
                 break;
             case 1:
-                y = middlePlatformY;
+                y = this.middlePlatformY;
                 break;
             case 2:
-                y = bottomPlatformY;
+                y = this.bottomPlatformY;
                 break;
             default:
-                // HIGHLY TEMPORARY
-                y = 25;
                 break;
         }
 
         // This is done so that the obstacles are initially off the screen totally
         coordinates[0] = x + xMax;
-        coordinates[1] = y + yMax;
+        coordinates[1] = y;
 
         return coordinates;
     }
@@ -131,6 +151,14 @@ public class Level {
 
     public int getVelocity() {
         return this.velocity;
+    }
+
+    public int getXMax() {
+        return this.xMax;
+    }
+
+    public int getYMax() {
+        return this.yMax;
     }
 
 }
