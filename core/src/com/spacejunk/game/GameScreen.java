@@ -69,9 +69,10 @@ public class GameScreen implements Screen {
 
 		canvas = new SpriteBatch();
 		background = new Texture("space_background.jpg");
+
 		font = new BitmapFont();
 		font.setColor(Color.WHITE);
-		font.getData().setScale(10);
+		font.getData().setScale(7);
 
 		gameOver = new Texture("gameover.png");
 
@@ -258,7 +259,9 @@ public class GameScreen implements Screen {
 	}
 
 	private void displayScore() {
-		font.draw(canvas, String.valueOf(spaceJunk.getCurrentGameScore()), 100, 200);
+		font.draw(canvas, String.valueOf(spaceJunk.getCurrentGameScore()),
+				Gdx.graphics.getWidth() / 2 - font.getXHeight(),
+				Gdx.graphics.getHeight());
 	}
 
 

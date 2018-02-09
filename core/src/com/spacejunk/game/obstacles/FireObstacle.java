@@ -14,7 +14,7 @@ public class FireObstacle extends Obstacle {
     private Level level;
 
     public FireObstacle(Level level) {
-        this.obstacleTexture = new Texture("fire_obstacle.png");
+        this.obstacleTexture = new Texture("fire_texture.png");
         this.level = level;
     }
 
