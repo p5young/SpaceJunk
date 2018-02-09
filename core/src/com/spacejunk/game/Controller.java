@@ -28,7 +28,11 @@ public class Controller {
     }
 
     public boolean playPauseButtonisPressed() {
-        return Gdx.input.getX() >= 0 && Gdx.input.getX() <= 81 && Gdx.input.getY() >= 0 && Gdx.input.getY() <= 81;
+        return Gdx.input.getX() >= optionsMenu.getOptionsMenuTexures()[0].getWidth() &&
+            Gdx.input.getX() <= optionsMenu.getOptionsMenuTexures()[0].getWidth() +
+                optionsMenu.getOptionsMenuTexures()[1].getWidth() &&
+                Gdx.input.getY() <= optionsMenu.getOptionsMenuTexures()[0].getHeight() &&
+                Gdx.input.getY() >= 0;
     }
 
     public void render(SpriteBatch canvas) {
@@ -36,4 +40,11 @@ public class Controller {
         consumablesMenu.render(canvas);
     }
 
+    public OptionsMenu getOptionsMenu() {
+        return optionsMenu;
+    }
+
+    public ConsumablesMenu getConsumablesMenu() {
+        return consumablesMenu;
+    }
 }

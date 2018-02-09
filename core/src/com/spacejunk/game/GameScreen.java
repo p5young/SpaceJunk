@@ -148,7 +148,7 @@ public class GameScreen implements Screen {
 				renderScreen();
 				break;
 			case PAUSE:
-				Gdx.app.log("applog", "In pause state now");
+				renderScreenEssentials();
 				if(controller.isTouched() &&  controller.playPauseButtonisPressed()) {
 					resume();
 				}
@@ -157,6 +157,14 @@ public class GameScreen implements Screen {
 				break;
 		}
 
+	}
+
+	private void renderScreenEssentials() {
+		canvas.begin();
+
+		renderController();
+
+		canvas.end();
 	}
 
 
@@ -209,7 +217,6 @@ public class GameScreen implements Screen {
 
 			if(controller.isTouched()) {
 				if(controller.playPauseButtonisPressed()) {
-					Gdx.app.log("applog", "PAUSE BUTTON PRESSED");
 					pause();
 				}
 
@@ -270,11 +277,13 @@ public class GameScreen implements Screen {
 	@Override
 	public void pause() {
 		this.state = State.PAUSE;
+		controller.getOptionsMenu().setMiddleButtonTextureToPlay();
 	}
 
 	@Override
 	public void resume() {
 		this.state = State.RUN;
+		controller.getOptionsMenu().setMiddleButtonTextureToPause();
 	}
 
 	@Override

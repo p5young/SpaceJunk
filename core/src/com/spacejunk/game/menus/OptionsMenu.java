@@ -1,5 +1,7 @@
 package com.spacejunk.game.menus;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
@@ -8,5 +10,48 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class OptionsMenu {
 
-    public void render(SpriteBatch canvas) {}
+    // BUTTON_0 <==> MAIN MENU
+    // BUTTON_1 <==> PLAY/PAUSE
+    // BUTTON_2 <==> RESTART
+
+    public static final int MAX_BUTTONS = 3;
+
+
+
+    private Texture[] optionsMenuTexures;
+
+    public OptionsMenu() {
+
+        optionsMenuTexures = new Texture[MAX_BUTTONS];
+
+        optionsMenuTexures[0] = new Texture("main_menu.png");
+        optionsMenuTexures[1] = new Texture("pause_button.png");
+        optionsMenuTexures[2] = new Texture("restart_button.png");
+    }
+
+    public void render(SpriteBatch canvas) {
+
+        for(int i = 0; i < MAX_BUTTONS; i++) {
+            if(i != 0) {
+                canvas.draw(optionsMenuTexures[i], (i * optionsMenuTexures[i-1].getWidth()),
+                        Gdx.graphics.getHeight() - optionsMenuTexures[i].getHeight());
+            }
+            else {
+                canvas.draw(optionsMenuTexures[i], 0, Gdx.graphics.getHeight() - optionsMenuTexures[i].getHeight());
+            }
+        }
+    }
+
+    public Texture[] getOptionsMenuTexures() {
+        return optionsMenuTexures;
+    }
+
+    public void setMiddleButtonTextureToPlay() {
+        optionsMenuTexures[1] = new Texture("play_button.png");
+    }
+
+    public void setMiddleButtonTextureToPause() {
+        optionsMenuTexures[1] = new Texture("pause_button.png");
+    }
+
 }
