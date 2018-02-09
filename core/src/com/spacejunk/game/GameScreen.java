@@ -48,7 +48,6 @@ public class GameScreen implements Screen {
 	int numberOfTubes = 4;
 
 	float[] tubeX = new float[numberOfTubes];
-	float[] tubeOffset = new float[numberOfTubes];
 	float distanceBetweenTubes;
 
 	OrthographicCamera camera;
@@ -113,10 +112,14 @@ public class GameScreen implements Screen {
 	}
 
 
+	/**
+	 * Prepares an astronaut for rendering. Moves it 'forward' one frame and then draws the result on the canvas
+	 * */
 	private void renderAstronaut() {
+		spaceJunk.getAstronaut().updateAstronautPosition();
 
-		spaceJunk.updateAstronautPosition();
-		this.canvas.draw(astronauts[0], spaceJunk.getInitialX(), spaceJunk.getCurrentY());
+		this.canvas.draw(astronauts[0], spaceJunk.getAstronaut().getInitialX() - astronauts[0].getWidth() / 2,
+				spaceJunk.getAstronaut().getCurrentY() - astronauts[0].getHeight() / 2);
 	}
 
 	private void renderObstacles() {
@@ -153,24 +156,17 @@ public class GameScreen implements Screen {
 
 		if(isGameActive && !isCrashed) {
 
-			if(astronautShape.x > tubeX[scoringTube]) {
-				gameScore++;
-				if(scoringTube < numberOfTubes-1) {
-					scoringTube++;
-				}
-				else {
-					scoringTube = 0;
-				}
-			}
+			gameScore++;
 
 			if(Gdx.input.justTouched()) {
-				spaceJunk.moveAstronaut(Gdx.input.getY());
+				spaceJunk.getAstronaut().moveAstronaut(Gdx.input.getY());
 			}
 
 			renderObstacles();
 
 
 		}
+
 		else if(!isGameActive && !isCrashed){
 			if(Gdx.input.justTouched()) {
 				isGameActive = true;
@@ -181,26 +177,18 @@ public class GameScreen implements Screen {
 		//if statement ends here
 		//Code for if crash occurs
 		if(isCrashed) {
-			canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
-			if(Gdx.input.justTouched()) {
-				isGameActive = true;
-				isCrashed = false;
-				gameScore = 0;
-				scoringTube = 0;
-				velocity = 0;
-
-			}
+			drawGameOverScreen();
 		}
 
 
 		renderAstronaut();
+		displayScore();
 
-		font.draw(canvas, String.valueOf(gameScore), 100, 200);
 		canvas.end();
 
 
 		//SETTING BIRD SHAPE
-		astronautShape.set(spaceJunk.getInitialX(), spaceJunk.getCurrentY(),
+		astronautShape.set(spaceJunk.getAstronaut().getInitialX(), spaceJunk.getAstronaut().getCurrentY(),
 				astronauts[0].getWidth() / 2, astronauts[0].getHeight() / 2); //XY Coordinate and radius
 
 		//SETTING BOTTOM TUBE SHAPE
@@ -214,6 +202,22 @@ public class GameScreen implements Screen {
 
 		}
 
+	}
+
+	private void drawGameOverScreen() {
+		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
+		if(Gdx.input.justTouched()) {
+			isGameActive = true;
+			isCrashed = false;
+			gameScore = 0;
+			scoringTube = 0;
+			velocity = 0;
+
+		}
+	}
+
+	private void displayScore() {
+		font.draw(canvas, String.valueOf(gameScore), 100, 200);
 	}
 
 

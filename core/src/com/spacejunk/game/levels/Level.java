@@ -3,11 +3,13 @@ package com.spacejunk.game.levels;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.spacejunk.game.SpaceJunk;
 import com.spacejunk.game.obstacles.Obstacle;
 import com.spacejunk.game.obstacles.WallObstacle;
 
 import java.util.ArrayList;
 import java.util.Random;
+
 
 /**
  * Created by vidxyz on 2/8/18.
@@ -34,11 +36,17 @@ public class Level {
 
     // Velocity
     int velocity;
+    int minimumDistanceBetweenObstacles;
 
-    public Level() {
+    private SpaceJunk currentGame;
+
+    public Level(SpaceJunk currentGame) {
         this.obstaclesList = new ArrayList<Obstacle>();
         this.randomGenerator = new Random();
         this.velocity = VELOCITY;
+
+        this.currentGame = currentGame;
+        this.minimumDistanceBetweenObstacles = currentGame.getxMax() / 4;
     }
 
     /**
@@ -70,10 +78,25 @@ public class Level {
 
         for (Obstacle o : obstaclesList) {
             int[] coordinates = this.getNextCoordinates();
+            coordinates[0] += xMax;
             o.setCoordinates(coordinates[0], coordinates[1]);
         }
 
     }
+
+    public boolean failsInitialOverlappingCheck(int x, Obstacle o) {
+        return (x >= o.getX() && x <= (o.getX() + o.getTexture().getWidth()));
+    }
+
+    /**
+     * Returns TRUE if x is too close to an obstacle's x co-ordinate
+     * TOO CLOSE is defined by level difficulty
+     * */
+    private boolean failsGapCheck(int x, Obstacle o) {
+        return(x >= o.getX() + o.getTexture().getWidth() &&
+                x <= o.getX() + o.getTexture().getWidth() + this.minimumDistanceBetweenObstacles);
+    }
+
 
     /**
      * Returns 'True' if @param:x is not present as x-coordinate for any other obstacle
@@ -81,7 +104,7 @@ public class Level {
     private boolean isXCoordinateAcceptable(int x) {
 
         for (Obstacle o : obstaclesList) {
-            if(o.getX() == x) {
+            if(this.failsInitialOverlappingCheck(x, o) || this.failsGapCheck(x, o)) {
                 return false;
             }
         }
@@ -96,7 +119,6 @@ public class Level {
 
         // Generate new x coordinate until all x coordinates are different
         while(!this.isXCoordinateAcceptable(x)) {
-            Gdx.app.log("applog", "MISMATCH: REGENERATING x value");
             x = randomGenerator.nextInt(Math.abs(this.xMax));
         }
 
@@ -119,7 +141,7 @@ public class Level {
         }
 
         // This is done so that the obstacles are initially off the screen totally
-        coordinates[0] = x + xMax;
+        coordinates[0] = x;
         coordinates[1] = y;
 
         return coordinates;

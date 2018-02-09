@@ -13,7 +13,7 @@ public class WallObstacle extends Obstacle {
     private Level level;
 
     public WallObstacle(Level level) {
-        this.obstacleTexture = new Texture("toptube.png");
+        this.obstacleTexture = new Texture("wall_bg.png");
         this.level = level;
     }
 
@@ -23,9 +23,8 @@ public class WallObstacle extends Obstacle {
         this.x = this.x - this.level.getVelocity();
 
         // We now wrap around over here
-        if(x < 0) {
+        if(x < -obstacleTexture.getWidth()) {
             int[] coordinates = this.level.getNextCoordinates();
-            coordinates[0] -= this.level.getXMax();
             this.setCoordinates(coordinates[0], coordinates[1]);
         }
 

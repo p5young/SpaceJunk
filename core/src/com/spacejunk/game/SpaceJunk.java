@@ -18,32 +18,26 @@ public class SpaceJunk extends Game {
 
 
     public enum DIFFICULTY_LEVEL {EASY, MEDIUM, HARD};
-    public enum PLATFORM {TOP, MIDDLE, BOTTOM}
+
 
     private int currentYposition;
     private DIFFICULTY_LEVEL currentDifficultyLevel;
-    private PLATFORM currentPlatform;
 
     // Canvas size
     int xMax, yMax;
 
-    // Positional identifiers
-    int currentX, currentY;
-    int initialY, initialX;
-    int targetY;
 
-    int topPlatformY, middlePlatformY, bottomPlatformY;
 
     private SpriteBatch canvas;
     private BitmapFont font;
 
     private Level level;
+    private Astronaut astronaut;
 
 
     public SpaceJunk(DIFFICULTY_LEVEL level) {
-
         this.currentDifficultyLevel = level;
-        this.currentPlatform = PLATFORM.MIDDLE;
+        this.astronaut = new Astronaut(Astronaut.PLATFORM.MIDDLE, this);
     }
 
 
@@ -61,32 +55,18 @@ public class SpaceJunk extends Game {
         Gdx.app.log("applog", "xMax is " + xMax);
         Gdx.app.log("applog", "yMax is " + yMax);
 
+        astronaut.create();
 
-        Texture[] astronauts = new Texture[3];
-        astronauts[0] = new Texture("astronaut_texture_1.png");
-        astronauts[1] = new Texture("astronaut_texture_2.png");
-        astronauts[2] = new Texture("astronaut_texture_3.png");
 
-        initialY = Gdx.graphics.getHeight() / 2 - astronauts[0].getWidth() / 2;
-        initialX = Gdx.graphics.getWidth() / 2;
-
-        topPlatformY = yMax / 6;
-        middlePlatformY = topPlatformY + yMax / 3;
-        bottomPlatformY = middlePlatformY + yMax / 3;
-
-        Gdx.app.log("applog", "Top platform y is " + topPlatformY);
-        Gdx.app.log("applog", "Middle platform y is " + middlePlatformY);
-        Gdx.app.log("applog", "Bottom platform y is " + bottomPlatformY);
-
-        currentY = initialY;
-        targetY = middlePlatformY;
 
         this.setScreen(new GameScreen(this));
 
         // Updating the values needed from within the level class
-        this.level = new Level();
+        this.level = new Level(this);
 
-        this.level.setPlatformCoordinates(topPlatformY, middlePlatformY, bottomPlatformY);
+
+        // We subtract 1/6th of the screen here to make up for the offset we caused earlier
+        this.level.setPlatformCoordinates(0, Gdx.graphics.getHeight() / 3, 2 * Gdx.graphics.getHeight() / 3);
         this.level.setMaxCoordinates(xMax, yMax);
         this.level.generateInitialObstacles();
 
@@ -103,78 +83,20 @@ public class SpaceJunk extends Game {
     }
 
 
-    private void updatePlatform(boolean isGoingUp) {
-        if(isGoingUp) {
-            if(this.currentPlatform == PLATFORM.BOTTOM) {
-                this.currentPlatform = PLATFORM.MIDDLE;
-                this.targetY = middlePlatformY;
-            }
-            else if (this.currentPlatform == PLATFORM.MIDDLE) {
-                this.currentPlatform = PLATFORM.TOP;
-                this.targetY = topPlatformY;
-            }
-            // Else we are already on the top platform, so no point going up anymore
-        }
-        else {
-            if(this.currentPlatform == PLATFORM.TOP) {
-                this.currentPlatform = PLATFORM.MIDDLE;
-                this.targetY = middlePlatformY;
-            }
-            else if(this.currentPlatform == PLATFORM.MIDDLE) {
-                this.currentPlatform = PLATFORM.BOTTOM;
-                this.targetY = bottomPlatformY;
-            }
-            // Else we already at the bottom, no point going futher down
-        }
-    }
-
-    public void moveAstronaut(int y) {
-
-        // Bottom half of screen tapped
-        if (y < (yMax / 2)) {
-            updatePlatform(false);
-        }
-        // Top half is tapped
-        else {
-            updatePlatform(true);
-            // Making sure we don't go up a platform while already at the top most
-        }
-    }
-
-    public void updateAstronautPosition() {
-
-        if(this.currentY < this.targetY) {
-            if(this.currentY + 10 < this.targetY) {
-                this.currentY += 10;
-            }
-            else {
-                this.currentY = this.targetY;
-            }
-        }
-        else if (this.currentY > this.targetY){
-            if(this.currentY - 10 > this.targetY) {
-                this.currentY -= 10;
-            }
-            else {
-                this.currentY = this.targetY;
-            }
-        }
-    }
-
-    public int getCurrentY() {
-        return this.currentY;
-    }
-
-    public int getCurrentX() {
-        return this.currentX;
-    }
-
-    public int getInitialX() {
-        return this.initialX;
-    }
-
     public Level getLevel() {
         return this.level;
+    }
+
+    public int getxMax() {
+        return this.xMax;
+    }
+
+    public int getyMax() {
+        return this.yMax;
+    }
+
+    public Astronaut getAstronaut() {
+        return this.astronaut;
     }
 
 }
