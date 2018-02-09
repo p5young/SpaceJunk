@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.spacejunk.game.SpaceJunk;
+import com.spacejunk.game.obstacles.FireObstacle;
 import com.spacejunk.game.obstacles.Obstacle;
 import com.spacejunk.game.obstacles.WallObstacle;
 
@@ -47,6 +48,7 @@ public class Level {
 
         this.currentGame = currentGame;
         this.minimumDistanceBetweenObstacles = currentGame.getxMax() / 4;
+        Gdx.app.log("applog", "minimum distance between obstacles is " + minimumDistanceBetweenObstacles);
     }
 
     /**
@@ -68,7 +70,18 @@ public class Level {
     Returns a random obstacle from our list of obstacles
     **/
     private Obstacle getNextRandomObstacle() {
-        return new WallObstacle(this);
+
+        int randomInt = randomGenerator.nextInt(2);
+
+        switch (randomInt) {
+            case 0:
+                return new WallObstacle(this);
+            case 1:
+                return new FireObstacle(this);
+            default:
+                Gdx.app.log("applog", "Error: This should'nt happen");
+                return null;
+        }
     }
 
     /**

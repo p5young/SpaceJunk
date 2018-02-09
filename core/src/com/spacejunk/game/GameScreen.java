@@ -11,12 +11,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Rectangle;
-import com.spacejunk.game.obstacles.Obstacle;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class GameScreen implements Screen {
+
+	public enum State
+	{
+		PAUSE,
+		RUN,
+		RESUME,
+		STOPPED
+	}
 
 	SpriteBatch canvas;
 	Texture background;
@@ -33,9 +39,6 @@ public class GameScreen implements Screen {
 	Boolean isCrashed = false;
 	float velocity = 0;
 	Ellipse astronautShape;
-
-	Texture topTubeTexture;
-	Texture bottomTubeTexture;
 
 	Rectangle[] topRectangles;
 	Rectangle[] bottomRectangles;
@@ -59,9 +62,12 @@ public class GameScreen implements Screen {
 	Animation<TextureRegion> astronautAnimation;
 	float stateTime;
 
+	private State state;
+
 
 	public GameScreen(final SpaceJunk game) {
 		this.spaceJunk = game;
+		this.state =  State.RUN;
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WIDTH, HEIGHT);
@@ -93,8 +99,6 @@ public class GameScreen implements Screen {
 		//TUBES
 		topRectangles = new Rectangle[numberOfTubes];
 		bottomRectangles = new Rectangle[numberOfTubes];
-		topTubeTexture = new Texture("toptube.png");
-		bottomTubeTexture = new Texture("bottomtube.png");
 		gap = 500;
 		randomGenerator = new Random();
 
@@ -151,35 +155,32 @@ public class GameScreen implements Screen {
 	@Override
 	public void render(float delta) {
 
+		switch (state) {
+			case RUN:
+				renderScreen();
+				break;
+			case PAUSE:
+				Gdx.app.log("applog", "In pause state now");
+				if(Gdx.input.justTouched() &&  playPauseButtonisPressed()) {
+					resume();
+				}
+				break;
+			default:
+				break;
+		}
+
+	}
+
+
+	private boolean playPauseButtonisPressed() {
+		return Gdx.input.getX() >= 0 && Gdx.input.getX() <= 81 && Gdx.input.getY() >= 0 && Gdx.input.getY() <= 81;
+	}
+
+	private void renderScreen() {
 		canvas.begin();
-		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		if(isGameActive && !isCrashed) {
-
-			gameScore++;
-
-			if(Gdx.input.justTouched()) {
-				spaceJunk.getAstronaut().moveAstronaut(Gdx.input.getY());
-			}
-
-			renderObstacles();
-
-
-		}
-
-		else if(!isGameActive && !isCrashed){
-			if(Gdx.input.justTouched()) {
-				isGameActive = true;
-			}
-		}
-
-
-		//if statement ends here
-		//Code for if crash occurs
-		if(isCrashed) {
-			drawGameOverScreen();
-		}
-
+		drawBackground();
+		eventLoop();
 
 		renderAstronaut();
 		displayScore();
@@ -201,7 +202,44 @@ public class GameScreen implements Screen {
 //			}
 
 		}
+	}
 
+	private void eventLoop() {
+		if(isGameActive && !isCrashed) {
+
+			gameScore++;
+
+			if(Gdx.input.justTouched()) {
+				if(playPauseButtonisPressed()) {
+					Gdx.app.log("applog", "PAUSE BUTTON PRESSED");
+					pause();
+				}
+
+				spaceJunk.getAstronaut().moveAstronaut(Gdx.input.getY());
+			}
+
+			renderObstacles();
+
+
+		}
+
+		else if(!isGameActive && !isCrashed){
+			if(Gdx.input.justTouched()) {
+				isGameActive = true;
+			}
+		}
+
+
+		//if statement ends here
+		//Code for if crash occurs
+		if(isCrashed) {
+			drawGameOverScreen();
+		}
+
+	}
+
+	private void drawBackground() {
+		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	private void drawGameOverScreen() {
@@ -235,12 +273,12 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void pause() {
-
+		this.state = State.PAUSE;
 	}
 
 	@Override
 	public void resume() {
-
+		this.state = State.RUN;
 	}
 
 	@Override
