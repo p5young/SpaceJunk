@@ -7,10 +7,10 @@ import com.spacejunk.game.levels.Level;
  * Created by vidxyz on 2/9/18.
  */
 
-public class FireObstacle extends Obstacle {
+public class AlienObstacle extends Obstacle {
 
-    public FireObstacle(Level level) {
-        this.obstacleTexture = new Texture("fire.png");
+    public AlienObstacle(Level level) {
+        this.obstacleTexture = new Texture("alien_security.png");
         this.level = level;
     }
 

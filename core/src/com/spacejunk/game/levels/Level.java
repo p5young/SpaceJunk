@@ -3,9 +3,11 @@ package com.spacejunk.game.levels;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.spacejunk.game.SpaceJunk;
+import com.spacejunk.game.obstacles.AlienObstacle;
 import com.spacejunk.game.obstacles.FireObstacle;
 import com.spacejunk.game.obstacles.Obstacle;
 import com.spacejunk.game.obstacles.AsteroidObstacle;
+import com.spacejunk.game.obstacles.ToxicGasObstacle;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -17,6 +19,7 @@ import java.util.Random;
 
 public class Level {
 
+    public static final int TOTAL_NUMBER_OF_OBSTACLES = 4;
     public static final int MAX_NUMBER_OF_OBSTACLES = 5;
     public static final int MAX_PLATFORMS = 3;
     public static final int VELOCITY = 8;
@@ -79,13 +82,17 @@ public class Level {
     **/
     private Obstacle getNextRandomObstacle() {
 
-        int randomInt = randomGenerator.nextInt(2);
+        int randomInt = randomGenerator.nextInt(TOTAL_NUMBER_OF_OBSTACLES);
 
         switch (randomInt) {
             case 0:
                 return new AsteroidObstacle(this);
             case 1:
                 return new FireObstacle(this);
+            case 2:
+                return new ToxicGasObstacle(this);
+            case 3:
+                return new AlienObstacle(this);
             default:
                 Gdx.app.log("applog", "Error: This should'nt happen");
                 return null;
@@ -158,7 +165,7 @@ public class Level {
             }
         }
 
-        return count >= 3;
+        return count > 2;
     }
 
 
@@ -168,15 +175,13 @@ public class Level {
     private boolean areCoordinatesAcceptable(int x, int y) {
 
         for (Obstacle o : obstaclesList) {
-
             if(this.failsInitialOverlappingCheck(x, o) || this.failsGapCheck(x, y, o)) {
-//                Gdx.app.log("applog", String.format("Coorindate (%d, %d) is not acceptable", x, y));
                 return false;
             }
-
         }
 
         if (this.fails3obstaclesInSingleColumnCheck(x, y)) {
+            Gdx.app.log("applog", "Failing 3 obs column check!");
             return false;
         }
 
@@ -219,14 +224,12 @@ public class Level {
 
         int y = generateRandomYCoordinate();
         // This is done so that new obstacles are ALWAYS generated AFTER our character's current position
-        int x = randomGenerator.nextInt(
-                Math.abs(currentGame.getCharacter().getCurrentX() +
-                        currentGame.getCharacter().getCharacterTextures()[0].getWidth() / 2
-                        - this.xMax));
+        int x = generateRandomXCoorindateInFrontOfCharacter();
+
 
         // Generate new (x,y) coordinates until it is acceptable and system is in equilibrium
         while(!this.areCoordinatesAcceptable(x, y)) {
-            x = randomGenerator.nextInt(Math.abs(this.xMax));
+            x = generateRandomXCoorindateInFrontOfCharacter();
             y = generateRandomYCoordinate();
         }
 
@@ -234,6 +237,14 @@ public class Level {
         coordinates[1] = y;
 
         return coordinates;
+    }
+
+
+    private int generateRandomXCoorindateInFrontOfCharacter() {
+        return  randomGenerator.nextInt(
+                Math.abs(currentGame.getCharacter().getCurrentX() +
+                        currentGame.getCharacter().getCharacterTextures()[0].getWidth() / 2
+                        - this.xMax));
     }
 
 

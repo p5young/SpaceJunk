@@ -1,6 +1,7 @@
 package com.spacejunk.game.obstacles;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.spacejunk.game.levels.Level;
 
 /**
  * Created by vidxyz on 2/8/18.
@@ -9,8 +10,11 @@ import com.badlogic.gdx.graphics.Texture;
 public abstract class Obstacle {
 
     // Initial dummy setting
-    int x = -1;
-    int y = -1;
+    protected int x = -1;
+    protected int y = -1;
+
+    protected Texture obstacleTexture;
+    protected Level level;
 
 
     public void setCoordinates(int x, int y) {
@@ -38,9 +42,21 @@ public abstract class Obstacle {
         }
     }
 
-    public abstract void moveLeft();
+    public void moveLeft() {
+        this.x = this.x - this.level.getVelocity();
 
-    public abstract Texture getTexture();
+        // We now wrap around over here
+        if(x < -obstacleTexture.getWidth()) {
+            int[] coordinates = this.level.getNextCoordinatesForObstacle();
+            this.setCoordinates(coordinates[0], coordinates[1]);
+        }
+
+
+    }
+
+    public Texture getTexture() {
+        return this.obstacleTexture;
+    }
 
 
 }
