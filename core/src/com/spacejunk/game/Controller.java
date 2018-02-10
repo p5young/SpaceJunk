@@ -20,7 +20,7 @@ public class Controller {
     public Controller(SpaceJunk currentGame) {
         this.currentGame = currentGame;
         this.optionsMenu = new OptionsMenu();
-        this.consumablesMenu = new ConsumablesMenu();
+        this.consumablesMenu = new ConsumablesMenu(currentGame);
     }
 
     public boolean isTouched() {

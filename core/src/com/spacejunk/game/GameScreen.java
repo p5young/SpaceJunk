@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Rectangle;
+import com.spacejunk.game.levels.Level;
 
 import java.util.Random;
 
@@ -80,9 +81,9 @@ public class GameScreen implements Screen {
 		astronautShape = new Ellipse();
 
 		// Must use spaceJunk.getLevel().getMaxLives() here
-		remainingLivesTextures = new Texture[3];
+		remainingLivesTextures = new Texture[spaceJunk.getLevel().getMaxLives()];
 
-		for(int i = 0; i < 3; i++) {
+		for(int i = 0; i < spaceJunk.getLevel().getMaxLives(); i++) {
 			remainingLivesTextures[i] = new Texture("heart.png");
 		}
 
@@ -150,7 +151,7 @@ public class GameScreen implements Screen {
 				break;
 			case PAUSE:
 				renderScreenEssentials();
-				if(controller.isTouched() &&  controller.playPauseButtonisPressed()) {
+				if(controller.isTouched() && controller.playPauseButtonisPressed()) {
 					resume();
 				}
 				break;
@@ -162,9 +163,7 @@ public class GameScreen implements Screen {
 
 	private void renderScreenEssentials() {
 		canvas.begin();
-
 		renderController();
-
 		canvas.end();
 	}
 
@@ -172,11 +171,12 @@ public class GameScreen implements Screen {
 	private void renderScreen() {
 		canvas.begin();
 
+		// We are making use of the painters algorithm here
 		drawBackground();
-		renderController();
 		eventLoop();
-		renderRemainingLives();
 		renderAstronaut();
+		renderController();
+		renderRemainingLives();
 		displayScore();
 
 		canvas.end();
@@ -205,7 +205,7 @@ public class GameScreen implements Screen {
 
 	private void renderRemainingLives() {
 
-		for(int i = 0; i < 3; i++) {
+		for(int i = 0; i < spaceJunk.getLevel().getMaxLives(); i++) {
 			canvas.draw(remainingLivesTextures[i], Gdx.graphics.getWidth() - ((i + 1) * remainingLivesTextures[i].getWidth()) - PADDING,
 					Gdx.graphics.getHeight() - remainingLivesTextures[i].getHeight() - PADDING);
 		}
@@ -220,17 +220,17 @@ public class GameScreen implements Screen {
 				if(controller.playPauseButtonisPressed()) {
 					pause();
 				}
-
-				spaceJunk.getCharacter().moveCharacter(Gdx.input.getY());
+				else {
+					spaceJunk.getCharacter().moveCharacter(Gdx.input.getY());
+				}
 			}
 
 			renderObstacles();
 
-
 		}
 
 		else if(!isGameActive && !isCrashed){
-			if(Gdx.input.justTouched()) {
+			if(controller.isTouched()) {
 				isGameActive = true;
 			}
 		}
