@@ -1,24 +1,28 @@
-package com.spacejunk.game.obstacles;
+package com.spacejunk.game.consumables;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.spacejunk.game.levels.Level;
+import com.spacejunk.game.obstacles.AsteroidObstacle;
+import com.spacejunk.game.obstacles.FireObstacle;
+import com.spacejunk.game.obstacles.Obstacle;
 
 /**
- * Created by vidxyz on 2/8/18.
+ * Created by vidxyz on 2/10/18.
  */
 
-public abstract class Obstacle {
+public class Consumable {
 
-    public enum OBSTACLES {ASTEROID, ALIEN, FIRE, TOXIC_GAS};
+    public enum CONSUMABLES {LIFE, INVISIBILITY, FIRESUIT, GAS_MASK, SPACE_HAMMER};
+
 
     // Initial dummy setting
     protected int x = -1;
     protected int y = -1;
 
-    protected int obstacleNumber;
-    protected OBSTACLES obstacleType;
+    protected int consumableNumber;
+    protected CONSUMABLES consumableType;
 
-    protected Texture obstacleTexture;
+    protected Texture consumableTexture;
     protected Level level;
 
 
@@ -36,16 +40,16 @@ public abstract class Obstacle {
     }
 
     public String getType() {
-        return String.valueOf(this.obstacleType);
+        return String.valueOf(this.consumableType);
     }
 
     public void moveLeft() {
         this.x = this.x - this.level.getVelocity();
 
         // We now wrap around over here
-        if(x < -obstacleTexture.getWidth()) {
+        if(x < -consumableTexture.getWidth()) {
             int[] coordinates = this.level.getCoordinatesForObstacle(level.getFurthestObstacleIndex());
-            level.setFurthestObstacleIndex(this.obstacleNumber);
+            level.setFurthestObstacleIndex(this.consumableNumber);
             this.setCoordinates(coordinates[0], coordinates[1]);
         }
 
@@ -53,8 +57,7 @@ public abstract class Obstacle {
     }
 
     public Texture getTexture() {
-        return this.obstacleTexture;
+        return this.consumableTexture;
     }
-
 
 }

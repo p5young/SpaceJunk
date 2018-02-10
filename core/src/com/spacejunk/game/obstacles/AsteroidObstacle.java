@@ -13,6 +13,8 @@ public class AsteroidObstacle extends Obstacle {
         this.obstacleTexture = new Texture("asteroid.png");
         this.level = level;
         this.obstacleNumber = obstacleNumber;
+        this.obstacleType = OBSTACLES.ASTEROID;
+
     }
 
 }

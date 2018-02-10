@@ -13,6 +13,8 @@ public class FireObstacle extends Obstacle {
         this.obstacleTexture = new Texture("fire.png");
         this.level = level;
         this.obstacleNumber = obstacleNumber;
+        this.obstacleType = OBSTACLES.FIRE;
+
     }
 
 }

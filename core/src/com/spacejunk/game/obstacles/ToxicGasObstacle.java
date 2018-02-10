@@ -14,6 +14,8 @@ public class ToxicGasObstacle extends Obstacle {
         this.obstacleTexture = new Texture("toxic_gas_green.png");
         this.level = level;
         this.obstacleNumber = obstacleNumber;
+        this.obstacleType = OBSTACLES.TOXIC_GAS;
+
     }
 
 }

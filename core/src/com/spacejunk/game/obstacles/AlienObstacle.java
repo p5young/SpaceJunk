@@ -13,6 +13,7 @@ public class AlienObstacle extends Obstacle {
         this.obstacleTexture = new Texture("alien_security.png");
         this.level = level;
         this.obstacleNumber = obstacleNumber;
+        this.obstacleType = OBSTACLES.ALIEN;
 
     }
 
