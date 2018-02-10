@@ -150,7 +150,7 @@ public class GameScreen implements Screen {
 				break;
 			case PAUSE:
 				renderScreenEssentials();
-				if(controller.isTouched() &&  controller.playPauseButtonisPressed()) {
+				if(controller.isTouched() && controller.playPauseButtonisPressed()) {
 					resume();
 				}
 				break;
@@ -162,9 +162,7 @@ public class GameScreen implements Screen {
 
 	private void renderScreenEssentials() {
 		canvas.begin();
-
 		renderController();
-
 		canvas.end();
 	}
 

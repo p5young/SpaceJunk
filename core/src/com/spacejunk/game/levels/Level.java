@@ -22,7 +22,7 @@ public class Level {
     public static final int TOTAL_NUMBER_OF_OBSTACLES = 4;
     public static final int MAX_NUMBER_OF_OBSTACLES = 5;
     public static final int MAX_PLATFORMS = 3;
-    public static final int VELOCITY = 8;
+    public static final int VELOCITY = 7;
     public static final double SCORING_RATE = 0.25;
     public static final int MAX_LIVES = 3;
 
@@ -165,6 +165,7 @@ public class Level {
             }
         }
 
+//        return false;
         return count > 2;
     }
 
@@ -176,6 +177,7 @@ public class Level {
 
         for (Obstacle o : obstaclesList) {
             if(this.failsInitialOverlappingCheck(x, o) || this.failsGapCheck(x, y, o)) {
+                Gdx.app.log("applog", "Failing a check!");
                 return false;
             }
         }
