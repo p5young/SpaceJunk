@@ -112,5 +112,7 @@ public class SpaceJunk extends Game {
     public void incrementGameScore() {
         this.currentGameScore += this.level.getScoringRate();
     }
+
+
 }
 

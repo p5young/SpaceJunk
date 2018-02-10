@@ -98,76 +98,160 @@ public class Level {
     private void generateInitialCoordinatesForObstacles() {
 
         for (Obstacle o : obstaclesList) {
-            int[] coordinates = this.getNextCoordinates();
+            int[] coordinates = this.getNextInitialCoordinatesForObstacle();
+            // This is done so that initially, at the start, the obstacles are off screen
+            // Giving the user some time to get accustomed to the in-game physics
             coordinates[0] += xMax;
             o.setCoordinates(coordinates[0], coordinates[1]);
         }
 
+        printObstacleCoordinates();
+
     }
 
+    private void printObstacleCoordinates() {
+
+        Gdx.app.log("applog", "Printing out newly generated coorindates");
+        int i = 0;
+        for (Obstacle o : obstaclesList) {
+            i++;
+            Gdx.app.log("applog",
+                    String.format("Obstacle %d is a %s has coordinates (%d, %d)", i, o.getType(),
+                            o.getX(), o.getY()));
+        }
+    }
+
+
+    /**
+     * Returns TRUE if (x,y) overlaps any other obstacle's coordinate region (including textures)
+     * */
     public boolean failsInitialOverlappingCheck(int x, Obstacle o) {
-        return (x >= o.getX() && x <= (o.getX() + o.getTexture().getWidth()));
+        return (x >= o.getX() &&
+                x <= (o.getX() + o.getTexture().getWidth()));
     }
 
     /**
-     * Returns TRUE if x is too close to an obstacle's x co-ordinate
+     * Returns TRUE if x is 'too close' to an obstacle's x co-ordinate
      * TOO CLOSE is defined by level difficulty
      * */
-    private boolean failsGapCheck(int x, Obstacle o) {
-        return(x >= o.getX() + o.getTexture().getWidth() &&
-                x <= o.getX() + o.getTexture().getWidth() + this.minimumDistanceBetweenObstacles);
+    private boolean failsGapCheck(int x, int y, Obstacle o) {
+        return (y == o.getY() && // Platforms match up
+                ((x >= o.getX() &&
+                x <= o.getX() + o.getTexture().getWidth() + this.minimumDistanceBetweenObstacles) ||
+                        (x <= o.getX() && x >= o.getX() - this.minimumDistanceBetweenObstacles)));
+    }
+
+    /**
+     * Return 'TRUE' if there (x,y) causes any 3 obstacles in this.obstaclesList to have the
+     * x-coordinates such that it forms a blockade completely on all three platforms
+     * ASSUMPTION :- (x,y) has already been checked to ensure that it doesn't overlap any existing coordinates
+     *               as well as (x,y) adheres to the minimum distance between obstacles
+     * */
+    private boolean fails3obstaclesInSingleColumnCheck(int x, int y) {
+        int count = 0;
+
+        for(Obstacle o : obstaclesList) {
+            if(x >= o.getX() - (2 * o.getTexture().getWidth()) &&
+                    x <= o.getX() + (2 * o.getTexture().getWidth())
+                    && o.getY() != y) {
+                count++;
+            }
+        }
+
+        return count >= 3;
     }
 
 
     /**
-     * Returns 'True' if @param:x is not present as x-coordinate for any other obstacle
+     * Returns 'True' if (x,y) does'nt violate any constraints
      * */
-    private boolean isXCoordinateAcceptable(int x) {
+    private boolean areCoordinatesAcceptable(int x, int y) {
 
         for (Obstacle o : obstaclesList) {
-            if(this.failsInitialOverlappingCheck(x, o) || this.failsGapCheck(x, o)) {
+
+            if(this.failsInitialOverlappingCheck(x, o) || this.failsGapCheck(x, y, o)) {
+//                Gdx.app.log("applog", String.format("Coorindate (%d, %d) is not acceptable", x, y));
                 return false;
             }
+
         }
+
+        if (this.fails3obstaclesInSingleColumnCheck(x, y)) {
+            return false;
+        }
+
         return true;
     }
 
-    public int[] getNextCoordinates() {
+
+    /**
+     * This exists because while generating initial coordinates, the first few obstacles are off the screen
+     * */
+    private int[] getNextInitialCoordinatesForObstacle() {
 
         int[] coordinates = new int[2];
 
+        int y = generateRandomYCoordinate();
+
         int x = randomGenerator.nextInt(Math.abs(this.xMax));
 
-        // Generate new x coordinate until all x coordinates are different
-        while(!this.isXCoordinateAcceptable(x)) {
+        // Generate new (x,y) coordinates until it is acceptable and system is in equilibrium
+        //  x = x + xMax is done because initially, we spawn obstacles off the screen
+        // to give the user some time to get accustomed to in-game physics
+        while(!this.areCoordinatesAcceptable(x + xMax, y)) {
             x = randomGenerator.nextInt(Math.abs(this.xMax));
+            y = generateRandomYCoordinate();
         }
 
-
-        int y = 0;
-        int temp = randomGenerator.nextInt(MAX_PLATFORMS);
-
-        switch (temp) {
-            case 0:
-                y = this.topPlatformY;
-                break;
-            case 1:
-                y = this.middlePlatformY;
-                break;
-            case 2:
-                y = this.bottomPlatformY;
-                break;
-            default:
-                break;
-        }
-
-        // This is done so that the obstacles are initially off the screen totally
         coordinates[0] = x;
         coordinates[1] = y;
 
         return coordinates;
     }
 
+
+    /**
+     * Generates a pair of (x,y) coordinates for the next obstacle
+     * */
+    public int[] getNextCoordinatesForObstacle() {
+
+        int[] coordinates = new int[2];
+
+        int y = generateRandomYCoordinate();
+        // This is done so that new obstacles are ALWAYS generated AFTER our character's current position
+        int x = randomGenerator.nextInt(
+                Math.abs(currentGame.getCharacter().getCurrentX() +
+                        currentGame.getCharacter().getCharacterTextures()[0].getWidth() / 2
+                        - this.xMax));
+
+        // Generate new (x,y) coordinates until it is acceptable and system is in equilibrium
+        while(!this.areCoordinatesAcceptable(x, y)) {
+            x = randomGenerator.nextInt(Math.abs(this.xMax));
+            y = generateRandomYCoordinate();
+        }
+
+        coordinates[0] = x;
+        coordinates[1] = y;
+
+        return coordinates;
+    }
+
+
+    private int generateRandomYCoordinate() {
+        int temp = randomGenerator.nextInt(MAX_PLATFORMS);
+
+        switch (temp) {
+            case 0:
+                return this.topPlatformY;
+            case 1:
+                return this.middlePlatformY;
+            case 2:
+                 return this.bottomPlatformY;
+            default:
+                Gdx.app.log("applog", "Error: This shouldn't be happening");
+                return this.middlePlatformY;
+        }
+    }
 
     /**
      * Renders the obstacles on screen, while constantly updating positions throughout

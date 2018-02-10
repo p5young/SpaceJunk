@@ -172,11 +172,12 @@ public class GameScreen implements Screen {
 	private void renderScreen() {
 		canvas.begin();
 
+		// We are making use of the painters algorithm here
 		drawBackground();
-		renderController();
 		eventLoop();
-		renderRemainingLives();
 		renderAstronaut();
+		renderController();
+		renderRemainingLives();
 		displayScore();
 
 		canvas.end();
@@ -220,17 +221,17 @@ public class GameScreen implements Screen {
 				if(controller.playPauseButtonisPressed()) {
 					pause();
 				}
-
-				spaceJunk.getCharacter().moveCharacter(Gdx.input.getY());
+				else {
+					spaceJunk.getCharacter().moveCharacter(Gdx.input.getY());
+				}
 			}
 
 			renderObstacles();
 
-
 		}
 
 		else if(!isGameActive && !isCrashed){
-			if(Gdx.input.justTouched()) {
+			if(controller.isTouched()) {
 				isGameActive = true;
 			}
 		}

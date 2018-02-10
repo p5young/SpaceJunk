@@ -26,6 +26,18 @@ public abstract class Obstacle {
         return this.y;
     }
 
+    public String getType() {
+        if(this instanceof AsteroidObstacle) {
+            return "Asteroid";
+        }
+        else if (this instanceof FireObstacle) {
+            return "Fire";
+        }
+        else {
+            return "Default";
+        }
+    }
+
     public abstract void moveLeft();
 
     public abstract Texture getTexture();

@@ -25,7 +25,7 @@ public class FireObstacle extends Obstacle {
 
         // We now wrap around over here
         if(x < -obstacleTexture.getWidth()) {
-            int[] coordinates = this.level.getNextCoordinates();
+            int[] coordinates = this.level.getNextCoordinatesForObstacle();
             this.setCoordinates(coordinates[0], coordinates[1]);
         }
 
