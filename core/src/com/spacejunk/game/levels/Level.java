@@ -19,10 +19,11 @@ import java.util.Random;
 
 public class Level {
 
-    public static final int TOTAL_NUMBER_OF_OBSTACLES = 4;
+    public static final int TOTAL_NUMBER_OF_OBSTACLE_TYPES = 4;
+
     public static final int MAX_NUMBER_OF_OBSTACLES = 5;
     public static final int MAX_PLATFORMS = 3;
-    public static final int VELOCITY = 7;
+    public static final int VELOCITY = 10;
     public static final double SCORING_RATE = 0.25;
     public static final int MAX_LIVES = 3;
 
@@ -45,6 +46,9 @@ public class Level {
 
     int maxLives;
 
+    private int furthestObstacleIndex;
+    private int randomRegion;
+
     private double scoringRate;
 
     private SpaceJunk currentGame;
@@ -56,9 +60,10 @@ public class Level {
         this.velocity = VELOCITY;
         this.scoringRate = SCORING_RATE;
         this.maxLives = MAX_LIVES;
+        this.furthestObstacleIndex = MAX_NUMBER_OF_OBSTACLES - 1;
 
         this.currentGame = currentGame;
-        this.minimumDistanceBetweenObstacles = currentGame.getxMax() / 4;
+        this.minimumDistanceBetweenObstacles = currentGame.getxMax() / 6;
         Gdx.app.log("applog", "minimum distance between obstacles is " + minimumDistanceBetweenObstacles);
     }
 
@@ -70,7 +75,7 @@ public class Level {
 
         // Initializing what the types of the obstacles are going to be
         for(int i = 0; i < MAX_NUMBER_OF_OBSTACLES; i++) {
-            obstaclesList.add(this.getNextRandomObstacle());
+            obstaclesList.add(this.getNextRandomObstacle(i));
         }
 
         this.generateInitialCoordinatesForObstacles();
@@ -80,19 +85,19 @@ public class Level {
     /**
     Returns a random obstacle from our list of obstacles
     **/
-    private Obstacle getNextRandomObstacle() {
+    private Obstacle getNextRandomObstacle(int obstacleNumber) {
 
-        int randomInt = randomGenerator.nextInt(TOTAL_NUMBER_OF_OBSTACLES);
+        int randomInt = randomGenerator.nextInt(TOTAL_NUMBER_OF_OBSTACLE_TYPES);
 
         switch (randomInt) {
             case 0:
-                return new AsteroidObstacle(this);
+                return new AsteroidObstacle(this, obstacleNumber);
             case 1:
-                return new FireObstacle(this);
+                return new FireObstacle(this, obstacleNumber);
             case 2:
-                return new ToxicGasObstacle(this);
+                return new ToxicGasObstacle(this, obstacleNumber);
             case 3:
-                return new AlienObstacle(this);
+                return new AlienObstacle(this, obstacleNumber);
             default:
                 Gdx.app.log("applog", "Error: This should'nt happen");
                 return null;
@@ -102,14 +107,22 @@ public class Level {
     /**
      * Generates initial co-ordinates while making sure that they are not impossible
      **/
-    private void generateInitialCoordinatesForObstacles() {
+    public void generateInitialCoordinatesForObstacles() {
 
-        for (Obstacle o : obstaclesList) {
-            int[] coordinates = this.getNextInitialCoordinatesForObstacle();
-            // This is done so that initially, at the start, the obstacles are off screen
-            // Giving the user some time to get accustomed to the in-game physics
-            coordinates[0] += xMax;
-            o.setCoordinates(coordinates[0], coordinates[1]);
+
+        for (int i = 0; i < obstaclesList.size(); i++) {
+            int[] coordinates;
+            if(i == 0) {
+                // This is done so that initially, at the start, the obstacles are off screen
+                // Giving the user some time to get accustomed to the in-game physics
+                coordinates = this.getCoordinatesForFirstObstacle();
+                coordinates[0] += xMax;
+            }
+            else {
+                coordinates = this.getCoordinatesForObstacle(i - 1);
+            }
+
+            obstaclesList.get(i).setCoordinates(coordinates[0], coordinates[1]);
         }
 
         printObstacleCoordinates();
@@ -129,124 +142,36 @@ public class Level {
     }
 
 
-    /**
-     * Returns TRUE if (x,y) overlaps any other obstacle's coordinate region (including textures)
-     * */
-    public boolean failsInitialOverlappingCheck(int x, Obstacle o) {
-        return (x >= o.getX() &&
-                x <= (o.getX() + o.getTexture().getWidth()));
-    }
+    private int[] getCoordinatesForFirstObstacle() {
 
-    /**
-     * Returns TRUE if x is 'too close' to an obstacle's x co-ordinate
-     * TOO CLOSE is defined by level difficulty
-     * */
-    private boolean failsGapCheck(int x, int y, Obstacle o) {
-        return (y == o.getY() && // Platforms match up
-                ((x >= o.getX() &&
-                x <= o.getX() + o.getTexture().getWidth() + this.minimumDistanceBetweenObstacles) ||
-                        (x <= o.getX() && x >= o.getX() - this.minimumDistanceBetweenObstacles)));
-    }
-
-    /**
-     * Return 'TRUE' if there (x,y) causes any 3 obstacles in this.obstaclesList to have the
-     * x-coordinates such that it forms a blockade completely on all three platforms
-     * ASSUMPTION :- (x,y) has already been checked to ensure that it doesn't overlap any existing coordinates
-     *               as well as (x,y) adheres to the minimum distance between obstacles
-     * */
-    private boolean fails3obstaclesInSingleColumnCheck(int x, int y) {
-        int count = 0;
-
-        for(Obstacle o : obstaclesList) {
-            if(x >= o.getX() - (2 * o.getTexture().getWidth()) &&
-                    x <= o.getX() + (2 * o.getTexture().getWidth())
-                    && o.getY() != y) {
-                count++;
-            }
-        }
-
-//        return false;
-        return count > 2;
+        int[] coordinates = new int[2];
+        int y = generateRandomYCoordinate();
+        int x = 0;
+        coordinates[0] = x;
+        coordinates[1] = y;
+        return coordinates;
     }
 
 
-    /**
-     * Returns 'True' if (x,y) does'nt violate any constraints
-     * */
-    private boolean areCoordinatesAcceptable(int x, int y) {
-
-        for (Obstacle o : obstaclesList) {
-            if(this.failsInitialOverlappingCheck(x, o) || this.failsGapCheck(x, y, o)) {
-                Gdx.app.log("applog", "Failing a check!");
-                return false;
-            }
-        }
-
-        if (this.fails3obstaclesInSingleColumnCheck(x, y)) {
-            Gdx.app.log("applog", "Failing 3 obs column check!");
-            return false;
-        }
-
-        return true;
-    }
-
-
-    /**
-     * This exists because while generating initial coordinates, the first few obstacles are off the screen
-     * */
-    private int[] getNextInitialCoordinatesForObstacle() {
+    public int[] getCoordinatesForObstacle(int previousObstacleIndex) {
 
         int[] coordinates = new int[2];
 
         int y = generateRandomYCoordinate();
 
-        int x = randomGenerator.nextInt(Math.abs(this.xMax));
+        int previousX;
 
-        // Generate new (x,y) coordinates until it is acceptable and system is in equilibrium
-        //  x = x + xMax is done because initially, we spawn obstacles off the screen
-        // to give the user some time to get accustomed to in-game physics
-        while(!this.areCoordinatesAcceptable(x + xMax, y)) {
-            x = randomGenerator.nextInt(Math.abs(this.xMax));
-            y = generateRandomYCoordinate();
-        }
+        previousX = obstaclesList.get(previousObstacleIndex).getX();
 
-        coordinates[0] = x;
-        coordinates[1] = y;
+        int from = previousX + this.minimumDistanceBetweenObstacles;
+        int to = from + this.randomRegion;
 
-        return coordinates;
-    }
-
-
-    /**
-     * Generates a pair of (x,y) coordinates for the next obstacle
-     * */
-    public int[] getNextCoordinatesForObstacle() {
-
-        int[] coordinates = new int[2];
-
-        int y = generateRandomYCoordinate();
-        // This is done so that new obstacles are ALWAYS generated AFTER our character's current position
-        int x = generateRandomXCoorindateInFrontOfCharacter();
-
-
-        // Generate new (x,y) coordinates until it is acceptable and system is in equilibrium
-        while(!this.areCoordinatesAcceptable(x, y)) {
-            x = generateRandomXCoorindateInFrontOfCharacter();
-            y = generateRandomYCoordinate();
-        }
+        int x = randomGenerator.nextInt(Math.abs(to - from)) + from;
 
         coordinates[0] = x;
         coordinates[1] = y;
 
         return coordinates;
-    }
-
-
-    private int generateRandomXCoorindateInFrontOfCharacter() {
-        return  randomGenerator.nextInt(
-                Math.abs(currentGame.getCharacter().getCurrentX() +
-                        currentGame.getCharacter().getCharacterTextures()[0].getWidth() / 2
-                        - this.xMax));
     }
 
 
@@ -287,6 +212,8 @@ public class Level {
     public void setMaxCoordinates(int xMax, int yMax) {
         this.xMax = xMax;
         this.yMax = yMax;
+        // Update this to change where points are being generated
+        this.randomRegion = this.xMax / 3;
     }
 
     public int getVelocity() {
@@ -307,5 +234,13 @@ public class Level {
 
     public int getMaxLives() {
         return this.maxLives;
+    }
+
+    public int getFurthestObstacleIndex() {
+        return furthestObstacleIndex;
+    }
+
+    public void setFurthestObstacleIndex(int furthestObstacleIndex) {
+        this.furthestObstacleIndex = furthestObstacleIndex;
     }
 }

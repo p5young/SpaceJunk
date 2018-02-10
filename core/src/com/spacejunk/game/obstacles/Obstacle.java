@@ -13,6 +13,8 @@ public abstract class Obstacle {
     protected int x = -1;
     protected int y = -1;
 
+    protected int obstacleNumber;
+
     protected Texture obstacleTexture;
     protected Level level;
 
@@ -47,7 +49,8 @@ public abstract class Obstacle {
 
         // We now wrap around over here
         if(x < -obstacleTexture.getWidth()) {
-            int[] coordinates = this.level.getNextCoordinatesForObstacle();
+            int[] coordinates = this.level.getCoordinatesForObstacle(level.getFurthestObstacleIndex());
+            level.setFurthestObstacleIndex(this.obstacleNumber);
             this.setCoordinates(coordinates[0], coordinates[1]);
         }
 

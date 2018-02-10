@@ -10,9 +10,10 @@ import com.spacejunk.game.levels.Level;
 public class ToxicGasObstacle extends Obstacle {
 
 
-    public ToxicGasObstacle(Level level) {
+    public ToxicGasObstacle(Level level, int obstacleNumber) {
         this.obstacleTexture = new Texture("toxic_gas_green.png");
         this.level = level;
+        this.obstacleNumber = obstacleNumber;
     }
 
 }

@@ -9,9 +9,11 @@ import com.spacejunk.game.levels.Level;
 
 public class AlienObstacle extends Obstacle {
 
-    public AlienObstacle(Level level) {
+    public AlienObstacle(Level level, int obstacleNumber) {
         this.obstacleTexture = new Texture("alien_security.png");
         this.level = level;
+        this.obstacleNumber = obstacleNumber;
+
     }
 
 }
