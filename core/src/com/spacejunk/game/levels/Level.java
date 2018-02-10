@@ -4,7 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.spacejunk.game.SpaceJunk;
 import com.spacejunk.game.consumables.Consumable;
+import com.spacejunk.game.consumables.FireSuitConsumable;
+import com.spacejunk.game.consumables.GasMaskConsumable;
+import com.spacejunk.game.consumables.InvisibilityConsumable;
 import com.spacejunk.game.consumables.LifeConsumable;
+import com.spacejunk.game.consumables.SpaceHammerConsumable;
 import com.spacejunk.game.obstacles.AlienObstacle;
 import com.spacejunk.game.obstacles.FireObstacle;
 import com.spacejunk.game.obstacles.Obstacle;
@@ -68,10 +72,10 @@ public class Level {
 
         this.inventoryList = new ArrayList<Consumable>();
         // Temporary
-        inventoryList.add(new LifeConsumable(this, 0));
-        inventoryList.add(new LifeConsumable(this, 1));
-        inventoryList.add(new LifeConsumable(this, 1));
-        inventoryList.add(new LifeConsumable(this, 2));
+        inventoryList.add(new InvisibilityConsumable(this, 0));
+        inventoryList.add(new SpaceHammerConsumable(this, 1));
+        inventoryList.add(new GasMaskConsumable(this, 1));
+        inventoryList.add(new FireSuitConsumable(this, 2));
 
 
         this.currentGame = currentGame;

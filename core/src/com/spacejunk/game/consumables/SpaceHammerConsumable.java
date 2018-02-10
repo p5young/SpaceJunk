@@ -10,7 +10,7 @@ import com.spacejunk.game.levels.Level;
 public class SpaceHammerConsumable extends Consumable {
 
     public SpaceHammerConsumable(Level level, int consumableNumber) {
-        this.consumableTexture = new Texture("heart.png");
+        this.consumableTexture = new Texture("space_hammer.png");
         this.level = level;
         this.consumableNumber = consumableNumber;
         this.consumableType = CONSUMABLES.SPACE_HAMMER;
