@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Rectangle;
+import com.spacejunk.game.levels.Level;
 
 import java.util.Random;
 
@@ -80,9 +81,9 @@ public class GameScreen implements Screen {
 		astronautShape = new Ellipse();
 
 		// Must use spaceJunk.getLevel().getMaxLives() here
-		remainingLivesTextures = new Texture[3];
+		remainingLivesTextures = new Texture[spaceJunk.getLevel().getMaxLives()];
 
-		for(int i = 0; i < 3; i++) {
+		for(int i = 0; i < spaceJunk.getLevel().getMaxLives(); i++) {
 			remainingLivesTextures[i] = new Texture("heart.png");
 		}
 
@@ -204,7 +205,7 @@ public class GameScreen implements Screen {
 
 	private void renderRemainingLives() {
 
-		for(int i = 0; i < 3; i++) {
+		for(int i = 0; i < spaceJunk.getLevel().getMaxLives(); i++) {
 			canvas.draw(remainingLivesTextures[i], Gdx.graphics.getWidth() - ((i + 1) * remainingLivesTextures[i].getWidth()) - PADDING,
 					Gdx.graphics.getHeight() - remainingLivesTextures[i].getHeight() - PADDING);
 		}

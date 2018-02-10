@@ -34,6 +34,7 @@ public class Level {
     public static final int MAX_LIVES = 3;
 
     private ArrayList<Obstacle> obstaclesList;
+    private ArrayList<Consumable> consumablesList;
 
     private ArrayList<Consumable> inventoryList;
     private Random randomGenerator;
@@ -62,6 +63,9 @@ public class Level {
     private SpaceJunk currentGame;
 
     public Level(SpaceJunk currentGame) {
+
+        Gdx.app.log("applog", "Level constructor called here");
+
         this.currentGame = currentGame;
         this.obstaclesList = new ArrayList<Obstacle>();
         this.randomGenerator = new Random();

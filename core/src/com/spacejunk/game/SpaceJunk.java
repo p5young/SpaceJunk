@@ -43,7 +43,6 @@ public class SpaceJunk extends Game {
         // This can be chnaged as needed
         this.character = new Astronaut(this);
         this.currentGameScore = 0;
-
     }
 
 
@@ -64,16 +63,17 @@ public class SpaceJunk extends Game {
         character.create();
 
 
-        this.setScreen(new GameScreen(this));
-
         // Updating the values needed from within the level class
         this.level = new Level(this);
 
+        Gdx.app.log("applog", "Level is initialized in create method of SpaceJunk");
 
         // We subtract 1/6th of the screen here to make up for the offset we caused earlier
         this.level.setPlatformCoordinates(0, Gdx.graphics.getHeight() / 3, 2 * Gdx.graphics.getHeight() / 3);
         this.level.setMaxCoordinates(xMax, yMax);
         this.level.generateInitialObstacles();
+
+        this.setScreen(new GameScreen(this));
 
     }
 
