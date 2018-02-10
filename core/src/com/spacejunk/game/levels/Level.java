@@ -1,12 +1,11 @@
 package com.spacejunk.game.levels;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.spacejunk.game.SpaceJunk;
 import com.spacejunk.game.obstacles.FireObstacle;
 import com.spacejunk.game.obstacles.Obstacle;
-import com.spacejunk.game.obstacles.WallObstacle;
+import com.spacejunk.game.obstacles.AsteroidObstacle;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -84,7 +83,7 @@ public class Level {
 
         switch (randomInt) {
             case 0:
-                return new WallObstacle(this);
+                return new AsteroidObstacle(this);
             case 1:
                 return new FireObstacle(this);
             default:

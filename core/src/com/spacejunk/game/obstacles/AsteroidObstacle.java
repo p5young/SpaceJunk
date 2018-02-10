@@ -7,13 +7,13 @@ import com.spacejunk.game.levels.Level;
  * Created by vidxyz on 2/8/18.
  */
 
-public class WallObstacle extends Obstacle {
+public class AsteroidObstacle extends Obstacle {
 
     private Texture obstacleTexture;
     private Level level;
 
-    public WallObstacle(Level level) {
-        this.obstacleTexture = new Texture("wall_bg.png");
+    public AsteroidObstacle(Level level) {
+        this.obstacleTexture = new Texture("asteroid.png");
         this.level = level;
     }
 
