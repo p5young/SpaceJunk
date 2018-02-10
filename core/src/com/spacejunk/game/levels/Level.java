@@ -3,6 +3,8 @@ package com.spacejunk.game.levels;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.spacejunk.game.SpaceJunk;
+import com.spacejunk.game.consumables.Consumable;
+import com.spacejunk.game.consumables.LifeConsumable;
 import com.spacejunk.game.obstacles.AlienObstacle;
 import com.spacejunk.game.obstacles.FireObstacle;
 import com.spacejunk.game.obstacles.Obstacle;
@@ -28,6 +30,8 @@ public class Level {
     public static final int MAX_LIVES = 3;
 
     private ArrayList<Obstacle> obstaclesList;
+
+    private ArrayList<Consumable> inventoryList;
     private Random randomGenerator;
 
 
@@ -61,6 +65,14 @@ public class Level {
         this.scoringRate = SCORING_RATE;
         this.maxLives = MAX_LIVES;
         this.furthestObstacleIndex = MAX_NUMBER_OF_OBSTACLES - 1;
+
+        this.inventoryList = new ArrayList<Consumable>();
+        // Temporary
+        inventoryList.add(new LifeConsumable(this, 0));
+        inventoryList.add(new LifeConsumable(this, 1));
+        inventoryList.add(new LifeConsumable(this, 1));
+        inventoryList.add(new LifeConsumable(this, 2));
+
 
         this.currentGame = currentGame;
         this.minimumDistanceBetweenObstacles = currentGame.getxMax() / 6;
@@ -242,5 +254,9 @@ public class Level {
 
     public void setFurthestObstacleIndex(int furthestObstacleIndex) {
         this.furthestObstacleIndex = furthestObstacleIndex;
+    }
+
+    public ArrayList<Consumable> getInventoryList() {
+        return this.inventoryList;
     }
 }

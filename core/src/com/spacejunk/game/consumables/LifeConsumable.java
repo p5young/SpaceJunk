@@ -10,7 +10,7 @@ import com.spacejunk.game.levels.Level;
 public class LifeConsumable extends Consumable {
 
     public LifeConsumable(Level level, int consumableNumber) {
-        this.consumableTexture = new Texture("toxic_gas_green.png");
+        this.consumableTexture = new Texture("heart.png");
         this.level = level;
         this.consumableNumber = consumableNumber;
         this.consumableType = CONSUMABLES.LIFE;
