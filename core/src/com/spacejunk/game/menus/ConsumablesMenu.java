@@ -45,13 +45,11 @@ public class ConsumablesMenu {
 
     private void renderInventoryList(SpriteBatch canvas) {
 
+        // Quick hack to set transparency of consumables menu
         canvas.setColor(1, 1, 1, 0.5f);
         canvas.draw(inventoryListTexture, currentGame.getxMax() - inventoryListTexture.getWidth(), 0);
         canvas.setColor(1, 1, 1, 1);
 
-//        Sprite sprite = new Sprite(inventoryListTexture);
-//        sprite.setAlpha(0.5f);
-//        canvas.draw(sprite);
     }
 
     private void renderInventoryElements(SpriteBatch canvas) {

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Ellipse;
@@ -121,19 +122,6 @@ public class GameScreen implements Screen {
 
 		this.spaceJunk.getLevel().renderObstacles(canvas);
 
-
-//		for(int i = 0; i < numberOfTubes; i++) {
-////			Gdx.app.log("testlog", "Initially, i is " + i + " and tubeX is " + tubeX[i]);
-//			if(tubeX[i] < -topTubeTexture.getWidth()) {
-//				Gdx.app.log("testlog", "Finally, i is " + i + " and tubeX is " + tubeX[i]);
-//				tubeX[i] += numberOfTubes * distanceBetweenTubes;
-//				Gdx.app.log("testlog", "The other thing is " + topTubeTexture.getWidth());
-//				tubeOffset[i] = (randomGenerator.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 100);
-//			}
-//			else {
-//				tubeX[i] = tubeX[i] - tubeVelocity;
-//			}
-//
 //			canvas.draw(topTubeTexture, tubeX[i], Gdx.graphics.getHeight() / 2 + gap / 2 + tubeOffset[i]);
 //			canvas.draw(bottomTubeTexture, tubeX[i], Gdx.graphics.getHeight() / 2 - bottomTubeTexture.getHeight() - gap / 2 + tubeOffset[i]);
 //
@@ -260,8 +248,9 @@ public class GameScreen implements Screen {
 	}
 
 	private void displayScore() {
+		GlyphLayout layout = new GlyphLayout(font, String.valueOf(spaceJunk.getCurrentGameScore()));
 		font.draw(canvas, String.valueOf(spaceJunk.getCurrentGameScore()),
-				Gdx.graphics.getWidth() / 2 - font.getXHeight(),
+				Gdx.graphics.getWidth() / 2 - layout.width / 2,
 				Gdx.graphics.getHeight());
 	}
 

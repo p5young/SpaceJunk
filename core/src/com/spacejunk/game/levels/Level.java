@@ -30,7 +30,7 @@ public class Level {
     public static final int MAX_NUMBER_OF_OBSTACLES = 8;
     public static final int MAX_PLATFORMS = 3;
     public static final int VELOCITY = 10;
-    public static final double SCORING_RATE = 0.25;
+    public static final double SCORING_RATE = 4;
     public static final int MAX_LIVES = 3;
 
     private ArrayList<Obstacle> obstaclesList;
