@@ -10,13 +10,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Rectangle;
+import com.spacejunk.game.menus.RemainingLivesMenu;
 
 import java.util.Random;
 
 public class GameScreen implements Screen {
-
-	public static final int PADDING = 20;
-
+	
 	public enum State
 	{
 		PAUSE,
@@ -33,7 +32,6 @@ public class GameScreen implements Screen {
 
 	Texture gameOver;
 
-	Texture[] remainingLivesTextures;
 
 	Boolean isGameActive = false;
 	Boolean isCrashed = false;
@@ -44,6 +42,7 @@ public class GameScreen implements Screen {
 
 	Random randomGenerator;
 
+	RemainingLivesMenu remainingLivesMenu;
 
 	final SpaceJunk spaceJunk;
 
@@ -56,7 +55,9 @@ public class GameScreen implements Screen {
 	public GameScreen(final SpaceJunk game) {
 		this.spaceJunk = game;
 		this.state =  State.RUN;
+
 		this.controller = new Controller(this.spaceJunk);
+		this.remainingLivesMenu = new RemainingLivesMenu(this.spaceJunk);
 
 		create();
 	}
@@ -79,13 +80,6 @@ public class GameScreen implements Screen {
 		//BIRDS
 		astronautShape = new Ellipse();
 
-		// Must use spaceJunk.getLevel().getMaxLives() here
-		remainingLivesTextures = new Texture[spaceJunk.getLevel().getMaxLives()];
-
-		for(int i = 0; i < spaceJunk.getLevel().getMaxLives(); i++) {
-			remainingLivesTextures[i] = new Texture("heart.png");
-		}
-
 
 		//TUBES
 		topRectangles = new Rectangle[4];
@@ -93,6 +87,7 @@ public class GameScreen implements Screen {
 		randomGenerator = new Random();
 
 		elapsedTime = 0f;
+
 
 	}
 
@@ -194,11 +189,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void renderRemainingLives() {
-
-		for(int i = 0; i < spaceJunk.getLevel().getMaxLives(); i++) {
-			canvas.draw(remainingLivesTextures[i], Gdx.graphics.getWidth() - ((i + 1) * remainingLivesTextures[i].getWidth()) - PADDING,
-					Gdx.graphics.getHeight() - remainingLivesTextures[i].getHeight() - PADDING);
-		}
+		remainingLivesMenu.render(canvas);
 	}
 
 	private void eventLoop() {

@@ -16,8 +16,6 @@ public class OptionsMenu {
 
     public static final int MAX_BUTTONS = 3;
 
-
-
     private Texture[] optionsMenuTexures;
 
     public OptionsMenu() {
