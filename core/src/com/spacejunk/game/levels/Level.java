@@ -172,6 +172,20 @@ public class Level {
         return coordinates;
     }
 
+    private int generateRandomXCoordinateForObstacleOnSamePlatform(int previousX) {
+
+        int from = previousX + this.minimumDistanceBetweenObstacles;
+        int to = from + this.randomRegion;
+
+       return randomGenerator.nextInt(Math.abs(to - from)) + from;
+    }
+
+    private int generateRandomXCoordinateForObstacleOnDifferentPlatform(int from) {
+
+        int to = from + this.randomRegion;
+
+        return randomGenerator.nextInt(Math.abs(to - from)) + from;
+    }
 
     public int[] getCoordinatesForObstacle(int previousObstacleIndex) {
 
@@ -179,17 +193,26 @@ public class Level {
 
         int y = generateRandomYCoordinate();
 
-        int previousX;
+        int previousX, previousY;
 
         previousX = obstaclesList.get(previousObstacleIndex).getX();
+        previousY = obstaclesList.get(previousObstacleIndex).getY();
 
-        int from = previousX + this.minimumDistanceBetweenObstacles;
-        int to = from + this.randomRegion;
+        int x;
+        // Previous obstacle was on the same platform as currently spawning obstacle
+        if(previousY == y) {
+            x = generateRandomXCoordinateForObstacleOnSamePlatform(previousX);
+        }
 
-        int x = randomGenerator.nextInt(Math.abs(to - from)) + from;
+        // Previous obstacle was on a different platform to currently spawning obstacle
+        else {
+            x = generateRandomXCoordinateForObstacleOnDifferentPlatform(previousX);
+        }
+
 
         coordinates[0] = x;
         coordinates[1] = y;
+
 
         return coordinates;
     }
