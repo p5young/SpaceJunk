@@ -3,7 +3,6 @@ package com.spacejunk.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Rectangle;
-import com.spacejunk.game.levels.Level;
 
 import java.util.Random;
 
@@ -51,9 +49,14 @@ public class GameScreen implements Screen {
 	final SpaceJunk spaceJunk;
 
 
-	float stateTime;
+	float elapsedTime;
 
 	private State state;
+
+	Animation<TextureRegion> astronautAnimation; // Must declare frame type (TextureRegion)
+	Texture animationSheet;
+	private static final int FRAME_COLS = 5;
+	private static final int FRAME_ROWS = 2;
 
 
 	public GameScreen(final SpaceJunk game) {
@@ -96,7 +99,35 @@ public class GameScreen implements Screen {
 		bottomRectangles = new Rectangle[4];
 		randomGenerator = new Random();
 
-		stateTime = 0f;
+		elapsedTime = 0f;
+
+
+		// Load the sprite sheet as a Texture
+		animationSheet = new Texture(Gdx.files.internal("astronaut_animation_sheet.png"));
+
+		// Use the split utility method to create a 2D array of TextureRegions. This is
+		// possible because this sprite sheet contains frames of equal size and they are
+		// all aligned.
+		TextureRegion[][] tmp = TextureRegion.split(animationSheet,
+				animationSheet.getWidth() / FRAME_COLS,
+				animationSheet.getHeight() / FRAME_ROWS);
+
+		// Place the regions into a 1D array in the correct order, starting from the top
+		// left, going across first. The Animation constructor requires a 1D array.
+		TextureRegion[] astronautFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+
+		int index = 0;
+		for (int i = 0; i < FRAME_ROWS; i++) {
+			for (int j = 0; j < FRAME_COLS; j++) {
+				astronautFrames[index++] = tmp[i][j];
+			}
+		}
+
+		// Initialize the Animation with the frame interval and array of frames
+		Gdx.app.log("applog" ,"Frame duration is " + String.valueOf(1f/(FRAME_COLS * FRAME_COLS)));
+//		astronautAnimation = new Animation<TextureRegion>(0.5f, astronautFrames);
+		astronautAnimation = new Animation<TextureRegion>(1f/(FRAME_COLS * FRAME_COLS), astronautFrames);
+
 
 	}
 
@@ -113,9 +144,14 @@ public class GameScreen implements Screen {
 	private void renderAstronaut() {
 		spaceJunk.getCharacter().updateCharacterPosition();
 
-		this.canvas.draw(spaceJunk.getCharacter().getCharacterTextures()[0],
-				spaceJunk.getCharacter().getInitialX() - spaceJunk.getCharacter().getCharacterTextures()[0].getWidth() / 2,
-				spaceJunk.getCharacter().getCurrentY() - spaceJunk.getCharacter().getCharacterTextures()[0].getHeight() / 2);
+		elapsedTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+
+
+		TextureRegion currentFrame = astronautAnimation.getKeyFrame(elapsedTime, true);
+
+		this.canvas.draw(currentFrame,
+				spaceJunk.getCharacter().getInitialX() - currentFrame.getRegionWidth() / 2,
+				spaceJunk.getCharacter().getCurrentY() - currentFrame.getRegionHeight() / 2);
 	}
 
 	private void renderObstacles() {
