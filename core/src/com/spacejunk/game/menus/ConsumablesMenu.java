@@ -1,6 +1,7 @@
 package com.spacejunk.game.menus;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.spacejunk.game.SpaceJunk;
 import com.spacejunk.game.consumables.Consumable;
@@ -43,7 +44,14 @@ public class ConsumablesMenu {
     }
 
     private void renderInventoryList(SpriteBatch canvas) {
-        canvas.draw(inventoryListTexture, 0, 0);
+
+        canvas.setColor(1, 1, 1, 0.5f);
+        canvas.draw(inventoryListTexture, currentGame.getxMax() - inventoryListTexture.getWidth(), 0);
+        canvas.setColor(1, 1, 1, 1);
+
+//        Sprite sprite = new Sprite(inventoryListTexture);
+//        sprite.setAlpha(0.5f);
+//        canvas.draw(sprite);
     }
 
     private void renderInventoryElements(SpriteBatch canvas) {
@@ -52,7 +60,7 @@ public class ConsumablesMenu {
         for(int i = 0; i < MAX_CONSUMABLES; i++) {
             if(inventoryList.get(i) != null) {
                 canvas.draw(inventoryList.get(i).getTexture(),
-                        ((i * inventoryListTexture.getWidth() / 4) + (12 - (i * 2))),
+                        (this.currentGame.getxMax() - ((i + 1) * inventoryListTexture.getWidth() / 4) + (12 - (i * 2))),
                         inventoryListTexture.getHeight() / 7);
             }
         }

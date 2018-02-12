@@ -69,6 +69,7 @@ public class GameScreen implements Screen {
 		Gdx.app.log("applog", "Create method of gamescreen.java called");
 
 		canvas = new SpriteBatch();
+		canvas.enableBlending();
 		background = new Texture("space_background.jpg");
 
 		font = new BitmapFont();

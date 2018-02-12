@@ -27,7 +27,7 @@ public class Level {
 
     public static final int TOTAL_NUMBER_OF_OBSTACLE_TYPES = 4;
 
-    public static final int MAX_NUMBER_OF_OBSTACLES = 5;
+    public static final int MAX_NUMBER_OF_OBSTACLES = 8;
     public static final int MAX_PLATFORMS = 3;
     public static final int VELOCITY = 10;
     public static final double SCORING_RATE = 0.25;
