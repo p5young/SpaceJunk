@@ -246,6 +246,13 @@ public class Level {
     }
 
 
+    public void updateObstacleShapeCoordinates() {
+        for (Obstacle o : obstaclesList) {
+            o.getObstacleShape().set(o.getX(), o.getY(),
+                    o.getTexture().getWidth(), o.getTexture().getHeight());
+        }
+    }
+
     public void setPlatformCoordinates(int topPlatformY, int middlePlatformY, int bottomPlatformY) {
         this.topPlatformY = topPlatformY;
         this.middlePlatformY = middlePlatformY;
@@ -289,5 +296,13 @@ public class Level {
 
     public ArrayList<Consumable> getInventoryList() {
         return this.inventoryList;
+    }
+
+    public ArrayList<Obstacle> getObstaclesList() {
+        return obstaclesList;
+    }
+
+    public ArrayList<Consumable> getConsumablesList() {
+        return consumablesList;
     }
 }

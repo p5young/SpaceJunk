@@ -8,8 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Ellipse;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Intersector;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 
 import java.util.Random;
@@ -35,17 +34,12 @@ public class GameScreen implements Screen {
 
 	Boolean isGameActive = false;
 	Boolean isCrashed = false;
-	Ellipse astronautShape;
-
-	Rectangle[] topRectangles;
-	Rectangle[] bottomRectangles;
 
 	Random randomGenerator;
 
 	RemainingLivesMenu remainingLivesMenu;
 
-	final SpaceJunk spaceJunk;
-
+	SpaceJunk spaceJunk;
 
 	float elapsedTime;
 
@@ -53,6 +47,12 @@ public class GameScreen implements Screen {
 
 
 	public GameScreen(final SpaceJunk game) {
+
+		startGame(game);
+	}
+
+	private void startGame(SpaceJunk game) {
+
 		this.spaceJunk = game;
 		this.state =  State.RUN;
 
@@ -77,18 +77,9 @@ public class GameScreen implements Screen {
 
 		gameOver = new Texture("gameover.png");
 
-		//BIRDS
-		astronautShape = new Ellipse();
-
-
-		//TUBES
-		topRectangles = new Rectangle[4];
-		bottomRectangles = new Rectangle[4];
 		randomGenerator = new Random();
 
 		elapsedTime = 0f;
-
-
 	}
 
 
@@ -103,6 +94,7 @@ public class GameScreen implements Screen {
 	 * */
 	private void renderAstronaut() {
 		spaceJunk.getCharacter().updateCharacterPosition();
+		spaceJunk.getCharacter().updateCharacterShapeCoordinates();
 
 		elapsedTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
 
@@ -115,16 +107,8 @@ public class GameScreen implements Screen {
 	}
 
 	private void renderObstacles() {
-
 		this.spaceJunk.getLevel().renderObstacles(canvas);
-
-//			canvas.draw(topTubeTexture, tubeX[i], Gdx.graphics.getHeight() / 2 + gap / 2 + tubeOffset[i]);
-//			canvas.draw(bottomTubeTexture, tubeX[i], Gdx.graphics.getHeight() / 2 - bottomTubeTexture.getHeight() - gap / 2 + tubeOffset[i]);
-//
-//			//SETTING TOP TUBE SHAPE
-//			topRectangles[i].set(tubeX[i], Gdx.graphics.getHeight() / 2 + gap/2 + tubeOffset[i], topTubeTexture.getWidth(), topTubeTexture.getHeight());
-//			bottomRectangles[i].set(tubeX[i], Gdx.graphics.getHeight() / 2 - bottomTubeTexture.getHeight() - gap / 2 + tubeOffset[i], topTubeTexture.getWidth(), topTubeTexture.getHeight());
-//		}
+		this.spaceJunk.getLevel().updateObstacleShapeCoordinates();
 	}
 
 	@Override
@@ -158,7 +142,7 @@ public class GameScreen implements Screen {
 
 		// We are making use of the painters algorithm here
 		drawBackground();
-		eventLoop();
+		gameLogic();
 		renderAstronaut();
 		renderController();
 		renderRemainingLives();
@@ -166,22 +150,21 @@ public class GameScreen implements Screen {
 
 		canvas.end();
 
+		isCrashed = hasCollisionOccured();
+	}
 
-		//SETTING BIRD SHAPE
-		astronautShape.set(spaceJunk.getCharacter().getInitialX(), spaceJunk.getCharacter().getCurrentY(),
-				spaceJunk.getCharacter().getCharacterTextures()[0].getWidth() / 2,
-				spaceJunk.getCharacter().getCharacterTextures()[0].getHeight() / 2); //XY Coordinate and radius
+	private boolean hasCollisionOccured() {
 
-		//SETTING BOTTOM TUBE SHAPE
-		for(int i = 0; i < 4; i++) {
+		int numberOfObstacles = spaceJunk.getLevel().getObstaclesList().size();
 
-			//CHECK FOR COLLISION
-//			if(Intersector.overlaps(astronautShape, topRectangles[i]) || Intersector.overlaps(astronautShape, bottomRectangles[i])) {
-//				GAME OVER AFTER COLLISION
-//				isCrashed = true;
-//			}
-
+		for(int i = 0; i < numberOfObstacles; i++) {
+			if(Intersector.overlaps(this.spaceJunk.getCharacter().getCharacterShape(),
+					this.spaceJunk.getLevel().getObstaclesList().get(i).getObstacleShape())) {
+				return true;
+			}
 		}
+
+		return false;
 	}
 
 	private void renderController() {
@@ -192,7 +175,8 @@ public class GameScreen implements Screen {
 		remainingLivesMenu.render(canvas);
 	}
 
-	private void eventLoop() {
+	private void gameLogic() {
+
 		if(isGameActive && !isCrashed) {
 
 			spaceJunk.incrementGameScore();
@@ -232,10 +216,10 @@ public class GameScreen implements Screen {
 
 	private void drawGameOverScreen() {
 		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
-		if(Gdx.input.justTouched()) {
+
+		if(controller.isTouched()) {
 			isGameActive = true;
 			isCrashed = false;
-
 		}
 	}
 

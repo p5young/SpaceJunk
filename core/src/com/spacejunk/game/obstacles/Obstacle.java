@@ -1,7 +1,10 @@
 package com.spacejunk.game.obstacles;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.levels.Level;
+
+import org.w3c.dom.css.Rect;
 
 /**
  * Created by vidxyz on 2/8/18.
@@ -21,6 +24,12 @@ public abstract class Obstacle {
     protected Texture obstacleTexture;
     protected Level level;
 
+    protected Rectangle obstacleShape;
+
+
+    public Obstacle() {
+        this.obstacleShape = new Rectangle();
+    }
 
     public void setCoordinates(int x, int y) {
         this.x = x;
@@ -56,5 +65,7 @@ public abstract class Obstacle {
         return this.obstacleTexture;
     }
 
-
+    public Rectangle getObstacleShape() {
+        return obstacleShape;
+    }
 }

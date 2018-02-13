@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.SpaceJunk;
 
 /**
@@ -27,6 +29,8 @@ public abstract class Character {
 
     Texture[] characterTextures = new Texture[3];
 
+    Rectangle characterShape;
+
     Animation<TextureRegion> characterAnimation; // Must declare frame type (TextureRegion)
     Texture animationSheet;
 
@@ -35,6 +39,8 @@ public abstract class Character {
 
 
     public void create() {
+
+        characterShape = new Rectangle();
 
         initialY = Gdx.graphics.getHeight() / 2 - characterTextures[0].getWidth() / 2;
         initialX = Gdx.graphics.getWidth() / 9;
@@ -84,6 +90,13 @@ public abstract class Character {
             updatePlatform(true);
             // Making sure we don't go up a platform while already at the top most
         }
+    }
+
+    public void updateCharacterShapeCoordinates() {
+        this.characterShape.set(this.initialX,
+                this.currentY,
+                this.characterTextures[0].getWidth() / 2,
+                this.characterTextures[0].getHeight() / 2); //XY Coordinate and radius
     }
 
     public void updateCharacterPosition() {
@@ -162,5 +175,9 @@ public abstract class Character {
 
     public Animation<TextureRegion> getCharacterAnimation() {
         return characterAnimation;
+    }
+
+    public Rectangle getCharacterShape() {
+        return characterShape;
     }
 }
