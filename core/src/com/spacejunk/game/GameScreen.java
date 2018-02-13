@@ -142,7 +142,7 @@ public class GameScreen implements Screen {
 
 		// We are making use of the painters algorithm here
 		drawBackground();
-		eventLoop();
+		gameLogic();
 		renderAstronaut();
 		renderController();
 		renderRemainingLives();
@@ -175,7 +175,8 @@ public class GameScreen implements Screen {
 		remainingLivesMenu.render(canvas);
 	}
 
-	private void eventLoop() {
+	private void gameLogic() {
+
 		if(isGameActive && !isCrashed) {
 
 			spaceJunk.incrementGameScore();
