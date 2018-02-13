@@ -39,7 +39,7 @@ public class GameScreen implements Screen {
 
 	RemainingLivesMenu remainingLivesMenu;
 
-	final SpaceJunk spaceJunk;
+	SpaceJunk spaceJunk;
 
 	float elapsedTime;
 
@@ -47,6 +47,12 @@ public class GameScreen implements Screen {
 
 
 	public GameScreen(final SpaceJunk game) {
+
+		startGame(game);
+	}
+
+	private void startGame(SpaceJunk game) {
+
 		this.spaceJunk = game;
 		this.state =  State.RUN;
 
@@ -209,10 +215,10 @@ public class GameScreen implements Screen {
 
 	private void drawGameOverScreen() {
 		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
-		if(Gdx.input.justTouched()) {
+
+		if(controller.isTouched()) {
 			isGameActive = true;
 			isCrashed = false;
-
 		}
 	}
 

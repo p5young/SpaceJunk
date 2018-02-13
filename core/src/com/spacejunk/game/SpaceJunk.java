@@ -20,18 +20,12 @@ public class SpaceJunk extends Game {
 
     public enum DIFFICULTY_LEVEL {EASY, MEDIUM, HARD};
 
-
-    private int currentYposition;
     private DIFFICULTY_LEVEL currentDifficultyLevel;
 
     // Canvas size
     int xMax, yMax;
 
     private double currentGameScore;
-
-
-    private SpriteBatch canvas;
-    private BitmapFont font;
 
     private Level level;
     private Character character;
@@ -48,10 +42,6 @@ public class SpaceJunk extends Game {
 
     @Override
     public void create () {
-
-        canvas = new SpriteBatch();
-        // Use libGDX's default Arial font
-        font = new BitmapFont();
 
         xMax = Gdx.graphics.getWidth();
         yMax = Gdx.graphics.getHeight();
@@ -83,8 +73,7 @@ public class SpaceJunk extends Game {
     }
 
     public void dispose() {
-        canvas.dispose();
-        font.dispose();
+
     }
 
 
