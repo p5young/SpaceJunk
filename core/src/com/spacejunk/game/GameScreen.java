@@ -3,22 +3,19 @@ package com.spacejunk.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Rectangle;
-import com.spacejunk.game.levels.Level;
+import com.spacejunk.game.menus.RemainingLivesMenu;
 
 import java.util.Random;
 
 public class GameScreen implements Screen {
-
-	public static final int PADDING = 20;
-
+	
 	public enum State
 	{
 		PAUSE,
@@ -35,7 +32,6 @@ public class GameScreen implements Screen {
 
 	Texture gameOver;
 
-	Texture[] remainingLivesTextures;
 
 	Boolean isGameActive = false;
 	Boolean isCrashed = false;
@@ -46,11 +42,12 @@ public class GameScreen implements Screen {
 
 	Random randomGenerator;
 
+	RemainingLivesMenu remainingLivesMenu;
 
 	final SpaceJunk spaceJunk;
 
 
-	float stateTime;
+	float elapsedTime;
 
 	private State state;
 
@@ -58,7 +55,9 @@ public class GameScreen implements Screen {
 	public GameScreen(final SpaceJunk game) {
 		this.spaceJunk = game;
 		this.state =  State.RUN;
+
 		this.controller = new Controller(this.spaceJunk);
+		this.remainingLivesMenu = new RemainingLivesMenu(this.spaceJunk);
 
 		create();
 	}
@@ -69,6 +68,7 @@ public class GameScreen implements Screen {
 		Gdx.app.log("applog", "Create method of gamescreen.java called");
 
 		canvas = new SpriteBatch();
+		canvas.enableBlending();
 		background = new Texture("space_background.jpg");
 
 		font = new BitmapFont();
@@ -80,21 +80,14 @@ public class GameScreen implements Screen {
 		//BIRDS
 		astronautShape = new Ellipse();
 
-		// Must use spaceJunk.getLevel().getMaxLives() here
-		remainingLivesTextures = new Texture[spaceJunk.getLevel().getMaxLives()];
-
-		for(int i = 0; i < spaceJunk.getLevel().getMaxLives(); i++) {
-			remainingLivesTextures[i] = new Texture("heart.png");
-		}
-
-
 
 		//TUBES
 		topRectangles = new Rectangle[4];
 		bottomRectangles = new Rectangle[4];
 		randomGenerator = new Random();
 
-		stateTime = 0f;
+		elapsedTime = 0f;
+
 
 	}
 
@@ -111,28 +104,20 @@ public class GameScreen implements Screen {
 	private void renderAstronaut() {
 		spaceJunk.getCharacter().updateCharacterPosition();
 
-		this.canvas.draw(spaceJunk.getCharacter().getCharacterTextures()[0],
-				spaceJunk.getCharacter().getInitialX() - spaceJunk.getCharacter().getCharacterTextures()[0].getWidth() / 2,
-				spaceJunk.getCharacter().getCurrentY() - spaceJunk.getCharacter().getCharacterTextures()[0].getHeight() / 2);
+		elapsedTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+
+
+		TextureRegion currentFrame = spaceJunk.getCharacter().getCharacterAnimation().getKeyFrame(elapsedTime, true);
+
+		this.canvas.draw(currentFrame,
+				spaceJunk.getCharacter().getInitialX() - currentFrame.getRegionWidth() / 2,
+				spaceJunk.getCharacter().getCurrentY() - currentFrame.getRegionHeight() / 2);
 	}
 
 	private void renderObstacles() {
 
 		this.spaceJunk.getLevel().renderObstacles(canvas);
 
-
-//		for(int i = 0; i < numberOfTubes; i++) {
-////			Gdx.app.log("testlog", "Initially, i is " + i + " and tubeX is " + tubeX[i]);
-//			if(tubeX[i] < -topTubeTexture.getWidth()) {
-//				Gdx.app.log("testlog", "Finally, i is " + i + " and tubeX is " + tubeX[i]);
-//				tubeX[i] += numberOfTubes * distanceBetweenTubes;
-//				Gdx.app.log("testlog", "The other thing is " + topTubeTexture.getWidth());
-//				tubeOffset[i] = (randomGenerator.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 100);
-//			}
-//			else {
-//				tubeX[i] = tubeX[i] - tubeVelocity;
-//			}
-//
 //			canvas.draw(topTubeTexture, tubeX[i], Gdx.graphics.getHeight() / 2 + gap / 2 + tubeOffset[i]);
 //			canvas.draw(bottomTubeTexture, tubeX[i], Gdx.graphics.getHeight() / 2 - bottomTubeTexture.getHeight() - gap / 2 + tubeOffset[i]);
 //
@@ -204,11 +189,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void renderRemainingLives() {
-
-		for(int i = 0; i < spaceJunk.getLevel().getMaxLives(); i++) {
-			canvas.draw(remainingLivesTextures[i], Gdx.graphics.getWidth() - ((i + 1) * remainingLivesTextures[i].getWidth()) - PADDING,
-					Gdx.graphics.getHeight() - remainingLivesTextures[i].getHeight() - PADDING);
-		}
+		remainingLivesMenu.render(canvas);
 	}
 
 	private void eventLoop() {
@@ -259,8 +240,9 @@ public class GameScreen implements Screen {
 	}
 
 	private void displayScore() {
+		GlyphLayout layout = new GlyphLayout(font, String.valueOf(spaceJunk.getCurrentGameScore()));
 		font.draw(canvas, String.valueOf(spaceJunk.getCurrentGameScore()),
-				Gdx.graphics.getWidth() / 2 - font.getXHeight(),
+				Gdx.graphics.getWidth() / 2 - layout.width / 2,
 				Gdx.graphics.getHeight());
 	}
 

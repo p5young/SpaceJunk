@@ -2,6 +2,8 @@ package com.spacejunk.game.characters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.spacejunk.game.SpaceJunk;
 
 /**
@@ -25,6 +27,12 @@ public abstract class Character {
 
     Texture[] characterTextures = new Texture[3];
 
+    Animation<TextureRegion> characterAnimation; // Must declare frame type (TextureRegion)
+    Texture animationSheet;
+
+    protected int FRAME_COLS;
+    protected int FRAME_ROWS;
+
 
     public void create() {
 
@@ -41,6 +49,28 @@ public abstract class Character {
 
         currentY = initialY;
         targetY = middlePlatformY;
+
+
+        // Use the split utility method to create a 2D array of TextureRegions. This is
+        // possible because this sprite sheet contains frames of equal size and they are
+        // all aligned.
+        TextureRegion[][] tmp = TextureRegion.split(animationSheet,
+                animationSheet.getWidth() / FRAME_COLS,
+                animationSheet.getHeight() / FRAME_ROWS);
+
+        // Place the regions into a 1D array in the correct order, starting from the top
+        // left, going across first. The Animation constructor requires a 1D array.
+        TextureRegion[] characterFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                characterFrames[index++] = tmp[i][j];
+            }
+        }
+
+        // Initialize the Animation with the frame interval and array of frames
+        characterAnimation = new Animation<TextureRegion>(1f/(FRAME_COLS * FRAME_COLS), characterFrames);
     }
 
     public void moveCharacter(int y) {
@@ -128,5 +158,9 @@ public abstract class Character {
 
     public Texture[] getCharacterTextures() {
         return characterTextures;
+    }
+
+    public Animation<TextureRegion> getCharacterAnimation() {
+        return characterAnimation;
     }
 }
