@@ -297,4 +297,12 @@ public class Level {
     public ArrayList<Consumable> getInventoryList() {
         return this.inventoryList;
     }
+
+    public ArrayList<Obstacle> getObstaclesList() {
+        return obstaclesList;
+    }
+
+    public ArrayList<Consumable> getConsumablesList() {
+        return consumablesList;
+    }
 }

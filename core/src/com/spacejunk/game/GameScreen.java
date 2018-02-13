@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Intersector;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 
 import java.util.Random;
@@ -143,16 +144,21 @@ public class GameScreen implements Screen {
 
 		canvas.end();
 
-		//SETTING BOTTOM TUBE SHAPE
-		for(int i = 0; i < 4; i++) {
+		isCrashed = hasCollisionOccured();
+	}
 
-			//CHECK FOR COLLISION
-//			if(Intersector.overlaps(astronautShape, topRectangles[i]) || Intersector.overlaps(astronautShape, bottomRectangles[i])) {
-//				GAME OVER AFTER COLLISION
-//				isCrashed = true;
-//			}
+	private boolean hasCollisionOccured() {
 
+		int numberOfObstacles = spaceJunk.getLevel().getObstaclesList().size();
+
+		for(int i = 0; i < numberOfObstacles; i++) {
+			if(Intersector.overlaps(this.spaceJunk.getCharacter().getCharacterShape(),
+					this.spaceJunk.getLevel().getObstaclesList().get(i).getObstacleShape())) {
+				return true;
+			}
 		}
+
+		return false;
 	}
 
 	private void renderController() {
