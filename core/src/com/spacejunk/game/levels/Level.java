@@ -39,8 +39,6 @@ public class Level {
     private ArrayList<Consumable> consumablesList;
 
     private ArrayList<Consumable> inventoryList;
-    private Random randomGenerator;
-
 
     // Co-ordinates for platform boundaries
     int topPlatformY;
@@ -63,6 +61,7 @@ public class Level {
     private double scoringRate;
 
     private SpaceJunk currentGame;
+    private LevelGenerator levelGenerator;
 
     public Level(SpaceJunk currentGame) {
 
@@ -70,12 +69,12 @@ public class Level {
 
         this.currentGame = currentGame;
         this.obstaclesList = new ArrayList<Obstacle>();
-        this.randomGenerator = new Random();
         this.velocity = VELOCITY;
         this.scoringRate = SCORING_RATE;
         this.maxLives = MAX_LIVES;
         this.furthestObstacleIndex = MAX_NUMBER_OF_OBSTACLES - 1;
 
+        this.levelGenerator = new LevelGenerator(this);
         this.inventoryList = new ArrayList<Consumable>();
         // Temporary
         inventoryList.add(new InvisibilityConsumable(this, 0));
@@ -94,147 +93,9 @@ public class Level {
     It generates it and random and makes sure it is not unbeatable
     **/
     public void generateInitialObstacles() {
-
-        // Initializing what the types of the obstacles are going to be
-        for(int i = 0; i < MAX_NUMBER_OF_OBSTACLES; i++) {
-            obstaclesList.add(this.getNextRandomObstacle(i));
-        }
-
-        this.generateInitialCoordinatesForObstacles();
-
+        levelGenerator.generateInitialObstacles();
     }
 
-    /**
-    Returns a random obstacle from our list of obstacles
-    **/
-    private Obstacle getNextRandomObstacle(int obstacleNumber) {
-
-        int randomInt = randomGenerator.nextInt(TOTAL_NUMBER_OF_OBSTACLE_TYPES);
-
-        switch (randomInt) {
-            case 0:
-                return new AsteroidObstacle(this, obstacleNumber);
-            case 1:
-                return new FireObstacle(this, obstacleNumber);
-            case 2:
-                return new ToxicGasObstacle(this, obstacleNumber);
-            case 3:
-                return new AlienObstacle(this, obstacleNumber);
-            default:
-                Gdx.app.log("applog", "Error: This should'nt happen");
-                return null;
-        }
-    }
-
-    /**
-     * Generates initial co-ordinates while making sure that they are not impossible
-     **/
-    public void generateInitialCoordinatesForObstacles() {
-
-
-        for (int i = 0; i < obstaclesList.size(); i++) {
-            int[] coordinates;
-            if(i == 0) {
-                // This is done so that initially, at the start, the obstacles are off screen
-                // Giving the user some time to get accustomed to the in-game physics
-                coordinates = this.getCoordinatesForFirstObstacle();
-                coordinates[0] += xMax;
-            }
-            else {
-                coordinates = this.getCoordinatesForObstacle(i - 1);
-            }
-
-            obstaclesList.get(i).setCoordinates(coordinates[0], coordinates[1]);
-        }
-
-        printObstacleCoordinates();
-
-    }
-
-    private void printObstacleCoordinates() {
-
-        Gdx.app.log("applog", "Printing out newly generated coorindates");
-        int i = 0;
-        for (Obstacle o : obstaclesList) {
-            i++;
-            Gdx.app.log("applog",
-                    String.format("Obstacle %d is a %s has coordinates (%d, %d)", i, o.getType(),
-                            o.getX(), o.getY()));
-        }
-    }
-
-
-    private int[] getCoordinatesForFirstObstacle() {
-
-        int[] coordinates = new int[2];
-        int y = generateRandomYCoordinate();
-        int x = 0;
-        coordinates[0] = x;
-        coordinates[1] = y;
-        return coordinates;
-    }
-
-    private int generateRandomXCoordinateForObstacleOnSamePlatform(int previousX) {
-
-        int from = previousX + this.minimumDistanceBetweenObstacles;
-        int to = from + this.randomRegion;
-
-       return randomGenerator.nextInt(Math.abs(to - from)) + from;
-    }
-
-    private int generateRandomXCoordinateForObstacleOnDifferentPlatform(int from) {
-
-        int to = from + this.randomRegion;
-
-        return randomGenerator.nextInt(Math.abs(to - from)) + from;
-    }
-
-    public int[] getCoordinatesForObstacle(int previousObstacleIndex) {
-
-        int[] coordinates = new int[2];
-
-        int y = generateRandomYCoordinate();
-
-        int previousX, previousY;
-
-        previousX = obstaclesList.get(previousObstacleIndex).getX();
-        previousY = obstaclesList.get(previousObstacleIndex).getY();
-
-        int x;
-        // Previous obstacle was on the same platform as currently spawning obstacle
-        if(previousY == y) {
-            x = generateRandomXCoordinateForObstacleOnSamePlatform(previousX);
-        }
-
-        // Previous obstacle was on a different platform to currently spawning obstacle
-        else {
-            x = generateRandomXCoordinateForObstacleOnDifferentPlatform(previousX);
-        }
-
-
-        coordinates[0] = x;
-        coordinates[1] = y;
-
-
-        return coordinates;
-    }
-
-
-    private int generateRandomYCoordinate() {
-        int temp = randomGenerator.nextInt(MAX_PLATFORMS);
-
-        switch (temp) {
-            case 0:
-                return this.topPlatformY;
-            case 1:
-                return this.middlePlatformY;
-            case 2:
-                 return this.bottomPlatformY;
-            default:
-                Gdx.app.log("applog", "Error: This shouldn't be happening");
-                return this.middlePlatformY;
-        }
-    }
 
     /**
      * Renders the obstacles on screen, while constantly updating positions throughout
@@ -312,5 +173,29 @@ public class Level {
 
     public ArrayList<Consumable> getConsumablesList() {
         return consumablesList;
+    }
+
+    public int getMinimumDistanceBetweenObstacles() {
+        return minimumDistanceBetweenObstacles;
+    }
+
+    public int getTopPlatformY() {
+        return topPlatformY;
+    }
+
+    public int getMiddlePlatformY() {
+        return middlePlatformY;
+    }
+
+    public int getBottomPlatformY() {
+        return bottomPlatformY;
+    }
+
+    public int getRandomRegion() {
+        return randomRegion;
+    }
+
+    public LevelGenerator getLevelGenerator() {
+        return levelGenerator;
     }
 }

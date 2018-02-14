@@ -53,7 +53,7 @@ public abstract class Obstacle {
 
         // We now wrap around over here
         if(x < -obstacleTexture.getWidth()) {
-            int[] coordinates = this.level.getCoordinatesForObstacle(level.getFurthestObstacleIndex());
+            int[] coordinates = this.level.getLevelGenerator().getCoordinatesForObstacle(level.getFurthestObstacleIndex());
             level.setFurthestObstacleIndex(this.obstacleNumber);
             this.setCoordinates(coordinates[0], coordinates[1]);
         }

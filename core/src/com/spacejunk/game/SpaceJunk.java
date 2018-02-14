@@ -105,6 +105,8 @@ public class SpaceJunk extends Game {
         this.currentGameScore += this.level.getScoringRate();
     }
 
-
+    public DIFFICULTY_LEVEL getCurrentDifficultyLevel() {
+        return currentDifficultyLevel;
+    }
 }
 

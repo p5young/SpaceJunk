@@ -14,6 +14,7 @@ import com.spacejunk.game.menus.RemainingLivesMenu;
 public class GameScreen implements Screen {
 
 	public static boolean DEBUG = true;
+//	public static boolean DEBUG = false;
 
 	public enum State
 	{
@@ -95,7 +96,7 @@ public class GameScreen implements Screen {
 
 		elapsedTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
 
-		spaceJunk.getCharacter().rendAer(canvas, elapsedTime, shapeRenderer);
+		spaceJunk.getCharacter().render(canvas, elapsedTime, shapeRenderer);
 	}
 
 	private void renderObstacles() {
