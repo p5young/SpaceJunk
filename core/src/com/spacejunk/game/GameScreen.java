@@ -7,14 +7,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 
-import java.util.Random;
-
 public class GameScreen implements Screen {
-	
+
+	public static boolean DEBUG = true;
+
 	public enum State
 	{
 		PAUSE,
@@ -24,6 +24,7 @@ public class GameScreen implements Screen {
 		STOPPED
 	}
 
+	private ShapeRenderer shapeRenderer;
 	private SpriteBatch canvas;
 	private Texture background;
 	private Controller controller;
@@ -64,6 +65,7 @@ public class GameScreen implements Screen {
 		Gdx.app.log("applog", "Create method of gamescreen.java called");
 
 		canvas = new SpriteBatch();
+		shapeRenderer = new ShapeRenderer();
 		canvas.enableBlending();
 		background = new Texture("space_background.jpg");
 
@@ -87,21 +89,17 @@ public class GameScreen implements Screen {
 	 * Prepares an astronaut for rendering. Moves it 'forward' one frame and then draws the result on the canvas
 	 * */
 	private void renderAstronaut() {
+
 		spaceJunk.getCharacter().updateCharacterPosition();
 		spaceJunk.getCharacter().updateCharacterShapeCoordinates();
 
 		elapsedTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
 
-
-		TextureRegion currentFrame = spaceJunk.getCharacter().getCharacterAnimation().getKeyFrame(elapsedTime, true);
-
-		this.canvas.draw(currentFrame,
-				spaceJunk.getCharacter().getInitialX() - currentFrame.getRegionWidth() / 2,
-				spaceJunk.getCharacter().getCurrentY() - currentFrame.getRegionHeight() / 2);
+		spaceJunk.getCharacter().rendAer(canvas, elapsedTime, shapeRenderer);
 	}
 
 	private void renderObstacles() {
-		this.spaceJunk.getLevel().renderObstacles(canvas);
+		this.spaceJunk.getLevel().renderObstacles(canvas, shapeRenderer);
 		this.spaceJunk.getLevel().updateObstacleShapeCoordinates();
 	}
 
@@ -147,16 +145,22 @@ public class GameScreen implements Screen {
 	// Note :- Rendering each on screen component that 'moves' updates its internal coordinates
 	private void renderScreen() {
 		canvas.begin();
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
 		// We are making use of the painters algorithm here
 		drawBackground();
+		// We do this so that the obstacles are painted red
+		shapeRenderer.setColor(Color.RED);
 		gameLogic();
+		// And the astronaut is painted green
+		shapeRenderer.setColor(Color.GREEN);
 		renderAstronaut();
 		renderController();
 		renderRemainingLives();
 		displayScore();
 
 		canvas.end();
+		shapeRenderer.end();
 
 		isCrashed = hasCollisionOccured();
 	}

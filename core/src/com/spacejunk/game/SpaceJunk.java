@@ -32,6 +32,7 @@ public class SpaceJunk extends Game {
 
 
     public SpaceJunk(DIFFICULTY_LEVEL level) {
+
         this.currentDifficultyLevel = level;
         // This can be chnaged as needed
         this.character = new Astronaut(this);
