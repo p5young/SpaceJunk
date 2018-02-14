@@ -19,35 +19,31 @@ public class GameScreen implements Screen {
 	{
 		PAUSE,
 		RUN,
+		CRASHED,
 		RESUME,
 		STOPPED
 	}
 
-	SpriteBatch canvas;
-	Texture background;
-	Controller controller;
+	private SpriteBatch canvas;
+	private Texture background;
+	private Controller controller;
 
-	BitmapFont font;
+	private BitmapFont font;
 
-	Texture gameOver;
+	private Texture gameOver;
 
+	private Boolean isGameActive = false;
+	private Boolean isCrashed = false;
 
-	Boolean isGameActive = false;
-	Boolean isCrashed = false;
+	private RemainingLivesMenu remainingLivesMenu;
 
-	Random randomGenerator;
+	private SpaceJunk spaceJunk;
 
-	RemainingLivesMenu remainingLivesMenu;
-
-	SpaceJunk spaceJunk;
-
-	float elapsedTime;
+	private float elapsedTime;
 
 	private State state;
 
-
 	public GameScreen(final SpaceJunk game) {
-
 		startGame(game);
 	}
 
@@ -76,8 +72,6 @@ public class GameScreen implements Screen {
 		font.getData().setScale(7);
 
 		gameOver = new Texture("gameover.png");
-
-		randomGenerator = new Random();
 
 		elapsedTime = 0f;
 	}
@@ -111,12 +105,26 @@ public class GameScreen implements Screen {
 		this.spaceJunk.getLevel().updateObstacleShapeCoordinates();
 	}
 
+	private void restartGame() {
+		spaceJunk.setUpGame();
+		startGame(spaceJunk);
+	}
+
 	@Override
 	public void render(float delta) {
 
 		switch (state) {
 			case RUN:
 				renderScreen();
+				break;
+			case CRASHED:
+				// Game should be restarted now
+				if(controller.isTouched()) {
+					isGameActive = true;
+					isCrashed = false;
+					restartGame();
+					this.state = State.RUN;
+				}
 				break;
 			case PAUSE:
 				renderScreenEssentials();
@@ -136,7 +144,7 @@ public class GameScreen implements Screen {
 		canvas.end();
 	}
 
-
+	// Note :- Rendering each on screen component that 'moves' updates its internal coordinates
 	private void renderScreen() {
 		canvas.begin();
 
@@ -181,17 +189,20 @@ public class GameScreen implements Screen {
 
 			spaceJunk.incrementGameScore();
 
+			// There has been on on screen touch action being done
 			if(controller.isTouched()) {
+				// Check if options menu is interacted with
 				if(controller.playPauseButtonisPressed()) {
 					pause();
 				}
+				// If all checks fail, this means the user meant to move the character
 				else {
-					spaceJunk.getCharacter().moveCharacter(Gdx.input.getY());
+					spaceJunk.getCharacter().moveCharacter(controller.getTouchYCoordinate());
 				}
 			}
 
+			// Only render obstacles if the game is active
 			renderObstacles();
-
 		}
 
 		else if(!isGameActive && !isCrashed){
@@ -200,10 +211,9 @@ public class GameScreen implements Screen {
 			}
 		}
 
-
-		//if statement ends here
 		//Code for if crash occurs
 		if(isCrashed) {
+			this.state = State.CRASHED;
 			drawGameOverScreen();
 		}
 
@@ -216,11 +226,6 @@ public class GameScreen implements Screen {
 
 	private void drawGameOverScreen() {
 		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
-
-		if(controller.isTouched()) {
-			isGameActive = true;
-			isCrashed = false;
-		}
 	}
 
 	private void displayScore() {

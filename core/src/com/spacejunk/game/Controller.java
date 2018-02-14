@@ -47,4 +47,12 @@ public class Controller {
     public ConsumablesMenu getConsumablesMenu() {
         return consumablesMenu;
     }
+
+    public int getTouchYCoordinate() {
+        return Gdx.input.getY();
+    }
+
+    public int getTouchXCoordinate() {
+        return Gdx.input.getX();
+    }
 }
