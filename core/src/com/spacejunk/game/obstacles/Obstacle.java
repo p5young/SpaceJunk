@@ -1,6 +1,7 @@
 package com.spacejunk.game.obstacles;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.levels.Level;
 
@@ -25,7 +26,6 @@ public abstract class Obstacle {
     protected Level level;
 
     protected Rectangle obstacleShape;
-
 
     public Obstacle() {
         this.obstacleShape = new Rectangle();

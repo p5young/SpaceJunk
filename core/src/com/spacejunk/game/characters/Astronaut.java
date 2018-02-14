@@ -2,6 +2,7 @@ package com.spacejunk.game.characters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.spacejunk.game.SpaceJunk;
 
 /**
@@ -10,12 +11,9 @@ import com.spacejunk.game.SpaceJunk;
 
 public class Astronaut extends Character  {
 
-
-
     public Astronaut(SpaceJunk game) {
         this.currentPlatform = PLATFORM.MIDDLE;
         this.currentGame = game;
-
     }
 
     public void create() {

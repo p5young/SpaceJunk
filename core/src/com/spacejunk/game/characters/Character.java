@@ -1,11 +1,15 @@
 package com.spacejunk.game.characters;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
+import com.spacejunk.game.GameScreen;
 import com.spacejunk.game.SpaceJunk;
 
 /**
@@ -95,8 +99,8 @@ public abstract class Character {
     public void updateCharacterShapeCoordinates() {
         this.characterShape.set(this.initialX,
                 this.currentY,
-                this.characterTextures[0].getWidth() / 2,
-                this.characterTextures[0].getHeight() / 2); //XY Coordinate and radius
+                this.characterTextures[0].getWidth(),
+                this.characterTextures[0].getHeight()); //XY Coordinate and radius
     }
 
     public void updateCharacterPosition() {
@@ -144,6 +148,24 @@ public abstract class Character {
         }
     }
 
+    public void render(SpriteBatch canvas, float elapsedTime, ShapeRenderer shapeRenderer) {
+
+        TextureRegion currentFrame = this.getCharacterAnimation().getKeyFrame(elapsedTime, true);
+
+        canvas.draw(currentFrame,
+                this.initialX - currentFrame.getRegionWidth() / 2,
+                this.currentY - currentFrame.getRegionHeight() / 2);
+
+        // Only render shapes if on debug mode
+        if(GameScreen.DEBUG) {
+            shapeRenderer.rect(this.getCharacterShape().getX(),
+                    this.getCharacterShape().getY(),
+                    this.getCharacterShape().getWidth(),
+                    this.getCharacterShape().getHeight());
+
+        }
+    }
+
     public int getTopPlatformY() {
         return topPlatformY;
     }
@@ -155,7 +177,6 @@ public abstract class Character {
     public int getBottomPlatformY() {
         return bottomPlatformY;
     }
-
 
     public int getCurrentY() {
         return this.currentY;

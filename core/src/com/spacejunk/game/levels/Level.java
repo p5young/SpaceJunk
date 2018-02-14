@@ -2,6 +2,8 @@ package com.spacejunk.game.levels;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.spacejunk.game.GameScreen;
 import com.spacejunk.game.SpaceJunk;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.consumables.FireSuitConsumable;
@@ -237,12 +239,18 @@ public class Level {
     /**
      * Renders the obstacles on screen, while constantly updating positions throughout
      **/
-    public void renderObstacles(SpriteBatch canvas) {
+    public void renderObstacles(SpriteBatch canvas, ShapeRenderer shapeRenderer) {
 
         for (Obstacle o : obstaclesList) {
             o.moveLeft();
             canvas.draw(o.getTexture(), o.getX(), o.getY());
+
+            if(GameScreen.DEBUG) {
+                shapeRenderer.rect(o.getObstacleShape().getX(), o.getObstacleShape().getY(),
+                        o.getObstacleShape().getWidth(), o.getObstacleShape().getHeight());
+            }
         }
+
     }
 
 

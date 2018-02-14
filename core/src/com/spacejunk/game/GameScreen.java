@@ -7,47 +7,44 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 
-import java.util.Random;
-
 public class GameScreen implements Screen {
-	
+
+	public static boolean DEBUG = true;
+
 	public enum State
 	{
 		PAUSE,
 		RUN,
+		CRASHED,
 		RESUME,
 		STOPPED
 	}
 
-	SpriteBatch canvas;
-	Texture background;
-	Controller controller;
+	private ShapeRenderer shapeRenderer;
+	private SpriteBatch canvas;
+	private Texture background;
+	private Controller controller;
 
-	BitmapFont font;
+	private BitmapFont font;
 
-	Texture gameOver;
+	private Texture gameOver;
 
+	private Boolean isGameActive = false;
+	private Boolean isCrashed = false;
 
-	Boolean isGameActive = false;
-	Boolean isCrashed = false;
+	private RemainingLivesMenu remainingLivesMenu;
 
-	Random randomGenerator;
+	private SpaceJunk spaceJunk;
 
-	RemainingLivesMenu remainingLivesMenu;
-
-	SpaceJunk spaceJunk;
-
-	float elapsedTime;
+	private float elapsedTime;
 
 	private State state;
 
-
 	public GameScreen(final SpaceJunk game) {
-
 		startGame(game);
 	}
 
@@ -68,6 +65,7 @@ public class GameScreen implements Screen {
 		Gdx.app.log("applog", "Create method of gamescreen.java called");
 
 		canvas = new SpriteBatch();
+		shapeRenderer = new ShapeRenderer();
 		canvas.enableBlending();
 		background = new Texture("space_background.jpg");
 
@@ -76,8 +74,6 @@ public class GameScreen implements Screen {
 		font.getData().setScale(7);
 
 		gameOver = new Texture("gameover.png");
-
-		randomGenerator = new Random();
 
 		elapsedTime = 0f;
 	}
@@ -93,22 +89,23 @@ public class GameScreen implements Screen {
 	 * Prepares an astronaut for rendering. Moves it 'forward' one frame and then draws the result on the canvas
 	 * */
 	private void renderAstronaut() {
+
 		spaceJunk.getCharacter().updateCharacterPosition();
 		spaceJunk.getCharacter().updateCharacterShapeCoordinates();
 
 		elapsedTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
 
-
-		TextureRegion currentFrame = spaceJunk.getCharacter().getCharacterAnimation().getKeyFrame(elapsedTime, true);
-
-		this.canvas.draw(currentFrame,
-				spaceJunk.getCharacter().getInitialX() - currentFrame.getRegionWidth() / 2,
-				spaceJunk.getCharacter().getCurrentY() - currentFrame.getRegionHeight() / 2);
+		spaceJunk.getCharacter().rendAer(canvas, elapsedTime, shapeRenderer);
 	}
 
 	private void renderObstacles() {
-		this.spaceJunk.getLevel().renderObstacles(canvas);
+		this.spaceJunk.getLevel().renderObstacles(canvas, shapeRenderer);
 		this.spaceJunk.getLevel().updateObstacleShapeCoordinates();
+	}
+
+	private void restartGame() {
+		spaceJunk.setUpGame();
+		startGame(spaceJunk);
 	}
 
 	@Override
@@ -117,6 +114,15 @@ public class GameScreen implements Screen {
 		switch (state) {
 			case RUN:
 				renderScreen();
+				break;
+			case CRASHED:
+				// Game should be restarted now
+				if(controller.isTouched()) {
+					isGameActive = true;
+					isCrashed = false;
+					restartGame();
+					this.state = State.RUN;
+				}
 				break;
 			case PAUSE:
 				renderScreenEssentials();
@@ -136,19 +142,25 @@ public class GameScreen implements Screen {
 		canvas.end();
 	}
 
-
+	// Note :- Rendering each on screen component that 'moves' updates its internal coordinates
 	private void renderScreen() {
 		canvas.begin();
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
 		// We are making use of the painters algorithm here
 		drawBackground();
+		// We do this so that the obstacles are painted red
+		shapeRenderer.setColor(Color.RED);
 		gameLogic();
+		// And the astronaut is painted green
+		shapeRenderer.setColor(Color.GREEN);
 		renderAstronaut();
 		renderController();
 		renderRemainingLives();
 		displayScore();
 
 		canvas.end();
+		shapeRenderer.end();
 
 		isCrashed = hasCollisionOccured();
 	}
@@ -181,17 +193,20 @@ public class GameScreen implements Screen {
 
 			spaceJunk.incrementGameScore();
 
+			// There has been on on screen touch action being done
 			if(controller.isTouched()) {
+				// Check if options menu is interacted with
 				if(controller.playPauseButtonisPressed()) {
 					pause();
 				}
+				// If all checks fail, this means the user meant to move the character
 				else {
-					spaceJunk.getCharacter().moveCharacter(Gdx.input.getY());
+					spaceJunk.getCharacter().moveCharacter(controller.getTouchYCoordinate());
 				}
 			}
 
+			// Only render obstacles if the game is active
 			renderObstacles();
-
 		}
 
 		else if(!isGameActive && !isCrashed){
@@ -200,10 +215,9 @@ public class GameScreen implements Screen {
 			}
 		}
 
-
-		//if statement ends here
 		//Code for if crash occurs
 		if(isCrashed) {
+			this.state = State.CRASHED;
 			drawGameOverScreen();
 		}
 
@@ -216,11 +230,6 @@ public class GameScreen implements Screen {
 
 	private void drawGameOverScreen() {
 		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
-
-		if(controller.isTouched()) {
-			isGameActive = true;
-			isCrashed = false;
-		}
 	}
 
 	private void displayScore() {

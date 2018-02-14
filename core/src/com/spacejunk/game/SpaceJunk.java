@@ -31,8 +31,8 @@ public class SpaceJunk extends Game {
     private Character character;
 
 
-
     public SpaceJunk(DIFFICULTY_LEVEL level) {
+
         this.currentDifficultyLevel = level;
         // This can be chnaged as needed
         this.character = new Astronaut(this);
@@ -43,6 +43,12 @@ public class SpaceJunk extends Game {
     @Override
     public void create () {
 
+        setUpGame();
+        this.setScreen(new GameScreen(this));
+
+    }
+
+    public void setUpGame() {
         xMax = Gdx.graphics.getWidth();
         yMax = Gdx.graphics.getHeight();
 
@@ -51,7 +57,6 @@ public class SpaceJunk extends Game {
         Gdx.app.log("applog", "yMax is " + yMax);
 
         character.create();
-
 
         // Updating the values needed from within the level class
         this.level = new Level(this);
@@ -62,9 +67,7 @@ public class SpaceJunk extends Game {
         this.level.setPlatformCoordinates(0, Gdx.graphics.getHeight() / 3, 2 * Gdx.graphics.getHeight() / 3);
         this.level.setMaxCoordinates(xMax, yMax);
         this.level.generateInitialObstacles();
-
-        this.setScreen(new GameScreen(this));
-
+        this.currentGameScore = 0;
     }
 
     @Override
