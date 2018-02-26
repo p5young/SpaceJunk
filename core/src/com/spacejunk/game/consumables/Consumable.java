@@ -10,7 +10,7 @@ import com.spacejunk.game.obstacles.Obstacle;
  * Created by vidxyz on 2/10/18.
  */
 
-public class Consumable {
+public abstract class Consumable {
 
     public enum CONSUMABLES {LIFE, INVISIBILITY, FIRESUIT, GAS_MASK, SPACE_HAMMER};
 
