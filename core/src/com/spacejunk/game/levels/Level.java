@@ -29,7 +29,7 @@ public class Level {
 
     public static final int TOTAL_NUMBER_OF_OBSTACLE_TYPES = 4;
 
-    public static final int MAX_NUMBER_OF_OBSTACLES = 8;
+    public static final int MAX_LAYOUTS = 3;
     public static final int MAX_PLATFORMS = 3;
     public static final int VELOCITY = 10;
     public static final double SCORING_RATE = 0.25;
@@ -55,13 +55,13 @@ public class Level {
 
     int maxLives;
 
-    private int furthestObstacleIndex;
-    private int randomRegion;
-
     private double scoringRate;
 
     private SpaceJunk currentGame;
     private LevelGenerator levelGenerator;
+
+    // used in renderObstacles() to delay next group's generation
+    private int chunkWidth;
 
     public Level(SpaceJunk currentGame) {
 
@@ -72,28 +72,29 @@ public class Level {
         this.velocity = VELOCITY;
         this.scoringRate = SCORING_RATE;
         this.maxLives = MAX_LIVES;
-        this.furthestObstacleIndex = MAX_NUMBER_OF_OBSTACLES - 1;
 
         this.levelGenerator = new LevelGenerator(this);
         this.inventoryList = new ArrayList<Consumable>();
         // Temporary
         inventoryList.add(new InvisibilityConsumable(this, 0));
         inventoryList.add(new SpaceHammerConsumable(this, 1));
-        inventoryList.add(new GasMaskConsumable(this, 1));
-        inventoryList.add(new FireSuitConsumable(this, 2));
+        inventoryList.add(new GasMaskConsumable(this, 2));
+        inventoryList.add(new FireSuitConsumable(this, 3));
 
 
         this.currentGame = currentGame;
-        this.minimumDistanceBetweenObstacles = currentGame.getxMax() / 6;
+        this.minimumDistanceBetweenObstacles = (int)currentGame.getCharacter().getCharacterShape().getWidth() + 100;
         Gdx.app.log("applog", "minimum distance between obstacles is " + minimumDistanceBetweenObstacles);
     }
 
     /**
-    This function generates obstacles for the level specified
-    It generates it and random and makes sure it is not unbeatable
+    This function generates a group of obstacles
+     Returns: an integer to be used as a delay counter before next group is generated
+                a wide group will return a large number
     **/
-    public void generateInitialObstacles() {
-        levelGenerator.generateInitialObstacles();
+    public void generateObstacles() {
+        chunkWidth = levelGenerator.generateObstacles();
+        Gdx.app.log("applog", "SETTING CHUNKWIDTH: " + chunkWidth);
     }
 
 
@@ -102,6 +103,12 @@ public class Level {
      **/
     public void renderObstacles(SpriteBatch canvas, ShapeRenderer shapeRenderer) {
 
+        // make new chunk of obstacles
+        if(--chunkWidth <= 0) {
+            generateObstacles();
+        }
+
+        // move everything left
         for (Obstacle o : obstaclesList) {
             o.moveLeft();
             canvas.draw(o.getTexture(), o.getX(), o.getY());
@@ -112,13 +119,22 @@ public class Level {
             }
         }
 
+        // delete anything that's moved off the left side of the screen
+        for (int i = obstaclesList.size() - 1 ; i >= 0 ; --i) {
+            Obstacle o = obstaclesList.get(i);
+            if(o.getX() < -o.getTexture().getWidth()) {
+                obstaclesList.remove(i);
+                Gdx.app.log("applog", "removed obstacle " + i);
+            }
+        }
     }
 
-
+    // I made the obstacle hitboxes 75% of normal size because
+    // corners collide while textures weren't touching
     public void updateObstacleShapeCoordinates() {
         for (Obstacle o : obstaclesList) {
             o.getObstacleShape().set(o.getX(), o.getY(),
-                    o.getTexture().getWidth(), o.getTexture().getHeight());
+                    o.getTexture().getWidth() * 0.75f, o.getTexture().getHeight() * 0.75f);
         }
     }
 
@@ -131,8 +147,6 @@ public class Level {
     public void setMaxCoordinates(int xMax, int yMax) {
         this.xMax = xMax;
         this.yMax = yMax;
-        // Update this to change where points are being generated
-        this.randomRegion = this.xMax / 3;
     }
 
     public int getVelocity() {
@@ -153,14 +167,6 @@ public class Level {
 
     public int getMaxLives() {
         return this.maxLives;
-    }
-
-    public int getFurthestObstacleIndex() {
-        return furthestObstacleIndex;
-    }
-
-    public void setFurthestObstacleIndex(int furthestObstacleIndex) {
-        this.furthestObstacleIndex = furthestObstacleIndex;
     }
 
     public ArrayList<Consumable> getInventoryList() {
@@ -191,11 +197,10 @@ public class Level {
         return bottomPlatformY;
     }
 
-    public int getRandomRegion() {
-        return randomRegion;
-    }
-
     public LevelGenerator getLevelGenerator() {
         return levelGenerator;
     }
+
+    public SpaceJunk getCurrentGame() { return currentGame; }
+
 }

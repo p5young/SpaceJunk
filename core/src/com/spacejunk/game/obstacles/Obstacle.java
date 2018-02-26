@@ -2,6 +2,7 @@ package com.spacejunk.game.obstacles;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.levels.Level;
 
@@ -50,15 +51,6 @@ public abstract class Obstacle {
 
     public void moveLeft() {
         this.x = this.x - this.level.getVelocity();
-
-        // We now wrap around over here
-        if(x < -obstacleTexture.getWidth()) {
-            int[] coordinates = this.level.getLevelGenerator().getCoordinatesForObstacle(level.getFurthestObstacleIndex());
-            level.setFurthestObstacleIndex(this.obstacleNumber);
-            this.setCoordinates(coordinates[0], coordinates[1]);
-        }
-
-
     }
 
     public Texture getTexture() {

@@ -43,18 +43,9 @@ public class Consumable {
         return String.valueOf(this.consumableType);
     }
 
+
     public void moveLeft() {
         this.x = this.x - this.level.getVelocity();
-
-        // We now wrap around over here
-        if(x < -consumableTexture.getWidth()) {
-            int[] coordinates = this.level.getLevelGenerator().
-                    getCoordinatesForObstacle(level.getFurthestObstacleIndex());
-            level.setFurthestObstacleIndex(this.consumableNumber);
-            this.setCoordinates(coordinates[0], coordinates[1]);
-        }
-
-
     }
 
     public Texture getTexture() {

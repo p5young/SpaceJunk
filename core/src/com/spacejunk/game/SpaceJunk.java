@@ -34,7 +34,7 @@ public class SpaceJunk extends Game {
     public SpaceJunk(DIFFICULTY_LEVEL level) {
 
         this.currentDifficultyLevel = level;
-        // This can be chnaged as needed
+        // This can be changed as needed
         this.character = new Astronaut(this);
         this.currentGameScore = 0;
     }
@@ -66,7 +66,7 @@ public class SpaceJunk extends Game {
         // We subtract 1/6th of the screen here to make up for the offset we caused earlier
         this.level.setPlatformCoordinates(0, Gdx.graphics.getHeight() / 3, 2 * Gdx.graphics.getHeight() / 3);
         this.level.setMaxCoordinates(xMax, yMax);
-        this.level.generateInitialObstacles();
+        this.level.generateObstacles();
         this.currentGameScore = 0;
     }
 

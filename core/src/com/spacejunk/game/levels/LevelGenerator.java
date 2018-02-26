@@ -18,62 +18,54 @@ public class LevelGenerator {
     private Level level;
     private Random randomGenerator;
 
+    private int MIN_GAP = 200;
+
     public LevelGenerator(Level level) {
         this.level = level;
         this.randomGenerator = new Random();
     }
 
-
-    public void generateInitialObstacles() {
-        // Initializing what the types of the obstacles are going to be
-        for(int i = 0; i < Level.MAX_NUMBER_OF_OBSTACLES; i++) {
-            level.getObstaclesList().add(this.getNextRandomObstacle(i));
-        }
-
-        this.generateInitialCoordinatesForObstacles();
-    }
-
-    /**
-     * Generates initial co-ordinates while making sure that they are not impossible
-     **/
-    public void generateInitialCoordinatesForObstacles() {
-
-
-        for (int i = 0; i < level.getObstaclesList().size(); i++) {
-            int[] coordinates;
-            if(i == 0) {
-                // This is done so that initially, at the start, the obstacles are off screen
-                // Giving the user some time to get accustomed to the in-game physics
-                coordinates = this.getCoordinatesForFirstObstacle();
-                coordinates[0] += level.getXMax();
-            }
-            else {
-                coordinates = this.getCoordinatesForObstacle(i - 1);
-            }
-
-            level.getObstaclesList().get(i).setCoordinates(coordinates[0], coordinates[1]);
-        }
-
-        printObstacleCoordinates();
-
-    }
-
-    private void printObstacleCoordinates() {
-
-        Gdx.app.log("applog", "Printing out newly generated coorindates");
-        int i = 0;
-        for (Obstacle o : level.getObstaclesList()) {
-            i++;
-            Gdx.app.log("applog",
-                    String.format("Obstacle %d is a %s has coordinates (%d, %d)", i, o.getType(),
-                            o.getX(), o.getY()));
+    // creates a group of obstacles
+    // returns its width plus a gap which is used by level.renderObstacles to delay next group
+    public int generateObstacles() {
+        Gdx.app.log("applog", "Making new batch of obstacles");
+        Gdx.app.log("applog", "MinGap: " + MIN_GAP);
+        int randomInt = randomGenerator.nextInt(Level.MAX_LAYOUTS);
+        switch (randomInt) {
+            // layout 0
+            case 0:
+                Gdx.app.log("applog", "Layout 0");
+                makeUnbreakable(0, level.getBottomPlatformY());
+                makeUnbreakable(20, level.getMiddlePlatformY());
+                makeUnbreakable(650, level.getTopPlatformY());
+                return 140;
+            // layout 1
+            case 1:
+                Gdx.app.log("applog", "Layout 1");
+                makeUnbreakable(0, level.getMiddlePlatformY());
+                makeUnbreakable(20, level.getTopPlatformY());
+                makeUnbreakable(650, level.getBottomPlatformY());
+                return 140;
+            // layout 2
+            case 2:
+                Gdx.app.log("applog", "Layout 2");
+                makeUnbreakable(0, level.getMiddlePlatformY());
+                makeUnbreakable(300, level.getMiddlePlatformY());
+                makeUnbreakable(300, level.getTopPlatformY());
+                return 100;
+            default:
+                Gdx.app.log("applog", "Error: generateObstacles' switch broke");
+                return 500;
         }
     }
 
-    /**
-     Returns a random obstacle from our list of obstacles
-     **/
-    private Obstacle getNextRandomObstacle(int obstacleNumber) {
+    private void makeUnbreakable(int x, int y) {
+        int size = level.getObstaclesList().size();
+        level.getObstaclesList().add(getRandomObstacle(size));
+        level.getObstaclesList().get(size).setCoordinates(level.getXMax() + x, y);
+    }
+
+    private Obstacle getRandomObstacle(int obstacleNumber) {
 
         int randomInt = randomGenerator.nextInt(Level.TOTAL_NUMBER_OF_OBSTACLE_TYPES);
 
@@ -89,79 +81,6 @@ public class LevelGenerator {
             default:
                 Gdx.app.log("applog", "Error: This should'nt happen");
                 return null;
-        }
-    }
-
-    private int[] getCoordinatesForFirstObstacle() {
-
-        int[] coordinates = new int[2];
-        int y = generateRandomYCoordinate();
-        int x = 0;
-        coordinates[0] = x;
-        coordinates[1] = y;
-        return coordinates;
-    }
-
-    public int[] getCoordinatesForObstacle(int previousObstacleIndex) {
-
-        int[] coordinates = new int[2];
-
-        int y = generateRandomYCoordinate();
-
-        int previousX, previousY;
-
-        previousX = level.getObstaclesList().get(previousObstacleIndex).getX();
-        previousY = level.getObstaclesList().get(previousObstacleIndex).getY();
-
-        int x;
-        // Previous obstacle was on the same platform as currently spawning obstacle
-        if(previousY == y) {
-            x = generateRandomXCoordinateForObstacleOnSamePlatform(previousX);
-        }
-
-        // Previous obstacle was on a different platform to currently spawning obstacle
-        else {
-            x = generateRandomXCoordinateForObstacleOnDifferentPlatform(previousX);
-        }
-
-
-        coordinates[0] = x;
-        coordinates[1] = y;
-
-
-        return coordinates;
-    }
-
-    private int generateRandomXCoordinateForObstacleOnSamePlatform(int previousX) {
-
-        int from = previousX + level.getMinimumDistanceBetweenObstacles();
-        int to = from + level.getRandomRegion();
-
-        return randomGenerator.nextInt(Math.abs(to - from)) + from;
-    }
-
-    private int generateRandomXCoordinateForObstacleOnDifferentPlatform(int from) {
-
-        int to = from + level.getRandomRegion();
-
-        return randomGenerator.nextInt(Math.abs(to - from)) + from;
-    }
-
-
-
-    private int generateRandomYCoordinate() {
-        int temp = randomGenerator.nextInt(Level.MAX_PLATFORMS);
-
-        switch (temp) {
-            case 0:
-                return level.getTopPlatformY();
-            case 1:
-                return level.getMiddlePlatformY();
-            case 2:
-                return level.getBottomPlatformY();
-            default:
-                Gdx.app.log("applog", "Error: This shouldn't be happening");
-                return level.getMiddlePlatformY();
         }
     }
 
