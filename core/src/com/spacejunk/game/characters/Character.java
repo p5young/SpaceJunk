@@ -97,8 +97,8 @@ public abstract class Character {
     }
 
     public void updateCharacterShapeCoordinates() {
-        this.characterShape.set(this.initialX,
-                this.currentY,
+        this.characterShape.set(this.initialX - this.getCharacterShape().getWidth() /2,
+                this.currentY - this.getCharacterShape().getHeight() /2,
                 this.characterTextures[0].getWidth(),
                 this.characterTextures[0].getHeight()); //XY Coordinate and radius
     }
@@ -153,8 +153,9 @@ public abstract class Character {
         TextureRegion currentFrame = this.getCharacterAnimation().getKeyFrame(elapsedTime, true);
 
         canvas.draw(currentFrame,
-                this.initialX,
-                this.currentY);
+                this.initialX - currentFrame.getRegionWidth() / 2,
+                this.currentY - currentFrame.getRegionHeight() / 2);
+
 
         // Only render shapes if on debug mode
         if(GameScreen.DEBUG) {

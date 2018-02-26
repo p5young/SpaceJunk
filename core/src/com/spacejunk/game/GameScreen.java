@@ -13,8 +13,8 @@ import com.spacejunk.game.menus.RemainingLivesMenu;
 
 public class GameScreen implements Screen {
 
-	public static boolean DEBUG = true;
-//	public static boolean DEBUG = false;
+//	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 
 	public enum State
 	{
