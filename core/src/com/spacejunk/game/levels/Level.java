@@ -101,7 +101,7 @@ public class Level {
     /**
      * Renders the obstacles on screen, while constantly updating positions throughout
      **/
-    public void renderObstacles(SpriteBatch canvas, ShapeRenderer shapeRenderer) {
+    public void renderObstacles(SpriteBatch canvas, ShapeRenderer shapeRenderer, boolean toMove) {
 
         // make new chunk of obstacles
         if(--chunkWidth <= 0) {
@@ -110,7 +110,9 @@ public class Level {
 
         // move everything left
         for (Obstacle o : obstaclesList) {
-            o.moveLeft();
+            if(toMove) {
+                o.moveLeft();
+            }
             canvas.draw(o.getTexture(), o.getX(), o.getY());
 
             if(GameScreen.DEBUG) {

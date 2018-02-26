@@ -99,8 +99,8 @@ public class GameScreen implements Screen {
 		spaceJunk.getCharacter().render(canvas, elapsedTime, shapeRenderer);
 	}
 
-	private void renderObstacles() {
-        spaceJunk.getLevel().renderObstacles(canvas, shapeRenderer);
+	private void renderObstacles(boolean toMove) {
+        spaceJunk.getLevel().renderObstacles(canvas, shapeRenderer, toMove);
         spaceJunk.getLevel().updateObstacleShapeCoordinates();
 	}
 
@@ -139,7 +139,13 @@ public class GameScreen implements Screen {
 
 	private void renderScreenEssentials() {
 		canvas.begin();
+		// We are making use of the painters algorithm here
+		drawBackground();
 		renderController();
+		renderAstronaut();
+		renderObstacles(false);
+		renderRemainingLives();
+		displayScore();
 		canvas.end();
 	}
 
@@ -206,8 +212,8 @@ public class GameScreen implements Screen {
 				}
 			}
 
-			// Only render obstacles if the game is active
-			renderObstacles();
+			// Only render and move obstacles if the game is active
+			renderObstacles(true);
 		}
 
 		else if(!isGameActive && !isCrashed){
