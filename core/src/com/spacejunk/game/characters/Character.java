@@ -46,7 +46,7 @@ public abstract class Character {
 
         characterShape = new Rectangle();
 
-        initialY = Gdx.graphics.getHeight() / 2 - characterTextures[0].getWidth() / 2;
+        initialY = Gdx.graphics.getHeight() / 2 - characterTextures[0].getHeight() / 2;
         initialX = Gdx.graphics.getWidth() / 9;
 
         topPlatformY = currentGame.getyMax() / 6;
@@ -153,8 +153,8 @@ public abstract class Character {
         TextureRegion currentFrame = this.getCharacterAnimation().getKeyFrame(elapsedTime, true);
 
         canvas.draw(currentFrame,
-                this.initialX - currentFrame.getRegionWidth() / 2,
-                this.currentY - currentFrame.getRegionHeight() / 2);
+                this.initialX,
+                this.currentY);
 
         // Only render shapes if on debug mode
         if(GameScreen.DEBUG) {
