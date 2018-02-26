@@ -13,7 +13,8 @@ import com.spacejunk.game.menus.RemainingLivesMenu;
 
 public class GameScreen implements Screen {
 
-	public static boolean DEBUG = false;
+	public static boolean DEBUG = true;
+//	public static boolean DEBUG = false;
 
 	public enum State
 	{
@@ -99,8 +100,8 @@ public class GameScreen implements Screen {
 	}
 
 	private void renderObstacles() {
-		this.spaceJunk.getLevel().renderObstacles(canvas, shapeRenderer);
-		this.spaceJunk.getLevel().updateObstacleShapeCoordinates();
+        spaceJunk.getLevel().renderObstacles(canvas, shapeRenderer);
+        spaceJunk.getLevel().updateObstacleShapeCoordinates();
 	}
 
 	private void restartGame() {
@@ -170,8 +171,8 @@ public class GameScreen implements Screen {
 		int numberOfObstacles = spaceJunk.getLevel().getObstaclesList().size();
 
 		for(int i = 0; i < numberOfObstacles; i++) {
-			if(Intersector.overlaps(this.spaceJunk.getCharacter().getCharacterShape(),
-					this.spaceJunk.getLevel().getObstaclesList().get(i).getObstacleShape())) {
+			if(Intersector.overlaps(this.spaceJunk.getLevel().getObstaclesList().get(i).getObstacleShape(),
+					this.spaceJunk.getCharacter().getCharacterShape())) {
 				return true;
 			}
 		}
