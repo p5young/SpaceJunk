@@ -29,7 +29,8 @@ public class RemainingLivesMenu {
     }
 
     public void render(SpriteBatch canvas) {
-        for(int i = 0; i < currentGame.getLevel().getMaxLives(); i++) {
+        int remainingLives = currentGame.getCharacter().getRemainingLives();
+        for(int i = 0; i < remainingLives; i++) {
             canvas.draw(remainingLivesTextures[i], Gdx.graphics.getWidth() - ((i + 1) * remainingLivesTextures[i].getWidth()) - PADDING,
                     Gdx.graphics.getHeight() - remainingLivesTextures[i].getHeight() - PADDING);
         }

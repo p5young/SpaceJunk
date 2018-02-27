@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.spacejunk.game.GameScreen;
 import com.spacejunk.game.SpaceJunk;
+import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.consumables.FireSuitConsumable;
 import com.spacejunk.game.consumables.GasMaskConsumable;
@@ -27,14 +28,6 @@ import java.util.Random;
 
 public class Level {
 
-    public static final int TOTAL_NUMBER_OF_OBSTACLE_TYPES = 4;
-
-    public static final int MAX_LAYOUTS = 3;
-    public static final int MAX_PLATFORMS = 3;
-    public static final int VELOCITY = 10;
-    public static final double SCORING_RATE = 0.25;
-    public static final int MAX_LIVES = 3;
-
     private ArrayList<Obstacle> obstaclesList;
     private ArrayList<Consumable> consumablesList;
 
@@ -50,12 +43,12 @@ public class Level {
     int yMax;
 
     // Velocity
-    int velocity;
+    int velocity = GameConstants.VELOCITY;
     int minimumDistanceBetweenObstacles;
 
-    int maxLives;
+    int maxLives = GameConstants.MAX_LIVES;
 
-    private double scoringRate;
+    private double scoringRate = GameConstants.SCORING_RATE;
 
     private SpaceJunk currentGame;
     private LevelGenerator levelGenerator;
@@ -69,9 +62,6 @@ public class Level {
 
         this.currentGame = currentGame;
         this.obstaclesList = new ArrayList<Obstacle>();
-        this.velocity = VELOCITY;
-        this.scoringRate = SCORING_RATE;
-        this.maxLives = MAX_LIVES;
 
         this.levelGenerator = new LevelGenerator(this);
         this.inventoryList = new ArrayList<Consumable>();
