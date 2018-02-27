@@ -1,6 +1,7 @@
 package com.spacejunk.game.levels;
 
 import com.badlogic.gdx.Gdx;
+import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.obstacles.AlienObstacle;
 import com.spacejunk.game.obstacles.AsteroidObstacle;
 import com.spacejunk.game.obstacles.FireObstacle;
@@ -30,7 +31,7 @@ public class LevelGenerator {
     public int generateObstacles() {
         Gdx.app.log("applog", "Making new batch of obstacles");
         Gdx.app.log("applog", "MinGap: " + MIN_GAP);
-        int randomInt = randomGenerator.nextInt(Level.MAX_LAYOUTS);
+        int randomInt = randomGenerator.nextInt(GameConstants.MAX_LAYOUTS);
         switch (randomInt) {
             // layout 0
             case 0:
@@ -67,7 +68,7 @@ public class LevelGenerator {
 
     private Obstacle getRandomObstacle(int obstacleNumber) {
 
-        int randomInt = randomGenerator.nextInt(Level.TOTAL_NUMBER_OF_OBSTACLE_TYPES);
+        int randomInt = randomGenerator.nextInt(GameConstants.TOTAL_NUMBER_OF_OBSTACLE_TYPES);
 
         switch (randomInt) {
             case 0:
