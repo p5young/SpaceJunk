@@ -15,6 +15,4 @@ public class GameConstants {
     public static final int VELOCITY = 10;
     public static final double SCORING_RATE = 0.25;
     public static final int MAX_LIVES = 3;
-
-
 }

@@ -119,6 +119,7 @@ public class GameScreen implements Screen {
 			case CRASHED:
 				// Game should be restarted now
 				if(controller.isTouched()) {
+					spaceJunk.getCharacter().resetLives();
 					isGameActive = true;
 					isCrashed = false;
 					restartGame();
@@ -169,7 +170,7 @@ public class GameScreen implements Screen {
 		canvas.end();
 		shapeRenderer.end();
 
-		isCrashed = hasCollisionOccured();
+		isCrashed = hasCharacterDied();
 	}
 
 	private boolean hasCollisionOccured() {
@@ -184,6 +185,35 @@ public class GameScreen implements Screen {
 		}
 
 		return false;
+	}
+
+	private boolean hasCharacterDied() {
+		int numberOfObstacles = spaceJunk.getLevel().getObstaclesList().size();
+
+		for(int i = 0; i < numberOfObstacles; i++) {
+
+			if (this
+					.spaceJunk
+					.getLevel()
+					.getObstaclesList()
+					.get(i)
+					.isBroken())
+				continue;
+
+			if(Intersector.overlaps(
+					this.spaceJunk.getLevel().getObstaclesList().get(i).getObstacleShape(),
+					this.spaceJunk.getCharacter().getCharacterShape())) {
+
+				this.spaceJunk.getLevel().getObstaclesList().get(i).setBroken(true);
+
+				boolean myBool = spaceJunk.getCharacter().takesHit();
+				return myBool;
+
+			}
+		}
+
+		return false;
+
 	}
 
 	private void renderController() {

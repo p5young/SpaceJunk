@@ -11,13 +11,13 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.GameScreen;
 import com.spacejunk.game.SpaceJunk;
+import com.spacejunk.game.constants.GameConstants;
 
 /**
  * Created by vidxyz on 2/9/18.
  */
 
 public abstract class Character {
-
 
     public enum PLATFORM {TOP, MIDDLE, BOTTOM}
 
@@ -40,6 +40,9 @@ public abstract class Character {
 
     protected int FRAME_COLS;
     protected int FRAME_ROWS;
+
+    // Remaining Lives; how many hits can be taken
+    private int remainingLives = GameConstants.MAX_LIVES;
 
 
     public void create() {
@@ -202,4 +205,19 @@ public abstract class Character {
     public Rectangle getCharacterShape() {
         return characterShape;
     }
+
+    public int getRemainingLives() {
+        return remainingLives;
+    }
+
+    // returns true if the hit took out remaining lives
+    // We can add a parameter here for how much of a hit
+    public boolean takesHit() {
+        return (--this.remainingLives <= 0);
+    }
+
+    public void resetLives() {
+        this.remainingLives = GameConstants.MAX_LIVES;
+    }
+
 }

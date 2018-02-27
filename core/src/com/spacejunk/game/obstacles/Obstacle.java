@@ -28,6 +28,12 @@ public abstract class Obstacle {
 
     protected Rectangle obstacleShape;
 
+    /* This field is to prevent collision set off by
+    an obstacle that the Astronaut is either taking a hit from (hence walks through)
+    or using a consumable on. In both cases, we don't want the collision to be detected.
+     */
+    private boolean isBroken = false;
+
     public Obstacle() {
         this.obstacleShape = new Rectangle();
     }
@@ -59,5 +65,12 @@ public abstract class Obstacle {
 
     public Rectangle getObstacleShape() {
         return obstacleShape;
+    }
+    public boolean isBroken() {
+        return isBroken;
+    }
+
+    public void setBroken(boolean broken) {
+        isBroken = broken;
     }
 }
