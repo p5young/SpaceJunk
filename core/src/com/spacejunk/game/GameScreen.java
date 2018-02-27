@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.spacejunk.game.levels.Level;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 
 public class GameScreen implements Screen {
@@ -27,7 +28,10 @@ public class GameScreen implements Screen {
 
 	private ShapeRenderer shapeRenderer;
 	private SpriteBatch canvas;
+
 	private Texture background;
+	private int backgroundImageIndex = 0;
+
 	private Controller controller;
 
 	private BitmapFont font;
@@ -68,7 +72,9 @@ public class GameScreen implements Screen {
 		canvas = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		canvas.enableBlending();
-		background = new Texture("space_background.jpg");
+
+		background = new Texture("new_background.jpg");
+		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 		font = new BitmapFont();
 		font.setColor(Color.WHITE);
@@ -265,7 +271,10 @@ public class GameScreen implements Screen {
 
 
 	private void drawBackground() {
-		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		//canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		canvas.draw(background, 0, 0, backgroundImageIndex, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		if (this.state == State.RUN) backgroundImageIndex += 10;
 	}
 
 	private void drawGameOverScreen() {
