@@ -53,7 +53,7 @@ public class LevelGenerator {
                 makeUnbreakable(0, level.getMiddlePlatformY());
                 makeUnbreakable(300, level.getMiddlePlatformY());
                 makeUnbreakable(300, level.getTopPlatformY());
-                return 100;
+                return 140;
             default:
                 Gdx.app.log("applog", "Error: generateObstacles' switch broke");
                 return 500;

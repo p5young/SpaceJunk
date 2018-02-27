@@ -94,7 +94,7 @@ public class Level {
     public void renderObstacles(SpriteBatch canvas, ShapeRenderer shapeRenderer, boolean toMove) {
 
         // make new chunk of obstacles
-        if(--chunkWidth <= 0) {
+        if(toMove && --chunkWidth <= 0) {
             generateObstacles();
         }
 
