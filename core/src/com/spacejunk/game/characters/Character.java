@@ -32,6 +32,7 @@ public abstract class Character {
     int topPlatformY, middlePlatformY, bottomPlatformY;
 
     Texture[] characterTextures = new Texture[3];
+    TextureRegion currentFrame;
 
     Rectangle characterShape;
 
@@ -151,9 +152,11 @@ public abstract class Character {
         }
     }
 
-    public void render(SpriteBatch canvas, float elapsedTime, ShapeRenderer shapeRenderer) {
+    public void render(SpriteBatch canvas, float elapsedTime, ShapeRenderer shapeRenderer, boolean toAnimate) {
 
-        TextureRegion currentFrame = this.getCharacterAnimation().getKeyFrame(elapsedTime, true);
+        if(toAnimate) {
+            currentFrame = this.getCharacterAnimation().getKeyFrame(elapsedTime, true);
+        }
 
         canvas.draw(currentFrame,
                 this.initialX - currentFrame.getRegionWidth() / 2,

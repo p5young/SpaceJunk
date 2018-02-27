@@ -89,14 +89,17 @@ public class GameScreen implements Screen {
 	/**
 	 * Prepares an astronaut for rendering. Moves it 'forward' one frame and then draws the result on the canvas
 	 * */
-	private void renderAstronaut() {
+	private void renderAstronaut(boolean toAnimate) {
 
 		spaceJunk.getCharacter().updateCharacterPosition();
 		spaceJunk.getCharacter().updateCharacterShapeCoordinates();
 
-		elapsedTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+		if(toAnimate) {
+			// Accumulate elapsed animation time only if astronaut is being animated
+			elapsedTime += Gdx.graphics.getDeltaTime();
+		}
 
-		spaceJunk.getCharacter().render(canvas, elapsedTime, shapeRenderer);
+		spaceJunk.getCharacter().render(canvas, elapsedTime, shapeRenderer, toAnimate);
 	}
 
 	private void renderObstacles(boolean toMove) {
@@ -117,6 +120,7 @@ public class GameScreen implements Screen {
 				renderScreen();
 				break;
 			case CRASHED:
+				renderCrashedScreenEssentials();
 				// Game should be restarted now
 				if(controller.isTouched()) {
 					spaceJunk.getCharacter().resetLives();
@@ -138,12 +142,25 @@ public class GameScreen implements Screen {
 
 	}
 
+	private void renderCrashedScreenEssentials() {
+		canvas.begin();
+		// We are making use of the painters algorithm here
+		drawBackground();
+		renderController();
+		renderAstronaut(false);
+		renderObstacles(false);
+		renderRemainingLives();
+		displayScore();
+		drawGameOverScreen();
+		canvas.end();
+	}
+
 	private void renderScreenEssentials() {
 		canvas.begin();
 		// We are making use of the painters algorithm here
 		drawBackground();
 		renderController();
-		renderAstronaut();
+		renderAstronaut(false);
 		renderObstacles(false);
 		renderRemainingLives();
 		displayScore();
@@ -162,7 +179,7 @@ public class GameScreen implements Screen {
 		gameLogic();
 		// And the astronaut is painted green
 		shapeRenderer.setColor(Color.GREEN);
-		renderAstronaut();
+		renderAstronaut(true);
 		renderController();
 		renderRemainingLives();
 		displayScore();
