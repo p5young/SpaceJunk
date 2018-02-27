@@ -173,20 +173,6 @@ public class GameScreen implements Screen {
 		isCrashed = hasCharacterDied();
 	}
 
-	private boolean hasCollisionOccured() {
-
-		int numberOfObstacles = spaceJunk.getLevel().getObstaclesList().size();
-
-		for(int i = 0; i < numberOfObstacles; i++) {
-			if(Intersector.overlaps(this.spaceJunk.getLevel().getObstaclesList().get(i).getObstacleShape(),
-					this.spaceJunk.getCharacter().getCharacterShape())) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	private boolean hasCharacterDied() {
 		int numberOfObstacles = spaceJunk.getLevel().getObstaclesList().size();
 
