@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.levels.Level;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 
@@ -73,7 +74,8 @@ public class GameScreen implements Screen {
 		shapeRenderer = new ShapeRenderer();
 		canvas.enableBlending();
 
-		background = new Texture("new_background.jpg");
+//		background = new Texture("space_background.jpg");
+		background = new Texture("background_space_without_bar.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 		font = new BitmapFont();
@@ -215,8 +217,7 @@ public class GameScreen implements Screen {
 
 				this.spaceJunk.getLevel().getObstaclesList().get(i).setBroken(true);
 
-				boolean myBool = spaceJunk.getCharacter().takesHit();
-				return myBool;
+				return spaceJunk.getCharacter().takesHit();
 
 			}
 		}
@@ -272,9 +273,19 @@ public class GameScreen implements Screen {
 
 	private void drawBackground() {
 		//canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		canvas.draw(background, 0, 0, backgroundImageIndex, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		//canvas.draw(background, 0, 0, backgroundImageIndex, 0, background.getWidth(), background.getHeight());
+		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), backgroundImageIndex, 0, Gdx.graphics.getWidth(), Math.min(background.getHeight(), Gdx.graphics.getHeight()), false, false);
 
-		if (this.state == State.RUN) backgroundImageIndex += 10;
+//		float eachStep = Gdx.graphics.getWidth() / background.getWidth();
+//		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), backgroundImageIndex / (float) background.getWidth(), 0, eachStep , 1);
+
+		if (this.state == State.RUN) {
+			backgroundImageIndex += GameConstants.BACKGROUND_SPEED;
+		}
+
+		if (backgroundImageIndex > background.getWidth()) {
+			backgroundImageIndex = 0;
+		}
 	}
 
 	private void drawGameOverScreen() {
