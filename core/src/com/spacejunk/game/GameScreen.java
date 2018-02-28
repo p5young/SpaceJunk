@@ -272,12 +272,12 @@ public class GameScreen implements Screen {
 
 
 	private void drawBackground() {
-		//canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		//canvas.draw(background, 0, 0, backgroundImageIndex, 0, background.getWidth(), background.getHeight());
-		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), backgroundImageIndex, 0, Gdx.graphics.getWidth(), Math.min(background.getHeight(), Gdx.graphics.getHeight()), false, false);
+		// canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		// Using this method here implies that the background is suitable for wrap as a background
+		// Using the width as the "u" parameter implies that image width is greater than screen width
+		// If it's not the background is tiled.
 
-//		float eachStep = Gdx.graphics.getWidth() / background.getWidth();
-//		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), backgroundImageIndex / (float) background.getWidth(), 0, eachStep , 1);
+		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), backgroundImageIndex, 0, Gdx.graphics.getWidth(), Math.min(background.getHeight(), Gdx.graphics.getHeight()), false, false);
 
 		if (this.state == State.RUN) {
 			backgroundImageIndex += GameConstants.BACKGROUND_SPEED;
