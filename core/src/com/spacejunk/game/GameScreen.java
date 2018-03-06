@@ -152,27 +152,44 @@ public class GameScreen implements Screen {
 
 	private void renderCrashedScreenEssentials() {
 		canvas.begin();
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		// We are making use of the painters algorithm here
 		drawBackground();
 		renderController();
+
+		shapeRenderer.setColor(Color.GREEN);
 		renderAstronaut(false);
+
+		shapeRenderer.setColor(Color.RED);
 		renderObstacles(false);
 		renderRemainingLives();
 		displayScore();
 		drawGameOverScreen();
+
+		shapeRenderer.end();
 		canvas.end();
 	}
 
 	private void renderScreenEssentials() {
+		// Start off with initializing the renderers
 		canvas.begin();
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
 		// We are making use of the painters algorithm here
 		drawBackground();
+
 		renderController();
+
+		shapeRenderer.setColor(Color.GREEN);
 		renderAstronaut(false);
+
+		shapeRenderer.setColor(Color.RED);
 		renderObstacles(false);
+
 		renderRemainingLives();
 		displayScore();
 		canvas.end();
+		shapeRenderer.end();
 	}
 
 	// Note :- Rendering each on screen component that 'moves' updates its internal coordinates
