@@ -49,7 +49,8 @@ public class Controller {
     }
 
     public int getTouchYCoordinate() {
-        return Gdx.input.getY();
+        // Flip y coordinate to match LibGDX (origin in bottom left)
+        return Gdx.graphics.getHeight() - Gdx.input.getY();
     }
 
     public int getTouchXCoordinate() {

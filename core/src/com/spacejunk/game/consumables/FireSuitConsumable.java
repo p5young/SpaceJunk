@@ -9,10 +9,9 @@ import com.spacejunk.game.levels.Level;
 
 public class FireSuitConsumable extends Consumable {
 
-    public FireSuitConsumable(Level level, int consumableNumber) {
+    public FireSuitConsumable(Level level) {
         this.consumableTexture = new Texture("fire_suit.png");
         this.level = level;
-        this.consumableNumber = consumableNumber;
         this.consumableType = CONSUMABLES.FIRESUIT;
     }
 }

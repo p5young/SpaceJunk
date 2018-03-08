@@ -9,10 +9,9 @@ import com.spacejunk.game.levels.Level;
 
 public class AsteroidObstacle extends Obstacle {
 
-    public AsteroidObstacle(Level level, int obstacleNumber) {
+    public AsteroidObstacle(Level level) {
         this.obstacleTexture = new Texture("asteroid.png");
         this.level = level;
-        this.obstacleNumber = obstacleNumber;
         this.obstacleType = OBSTACLES.ASTEROID;
 
     }

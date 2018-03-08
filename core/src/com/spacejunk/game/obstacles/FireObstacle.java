@@ -9,10 +9,9 @@ import com.spacejunk.game.levels.Level;
 
 public class FireObstacle extends Obstacle {
 
-    public FireObstacle(Level level, int obstacleNumber) {
+    public FireObstacle(Level level) {
         this.obstacleTexture = new Texture("fire.png");
         this.level = level;
-        this.obstacleNumber = obstacleNumber;
         this.obstacleType = OBSTACLES.FIRE;
 
     }

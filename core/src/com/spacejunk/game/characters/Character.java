@@ -53,9 +53,9 @@ public abstract class Character {
         initialY = Gdx.graphics.getHeight() / 2 - characterTextures[0].getHeight() / 2;
         initialX = Gdx.graphics.getWidth() / 9;
 
-        topPlatformY = currentGame.getyMax() / 6;
-        middlePlatformY = topPlatformY + currentGame.getyMax() / 3;
-        bottomPlatformY = middlePlatformY + currentGame.getyMax()  / 3;
+        topPlatformY = 5 * Gdx.graphics.getHeight() / 6;
+        middlePlatformY = 3 * Gdx.graphics.getHeight() / 6;
+        bottomPlatformY = Gdx.graphics.getHeight() / 6;
 
         Gdx.app.log("applog", "Top platform y is " + topPlatformY);
         Gdx.app.log("applog", "Middle platform y is " + middlePlatformY);
@@ -88,13 +88,14 @@ public abstract class Character {
     }
 
     public void moveCharacter(int y) {
-
         // Bottom half of screen tapped
         if (y < (currentGame.getyMax() / 2)) {
+            Gdx.app.log("applog", "going down");
             updatePlatform(false);
         }
         // Top half is tapped
         else {
+            Gdx.app.log("applog", "going up");
             updatePlatform(true);
             // Making sure we don't go up a platform while already at the top most
         }

@@ -13,8 +13,8 @@ import com.spacejunk.game.menus.RemainingLivesMenu;
 
 public class GameScreen implements Screen {
 
-//	public static boolean DEBUG = true;
-	public static boolean DEBUG = false;
+	public static boolean DEBUG = true;
+//	public static boolean DEBUG = false;
 
 	public enum State
 	{
@@ -144,27 +144,35 @@ public class GameScreen implements Screen {
 
 	private void renderCrashedScreenEssentials() {
 		canvas.begin();
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(Color.GREEN);
 		// We are making use of the painters algorithm here
 		drawBackground();
 		renderController();
 		renderAstronaut(false);
+		shapeRenderer.setColor(Color.RED);
 		renderObstacles(false);
 		renderRemainingLives();
 		displayScore();
 		drawGameOverScreen();
 		canvas.end();
+		shapeRenderer.end();
 	}
 
 	private void renderScreenEssentials() {
 		canvas.begin();
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(Color.GREEN);
 		// We are making use of the painters algorithm here
 		drawBackground();
 		renderController();
 		renderAstronaut(false);
+		shapeRenderer.setColor(Color.RED);
 		renderObstacles(false);
 		renderRemainingLives();
 		displayScore();
 		canvas.end();
+		shapeRenderer.end();
 	}
 
 	// Note :- Rendering each on screen component that 'moves' updates its internal coordinates

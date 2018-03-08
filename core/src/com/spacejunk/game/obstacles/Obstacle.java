@@ -1,5 +1,6 @@
 package com.spacejunk.game.obstacles;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
@@ -20,7 +21,6 @@ public abstract class Obstacle {
     protected int x = -1;
     protected int y = -1;
 
-    protected int obstacleNumber;
     protected OBSTACLES obstacleType;
 
     protected Texture obstacleTexture;
@@ -40,7 +40,7 @@ public abstract class Obstacle {
 
     public void setCoordinates(int x, int y) {
         this.x = x;
-        this.y = y;
+        this.y = y - (obstacleTexture.getHeight() / 2);
     }
 
     public int getX() {

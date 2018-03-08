@@ -1,6 +1,8 @@
 package com.spacejunk.game.consumables;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.levels.Level;
 import com.spacejunk.game.obstacles.AsteroidObstacle;
 import com.spacejunk.game.obstacles.FireObstacle;
@@ -19,16 +21,25 @@ public abstract class Consumable {
     protected int x = -1;
     protected int y = -1;
 
-    protected int consumableNumber;
     protected CONSUMABLES consumableType;
 
     protected Texture consumableTexture;
     protected Level level;
 
+    protected Rectangle consumableShape;
+
+    public Consumable() {
+        this.consumableShape = new Rectangle();
+    }
+
+    public Rectangle getConsumableShape() {
+        return consumableShape;
+    }
+
 
     public void setCoordinates(int x, int y) {
         this.x = x;
-        this.y = y;
+        this.y = y - (consumableTexture.getHeight() / 2);
     }
 
     public int getX() {
@@ -45,7 +56,7 @@ public abstract class Consumable {
 
 
     public void moveLeft() {
-        this.x = this.x - this.level.getVelocity();
+        this.x -= this.level.getVelocity();
     }
 
     public Texture getTexture() {
