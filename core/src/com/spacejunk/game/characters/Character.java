@@ -170,7 +170,6 @@ public abstract class Character {
                     this.getCharacterShape().getY(),
                     this.getCharacterShape().getWidth(),
                     this.getCharacterShape().getHeight());
-
         }
     }
 

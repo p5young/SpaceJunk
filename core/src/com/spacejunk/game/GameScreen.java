@@ -9,12 +9,14 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.spacejunk.game.constants.GameConstants;
+import com.spacejunk.game.levels.Level;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 
 public class GameScreen implements Screen {
 
-	public static boolean DEBUG = true;
-//	public static boolean DEBUG = false;
+//	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 
 	public enum State
 	{
@@ -27,7 +29,10 @@ public class GameScreen implements Screen {
 
 	private ShapeRenderer shapeRenderer;
 	private SpriteBatch canvas;
+
 	private Texture background;
+	private int backgroundImageIndex = 0;
+
 	private Controller controller;
 
 	private BitmapFont font;
@@ -68,7 +73,10 @@ public class GameScreen implements Screen {
 		canvas = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		canvas.enableBlending();
-		background = new Texture("space_background.jpg");
+
+//		background = new Texture("space_background.jpg");
+		background = new Texture("background_space_without_bar.jpg");
+		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 		font = new BitmapFont();
 		font.setColor(Color.WHITE);
@@ -162,13 +170,17 @@ public class GameScreen implements Screen {
 	private void renderScreenEssentials() {
 		canvas.begin();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.setColor(Color.GREEN);
+
 		// We are making use of the painters algorithm here
 		drawBackground();
+
 		renderController();
+
+        shapeRenderer.setColor(Color.GREEN);
 		renderAstronaut(false);
 		shapeRenderer.setColor(Color.RED);
 		renderObstacles(false);
+
 		renderRemainingLives();
 		displayScore();
 		canvas.end();
@@ -217,8 +229,7 @@ public class GameScreen implements Screen {
 
 				this.spaceJunk.getLevel().getObstaclesList().get(i).setBroken(true);
 
-				boolean myBool = spaceJunk.getCharacter().takesHit();
-				return myBool;
+				return spaceJunk.getCharacter().takesHit();
 
 			}
 		}
@@ -273,7 +284,20 @@ public class GameScreen implements Screen {
 
 
 	private void drawBackground() {
-		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		// canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		// Using this method here implies that the background is suitable for wrap as a background
+		// Using the width as the "u" parameter implies that image width is greater than screen width
+		// If it's not the background is tiled.
+
+		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), backgroundImageIndex, 0, Gdx.graphics.getWidth(), Math.min(background.getHeight(), Gdx.graphics.getHeight()), false, false);
+
+		if (this.state == State.RUN) {
+			backgroundImageIndex += GameConstants.BACKGROUND_SPEED;
+		}
+
+		if (backgroundImageIndex > background.getWidth()) {
+			backgroundImageIndex = 0;
+		}
 	}
 
 	private void drawGameOverScreen() {
