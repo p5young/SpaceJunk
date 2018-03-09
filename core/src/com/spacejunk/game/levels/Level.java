@@ -85,7 +85,7 @@ public class Level {
                 a wide group will return a large number
     **/
     public void generateObstacles() {
-        //chunkWidth = levelGenerator.generateDEBUGObstacles()
+        //chunkWidth = levelGenerator.generateDEBUGObstacles();
         chunkWidth = levelGenerator.generateObstacles();
         Gdx.app.log("applog", "SETTING CHUNKWIDTH: " + chunkWidth);
     }
@@ -159,8 +159,8 @@ public class Level {
     // corners collide while textures weren't touching
     public void updateObstacleShapeCoordinates() {
         for (Obstacle o : obstaclesList) {
-            o.getObstacleShape().set(o.getX() + o.getTexture().getWidth() * 0.125f, o.getY() + o.getTexture().getHeight() * 0.125f,
-                    o.getTexture().getWidth() * 0.75f, o.getTexture().getHeight() * 0.75f);
+            o.getObstacleShape().set(o.getX(), o.getY(),
+                    o.getTexture().getWidth(), o.getTexture().getHeight());
         }
         for (Consumable c : consumablesList) {
             c.getConsumableShape().set(c.getX(), c.getY(),

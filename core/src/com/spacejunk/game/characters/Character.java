@@ -1,7 +1,9 @@
 package com.spacejunk.game.characters;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -42,11 +44,18 @@ public abstract class Character {
     protected int FRAME_COLS;
     protected int FRAME_ROWS;
 
+    // MY SHIT  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    protected Pixmap pixmap;
+
     // Remaining Lives; how many hits can be taken
     private int remainingLives = GameConstants.MAX_LIVES;
 
 
     public void create() {
+
+        // MY SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        FileHandle handle = Gdx.files.internal("astronaut_texture_1.png");
+        this.pixmap = new Pixmap(handle);
 
         characterShape = new Rectangle();
 
@@ -86,6 +95,9 @@ public abstract class Character {
         // Initialize the Animation with the frame interval and array of frames
         characterAnimation = new Animation<TextureRegion>(1f/(FRAME_COLS * FRAME_COLS), characterFrames);
     }
+
+    // MY SHIT DELETE ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public Pixmap getPixmap() { return pixmap; }
 
     public void moveCharacter(int y) {
         // Bottom half of screen tapped
@@ -191,6 +203,10 @@ public abstract class Character {
 
     public int getCurrentX() {
         return this.currentX;
+    }
+
+    public int[] getCoordinates() {
+        return new int[]{ (int)this.getCharacterShape().getX(), (int)this.getCharacterShape().getY()};
     }
 
     public int getInitialX() {

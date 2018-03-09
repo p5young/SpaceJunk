@@ -3,20 +3,29 @@ package com.spacejunk.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.levels.Level;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 
+import org.w3c.dom.css.Rect;
+
+import java.lang.Math;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 public class GameScreen implements Screen {
 
-//	public static boolean DEBUG = true;
-	public static boolean DEBUG = false;
+	public static boolean DEBUG = true;
+//	public static boolean DEBUG = false;
 
 	public enum State
 	{
@@ -74,7 +83,6 @@ public class GameScreen implements Screen {
 		shapeRenderer = new ShapeRenderer();
 		canvas.enableBlending();
 
-//		background = new Texture("space_background.jpg");
 		background = new Texture("background_space_without_bar.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
@@ -183,6 +191,7 @@ public class GameScreen implements Screen {
 
 		renderRemainingLives();
 		displayScore();
+
 		canvas.end();
 		shapeRenderer.end();
 	}
@@ -196,7 +205,7 @@ public class GameScreen implements Screen {
 		drawBackground();
 		// We do this so that the obstacles are painted red
 		shapeRenderer.setColor(Color.RED);
-		gameLogic();
+		gameLogic();            ///// THIS RENDERS OBSTACLES!!!!!!!!! just a note, leave the code
 		// And the astronaut is painted green
 		shapeRenderer.setColor(Color.GREEN);
 		renderAstronaut(true);
@@ -215,27 +224,58 @@ public class GameScreen implements Screen {
 
 		for(int i = 0; i < numberOfObstacles; i++) {
 
-			if (this
-					.spaceJunk
-					.getLevel()
-					.getObstaclesList()
-					.get(i)
-					.isBroken())
+			if (this.spaceJunk.getLevel().getObstaclesList().get(i).isBroken())
 				continue;
 
 			if(Intersector.overlaps(
 					this.spaceJunk.getLevel().getObstaclesList().get(i).getObstacleShape(),
 					this.spaceJunk.getCharacter().getCharacterShape())) {
+				////// MY SHITTT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				if (collisionDetector(
+						this.spaceJunk.getLevel().getObstaclesList().get(i).getPixmap(),
+						this.spaceJunk.getCharacter().getPixmap(),
+                        this.spaceJunk.getLevel().getObstaclesList().get(i).getCoordinates(),
+                        this.spaceJunk.getCharacter().getCoordinates())) {
 
-				this.spaceJunk.getLevel().getObstaclesList().get(i).setBroken(true);
+                    this.spaceJunk.getLevel().getObstaclesList().get(i).setBroken(true);
 
-				return spaceJunk.getCharacter().takesHit();
-
+                    return spaceJunk.getCharacter().takesHit();
+                }
 			}
 		}
 
 		return false;
 
+	}
+
+    // Returns true if pixmaps are found to overlap
+    // takes in 2 pixmaps and 2 (x,y) coordinate pairs
+    // ANTI-PLAGIARISM NOTE:
+    // The design of this collision detector was taken from this page:
+    // https://stackoverflow.com/questions/5914911/pixel-perfect-collision-detection-android
+	private boolean collisionDetector(Pixmap obstacle, Pixmap astronaut, int[] obst, int[] astr) {
+	    // Since no lives are lost when this returns false, announce it to logcat to see if this was called
+        Gdx.app.log("applog", "COLLISION DETECTOR CALLED");
+
+        // define intersection of obstacle and astronaut bounding boxes
+	    int left = max(obst[0], astr[0]);
+	    int right = min(obst[0] + obstacle.getWidth(), astr[0] + astronaut.getWidth());
+	    int top = min(obst[1] + obstacle.getHeight(), astr[1] + astronaut.getHeight());
+	    int bottom = max(obst[1], astr[1]);
+
+	    // search intersection area only for pixels occupying same coordinate
+        // only check every other column and every other row for 4 times the efficiency
+        for (int x = left ; x < right - 1 ; x += 2) {
+            for (int y = top ; y > bottom + 1 ; y -= 2) {
+                // if a pixel == 0, it has no color (empty)
+                // if co-located astronaut and obstacle pixels both != 0, then there's a collision
+                if (obstacle.getPixel(x - obst[0], obst[1] + obstacle.getHeight() - y) != 0
+                    && astronaut.getPixel(x - astr[0], astr[1] + astronaut.getHeight() - y) != 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
 	}
 
 	private void renderController() {
