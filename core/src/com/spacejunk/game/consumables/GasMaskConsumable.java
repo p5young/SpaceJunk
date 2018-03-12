@@ -9,10 +9,9 @@ import com.spacejunk.game.levels.Level;
 
 public class GasMaskConsumable extends Consumable {
 
-    public GasMaskConsumable(Level level, int consumableNumber) {
+    public GasMaskConsumable(Level level) {
         this.consumableTexture = new Texture("gas_mask.png");
         this.level = level;
-        this.consumableNumber = consumableNumber;
         this.consumableType = CONSUMABLES.GAS_MASK;
     }
 }

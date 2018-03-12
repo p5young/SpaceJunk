@@ -1,5 +1,7 @@
 package com.spacejunk.game.obstacles;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
@@ -20,13 +22,15 @@ public abstract class Obstacle {
     protected int x = -1;
     protected int y = -1;
 
-    protected int obstacleNumber;
     protected OBSTACLES obstacleType;
 
     protected Texture obstacleTexture;
     protected Level level;
 
     protected Rectangle obstacleShape;
+
+    // MYSHIT DELETE IF THIS FAILS!1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    protected Pixmap pixmap;
 
     /* This field is to prevent collision set off by
     an obstacle that the Astronaut is either taking a hit from (hence walks through)
@@ -40,7 +44,11 @@ public abstract class Obstacle {
 
     public void setCoordinates(int x, int y) {
         this.x = x;
-        this.y = y;
+        this.y = y - (obstacleTexture.getHeight() / 2);
+    }
+
+    public int[] getCoordinates() {
+        return new int[]{this.x, this.y};
     }
 
     public int getX() {
@@ -73,4 +81,7 @@ public abstract class Obstacle {
     public void setBroken(boolean broken) {
         isBroken = broken;
     }
+
+    // MY SHIT!!!!! DELETE THIS IF IT FAILS
+    public Pixmap getPixmap() { return this.pixmap; }
 }

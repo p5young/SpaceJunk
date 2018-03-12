@@ -1,6 +1,7 @@
 package com.spacejunk.game.levels;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.spacejunk.game.GameScreen;
@@ -62,14 +63,15 @@ public class Level {
 
         this.currentGame = currentGame;
         this.obstaclesList = new ArrayList<Obstacle>();
+        this.consumablesList = new ArrayList<Consumable>();
 
         this.levelGenerator = new LevelGenerator(this);
         this.inventoryList = new ArrayList<Consumable>();
         // Temporary
-        inventoryList.add(new InvisibilityConsumable(this, 0));
-        inventoryList.add(new SpaceHammerConsumable(this, 1));
-        inventoryList.add(new GasMaskConsumable(this, 2));
-        inventoryList.add(new FireSuitConsumable(this, 3));
+        inventoryList.add(new InvisibilityConsumable(this));
+        inventoryList.add(new SpaceHammerConsumable(this));
+        inventoryList.add(new GasMaskConsumable(this));
+        inventoryList.add(new FireSuitConsumable(this));
 
 
         this.currentGame = currentGame;
@@ -83,6 +85,7 @@ public class Level {
                 a wide group will return a large number
     **/
     public void generateObstacles() {
+        //chunkWidth = levelGenerator.generateDEBUGObstacles();
         chunkWidth = levelGenerator.generateObstacles();
         Gdx.app.log("applog", "SETTING CHUNKWIDTH: " + chunkWidth);
     }
@@ -94,7 +97,7 @@ public class Level {
     public void renderObstacles(SpriteBatch canvas, ShapeRenderer shapeRenderer, boolean toMove) {
 
         // make new chunk of obstacles
-        if(toMove && --chunkWidth <= 0) {
+        if(toMove && (chunkWidth -= GameConstants.VELOCITY) <= 0) {
             generateObstacles();
         }
 
@@ -110,6 +113,30 @@ public class Level {
                         o.getObstacleShape().getWidth(), o.getObstacleShape().getHeight());
             }
         }
+        for (Consumable c : consumablesList) {
+            if(toMove) {
+                c.moveLeft();
+            }
+            canvas.draw(c.getTexture(), c.getX(), c.getY());
+
+            if(GameScreen.DEBUG) {
+                Color col = shapeRenderer.getColor(); // store color
+                shapeRenderer.setColor(Color.YELLOW); // make color blue
+                shapeRenderer.rect(c.getConsumableShape().getX(), c.getConsumableShape().getY(),
+                        c.getConsumableShape().getWidth(), c.getConsumableShape().getHeight());
+                shapeRenderer.setColor(col);          // restore color
+            }
+        }
+
+        // draw platform lines if DEBUG is on
+        if (GameScreen.DEBUG) {
+            Color c = shapeRenderer.getColor(); // store color
+            shapeRenderer.setColor(Color.BLUE); // make color blue
+            shapeRenderer.rect(0f, (float)this.topPlatformY, (float)xMax, 5f);
+            shapeRenderer.rect(0f, (float)this.middlePlatformY, (float)xMax, 5f);
+            shapeRenderer.rect(0f, (float)this.bottomPlatformY, (float)xMax, 5f);
+            shapeRenderer.setColor(c);          // restore color
+        }
 
         // delete anything that's moved off the left side of the screen
         for (int i = obstaclesList.size() - 1 ; i >= 0 ; --i) {
@@ -119,6 +146,13 @@ public class Level {
                 Gdx.app.log("applog", "removed obstacle " + i);
             }
         }
+        for (int i = consumablesList.size() - 1 ; i >= 0 ; --i) {
+            Consumable c = consumablesList.get(i);
+            if(c.getX() < -c.getTexture().getWidth()) {
+                consumablesList.remove(i);
+                Gdx.app.log("applog", "removed consumable " + i);
+            }
+        }
     }
 
     // I made the obstacle hitboxes 75% of normal size because
@@ -126,7 +160,11 @@ public class Level {
     public void updateObstacleShapeCoordinates() {
         for (Obstacle o : obstaclesList) {
             o.getObstacleShape().set(o.getX(), o.getY(),
-                    o.getTexture().getWidth() * 0.75f, o.getTexture().getHeight() * 0.75f);
+                    o.getTexture().getWidth(), o.getTexture().getHeight());
+        }
+        for (Consumable c : consumablesList) {
+            c.getConsumableShape().set(c.getX(), c.getY(),
+                    c.getTexture().getWidth(), c.getTexture().getHeight());
         }
     }
 

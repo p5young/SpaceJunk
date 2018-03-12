@@ -1,7 +1,9 @@
 package com.spacejunk.game.characters;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -42,20 +44,27 @@ public abstract class Character {
     protected int FRAME_COLS;
     protected int FRAME_ROWS;
 
+    // MY SHIT  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    protected Pixmap pixmap;
+
     // Remaining Lives; how many hits can be taken
     private int remainingLives = GameConstants.MAX_LIVES;
 
 
     public void create() {
 
+        // MY SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        FileHandle handle = Gdx.files.internal("astronaut_texture_1.png");
+        this.pixmap = new Pixmap(handle);
+
         characterShape = new Rectangle();
 
         initialY = Gdx.graphics.getHeight() / 2 - characterTextures[0].getHeight() / 2;
         initialX = Gdx.graphics.getWidth() / 9;
 
-        topPlatformY = currentGame.getyMax() / 6;
-        middlePlatformY = topPlatformY + currentGame.getyMax() / 3;
-        bottomPlatformY = middlePlatformY + currentGame.getyMax()  / 3;
+        topPlatformY = 5 * Gdx.graphics.getHeight() / 6;
+        middlePlatformY = 3 * Gdx.graphics.getHeight() / 6;
+        bottomPlatformY = Gdx.graphics.getHeight() / 6;
 
         Gdx.app.log("applog", "Top platform y is " + topPlatformY);
         Gdx.app.log("applog", "Middle platform y is " + middlePlatformY);
@@ -87,14 +96,18 @@ public abstract class Character {
         characterAnimation = new Animation<TextureRegion>(1f/(FRAME_COLS * FRAME_COLS), characterFrames);
     }
 
-    public void moveCharacter(int y) {
+    // MY SHIT DELETE ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public Pixmap getPixmap() { return pixmap; }
 
+    public void moveCharacter(int y) {
         // Bottom half of screen tapped
         if (y < (currentGame.getyMax() / 2)) {
+            Gdx.app.log("applog", "going down");
             updatePlatform(false);
         }
         // Top half is tapped
         else {
+            Gdx.app.log("applog", "going up");
             updatePlatform(true);
             // Making sure we don't go up a platform while already at the top most
         }
@@ -190,6 +203,10 @@ public abstract class Character {
 
     public int getCurrentX() {
         return this.currentX;
+    }
+
+    public int[] getCoordinates() {
+        return new int[]{ (int)this.getCharacterShape().getX(), (int)this.getCharacterShape().getY()};
     }
 
     public int getInitialX() {

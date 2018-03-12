@@ -64,7 +64,10 @@ public class SpaceJunk extends Game {
         Gdx.app.log("applog", "Level is initialized in create method of SpaceJunk");
 
         // We subtract 1/6th of the screen here to make up for the offset we caused earlier
-        this.level.setPlatformCoordinates(0, Gdx.graphics.getHeight() / 3, 2 * Gdx.graphics.getHeight() / 3);
+        this.level.setPlatformCoordinates(
+                5 * Gdx.graphics.getHeight() / 6,
+                3 * Gdx.graphics.getHeight() / 6,
+                1 * Gdx.graphics.getHeight() / 6);
         this.level.setMaxCoordinates(xMax, yMax);
         this.level.generateObstacles();
         this.currentGameScore = 0;
