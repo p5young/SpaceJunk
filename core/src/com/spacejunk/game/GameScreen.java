@@ -10,12 +10,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.constants.GameConstants;
-import com.spacejunk.game.levels.Level;
 import com.spacejunk.game.menus.RemainingLivesMenu;
-
-import org.w3c.dom.css.Rect;
 
 import java.lang.Math;
 
@@ -24,8 +20,8 @@ import static java.lang.Math.min;
 
 public class GameScreen implements Screen {
 
-	public static boolean DEBUG = true;
-//	public static boolean DEBUG = false;
+//	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 
 	public enum State
 	{
@@ -147,7 +143,7 @@ public class GameScreen implements Screen {
 				}
 				break;
 			case PAUSE:
-				renderScreenEssentials();
+				renderPauseScreenEssentials();
 				if(controller.isTouched() && controller.playPauseButtonisPressed()) {
 					resume();
 				}
@@ -175,13 +171,13 @@ public class GameScreen implements Screen {
 		shapeRenderer.end();
 	}
 
-	private void renderScreenEssentials() {
+	private void renderPauseScreenEssentials() {
 		canvas.begin();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
 		// We are making use of the painters algorithm here
 		drawBackground();
-
+		drawPauseScreenTexture();
 		renderController();
 
         shapeRenderer.setColor(Color.GREEN);
@@ -341,6 +337,10 @@ public class GameScreen implements Screen {
 	}
 
 	private void drawGameOverScreen() {
+		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
+	}
+
+	private void drawPauseScreenTexture() {
 		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
 	}
 
