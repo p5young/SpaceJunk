@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.menus.RemainingLivesMenu;
+import com.spacejunk.game.utilities.SimpleDirectionGestureDetector;
 
 import java.lang.Math;
 
@@ -48,6 +49,7 @@ public class GameScreen implements Screen {
 	private Boolean isCrashed = false;
 
 	private RemainingLivesMenu remainingLivesMenu;
+
 
 	private SpaceJunk spaceJunk;
 
@@ -89,8 +91,37 @@ public class GameScreen implements Screen {
 		gameOver = new Texture("gameover.png");
 
 		elapsedTime = 0f;
+
+		setupSwipeDetection();
 	}
 
+	private void setupSwipeDetection() {
+		Gdx.input.setInputProcessor(new SimpleDirectionGestureDetector(new SimpleDirectionGestureDetector.DirectionListener() {
+
+			@Override
+			public void onUp() {
+				spaceJunk.getCharacter().moveCharacter(Gdx.graphics.getHeight());
+				Gdx.app.log("swipelog", "onUp caled");
+			}
+
+			@Override
+			public void onRight() {
+
+			}
+
+			@Override
+			public void onLeft() {
+
+			}
+
+			@Override
+			public void onDown() {
+				spaceJunk.getCharacter().moveCharacter(0);
+				Gdx.app.log("swipelog", "onDown caled");
+			}
+
+		}));
+	}
 
 	@Override
 	public void dispose () {
@@ -379,6 +410,10 @@ public class GameScreen implements Screen {
 	@Override
 	public void hide() {
 
+	}
+
+	public SpaceJunk getSpaceJunk() {
+		return spaceJunk;
 	}
 
 }
