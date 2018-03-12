@@ -19,6 +19,8 @@ public class AlienObstacle extends Obstacle {
         FileHandle handle = Gdx.files.internal("alien_security.png");
         this.pixmap = new Pixmap(handle);
 
+        this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/fire_sound.mp3"));
+
         this.level = level;
         this.obstacleType = OBSTACLES.ALIEN;
     }

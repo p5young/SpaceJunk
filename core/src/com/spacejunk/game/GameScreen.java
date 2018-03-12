@@ -265,6 +265,7 @@ public class GameScreen implements Screen {
                         this.spaceJunk.getCharacter().getCoordinates())) {
 
                     this.spaceJunk.getLevel().getObstaclesList().get(i).setBroken(true);
+					this.spaceJunk.getLevel().getObstaclesList().get(i).playSound();
 
                     return spaceJunk.getCharacter().takesHit();
                 }

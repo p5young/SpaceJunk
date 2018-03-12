@@ -1,6 +1,7 @@
 package com.spacejunk.game.obstacles;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -28,6 +29,8 @@ public abstract class Obstacle {
     protected Level level;
 
     protected Rectangle obstacleShape;
+
+    protected Sound sound;
 
     // MYSHIT DELETE IF THIS FAILS!1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     protected Pixmap pixmap;
@@ -84,4 +87,8 @@ public abstract class Obstacle {
 
     // MY SHIT!!!!! DELETE THIS IF IT FAILS
     public Pixmap getPixmap() { return this.pixmap; }
+
+    public void playSound() {
+        this.sound.play(1.0f);
+    }
 }
