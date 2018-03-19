@@ -92,36 +92,11 @@ public class GameScreen implements Screen {
 
 		elapsedTime = 0f;
 
-		setupSwipeDetection();
+		controller.setupSwipeDetection();
+
 	}
 
-	private void setupSwipeDetection() {
-		Gdx.input.setInputProcessor(new SimpleDirectionGestureDetector(new SimpleDirectionGestureDetector.DirectionListener() {
 
-			@Override
-			public void onUp() {
-				spaceJunk.getCharacter().moveCharacter(Gdx.graphics.getHeight());
-				Gdx.app.log("swipelog", "onUp caled");
-			}
-
-			@Override
-			public void onRight() {
-
-			}
-
-			@Override
-			public void onLeft() {
-
-			}
-
-			@Override
-			public void onDown() {
-				spaceJunk.getCharacter().moveCharacter(0);
-				Gdx.app.log("swipelog", "onDown caled");
-			}
-
-		}));
-	}
 
 	@Override
 	public void dispose () {
