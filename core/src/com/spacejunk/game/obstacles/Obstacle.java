@@ -25,6 +25,7 @@ public abstract class Obstacle {
     protected OBSTACLES obstacleType;
 
     protected Texture obstacleTexture;
+    protected Texture brokenTexture;
     protected Level level;
 
     protected Rectangle obstacleShape;
@@ -68,7 +69,12 @@ public abstract class Obstacle {
     }
 
     public Texture getTexture() {
-        return this.obstacleTexture;
+        if (this.isBroken()) {
+            return this.brokenTexture;
+        } else {
+
+            return this.obstacleTexture;
+        }
     }
 
     public Rectangle getObstacleShape() {

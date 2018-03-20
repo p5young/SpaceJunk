@@ -15,6 +15,7 @@ public class ToxicGasObstacle extends Obstacle {
 
     public ToxicGasObstacle(Level level) {
         this.obstacleTexture = new Texture("toxic_gas_green.png");
+        this.brokenTexture = new Texture("toxic_gas_green.png");
 
         FileHandle handle = Gdx.files.internal("toxic_gas_green.png");
         this.pixmap = new Pixmap(handle);

@@ -15,6 +15,7 @@ public class AlienObstacle extends Obstacle {
     public AlienObstacle(Level level) {
         super();
         this.obstacleTexture = new Texture("alien_security.png");
+        this.brokenTexture = new Texture("alien_security.png");
 
         FileHandle handle = Gdx.files.internal("alien_security.png");
         this.pixmap = new Pixmap(handle);

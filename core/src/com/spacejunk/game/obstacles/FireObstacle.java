@@ -17,6 +17,7 @@ public class FireObstacle extends Obstacle {
 
     public FireObstacle(Level level) {
         this.obstacleTexture = new Texture("fire.png");
+        this.brokenTexture = new Texture("fire.png");
 
         // MY SHIT - DELETE IF THIS FAILS
         FileHandle handle = Gdx.files.internal("fire.png");

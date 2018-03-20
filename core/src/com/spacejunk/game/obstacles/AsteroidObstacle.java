@@ -13,7 +13,9 @@ import com.spacejunk.game.levels.Level;
 public class AsteroidObstacle extends Obstacle {
 
     public AsteroidObstacle(Level level) {
-        this.obstacleTexture = new Texture("asteroid_crush.png");
+        this.obstacleTexture = new Texture("asteroid.png");
+
+        this.brokenTexture = new Texture("asteroid_broken.png");
 
         FileHandle handle = Gdx.files.internal("asteroid_crush.png");
         this.pixmap = new Pixmap(handle);
