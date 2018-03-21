@@ -17,7 +17,7 @@ public class AsteroidObstacle extends Obstacle {
 
         this.brokenTexture = new Texture("asteroid_broken.png");
 
-        FileHandle handle = Gdx.files.internal("asteroid_crush.png");
+        FileHandle handle = Gdx.files.internal("asteroid.png");
         this.pixmap = new Pixmap(handle);
 
         this.level = level;

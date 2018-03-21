@@ -12,20 +12,22 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.constants.GameConstants;
+import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.levels.Level;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 
 import org.w3c.dom.css.Rect;
 
 import java.lang.Math;
+import java.util.ArrayList;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class GameScreen implements Screen {
 
-	public static boolean DEBUG = true;
-//	public static boolean DEBUG = false;
+//	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 
 	public enum State
 	{
@@ -216,6 +218,7 @@ public class GameScreen implements Screen {
 		canvas.end();
 		shapeRenderer.end();
 
+		pickedConsumable();
 		isCrashed = hasCharacterDied();
 	}
 
@@ -246,6 +249,49 @@ public class GameScreen implements Screen {
 
 		return false;
 
+	}
+
+	private boolean pickedConsumable() {
+		boolean status = false;
+
+		int numberOfConsumables = spaceJunk.getLevel().getConsumablesList().size();
+
+		int indexToRemove = -1;
+
+		for (int i = 0; i < numberOfConsumables; i++) {
+			Consumable currentConsumable = this.spaceJunk.getLevel().getConsumablesList().get(i);
+
+			if (Intersector.overlaps(
+					currentConsumable.getConsumableShape(),
+					this.spaceJunk.getCharacter().getCharacterShape()
+			)) {
+				indexToRemove = i;
+				status = true;
+
+				// have to deal with lives a little differently
+				if(currentConsumable.getType() == Consumable.CONSUMABLES.LIFE) {
+					this.spaceJunk.getCharacter().giveLife();
+					break;
+				}
+
+				// increment the count
+				int currentCount = this.spaceJunk.getLevel().getInventory().get(currentConsumable.getType());
+				if (currentCount < 4) {
+					this.spaceJunk.getLevel().getInventory().put(currentConsumable.getType(), currentCount + 1);
+
+					Gdx.app.log("applog", new StringBuilder().append("Adding consumable ").append(currentConsumable.getType().toString()).append(". Count: ").append(currentCount + 1).toString());
+				}
+
+				break;
+			}
+		}
+
+		if (status) {
+			this.spaceJunk.getLevel().getConsumablesList().remove(indexToRemove);
+			Gdx.app.log("applog", "removed a consumable");
+		}
+
+		return status;
 	}
 
     // Returns true if pixmaps are found to overlap
@@ -321,7 +367,6 @@ public class GameScreen implements Screen {
 		}
 
 	}
-
 
 	private void drawBackground() {
 		// canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

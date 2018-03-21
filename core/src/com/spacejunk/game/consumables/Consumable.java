@@ -50,10 +50,9 @@ public abstract class Consumable {
         return this.y;
     }
 
-    public String getType() {
-        return String.valueOf(this.consumableType);
+    public CONSUMABLES getType() {
+        return this.consumableType;
     }
-
 
     public void moveLeft() {
         this.x -= this.level.getVelocity();

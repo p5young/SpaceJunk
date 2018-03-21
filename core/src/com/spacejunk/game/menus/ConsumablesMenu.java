@@ -53,11 +53,13 @@ public class ConsumablesMenu {
     }
 
     private void renderInventoryElements(SpriteBatch canvas) {
-        ArrayList<Consumable> inventoryList = this.currentGame.getLevel().getInventoryList();
+        ArrayList<Consumable> inventoryObjects = this.currentGame.getLevel().getInventoryObjects();
 
         for(int i = 0; i < MAX_CONSUMABLES; i++) {
-            if(inventoryList.get(i) != null) {
-                canvas.draw(inventoryList.get(i).getTexture(),
+            if(inventoryObjects.get(i) != null) {
+
+                // there are a lot of magic numbers here
+                canvas.draw(inventoryObjects.get(i).getTexture(),
                         (this.currentGame.getxMax() - ((i + 1) * inventoryListTexture.getWidth() / 4) + (12 - (i * 2))),
                         inventoryListTexture.getHeight() / 7);
             }
