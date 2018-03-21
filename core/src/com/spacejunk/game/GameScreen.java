@@ -13,8 +13,15 @@ import com.badlogic.gdx.math.Intersector;
 import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 import com.spacejunk.game.utilities.SimpleDirectionGestureDetector;
+import com.spacejunk.game.consumables.Consumable;
+import com.spacejunk.game.levels.Level;
+import com.spacejunk.game.menus.RemainingLivesMenu;
+import com.spacejunk.game.obstacles.Obstacle;
+
+import org.w3c.dom.css.Rect;
 
 import java.lang.Math;
+import java.util.ArrayList;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -56,6 +63,9 @@ public class GameScreen implements Screen {
 	private float elapsedTime;
 
 	private State state;
+
+	// this field is just for avoiding a local field instantiated every tap
+	private Consumable.CONSUMABLES justPressed;
 
 	public GameScreen(final SpaceJunk game) {
 		startGame(game);
@@ -218,6 +228,7 @@ public class GameScreen implements Screen {
 		canvas.end();
 		shapeRenderer.end();
 
+		pickedConsumable();
 		isCrashed = hasCharacterDied();
 	}
 
@@ -226,21 +237,45 @@ public class GameScreen implements Screen {
 
 		for(int i = 0; i < numberOfObstacles; i++) {
 
-			if (this.spaceJunk.getLevel().getObstaclesList().get(i).isBroken())
-				continue;
+			Obstacle currentObstacle = this.spaceJunk.getLevel().getObstaclesList().get(i);
 
+			// Move on if the obstacle is already broken, nothing to do here....
+			if (currentObstacle.isBroken()) {
+				continue;
+			}
+
+			/*
+			 *  Collision detection
+			 */
 			if(Intersector.overlaps(
-					this.spaceJunk.getLevel().getObstaclesList().get(i).getObstacleShape(),
+					currentObstacle.getObstacleShape(),
 					this.spaceJunk.getCharacter().getCharacterShape())) {
-				////// MY SHITTT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 				if (collisionDetector(
-						this.spaceJunk.getLevel().getObstaclesList().get(i).getPixmap(),
+						currentObstacle.getPixmap(),
 						this.spaceJunk.getCharacter().getPixmap(),
-                        this.spaceJunk.getLevel().getObstaclesList().get(i).getCoordinates(),
+                        currentObstacle.getCoordinates(),
                         this.spaceJunk.getCharacter().getCoordinates())) {
 
-                    this.spaceJunk.getLevel().getObstaclesList().get(i).setBroken(true);
-					this.spaceJunk.getLevel().getObstaclesList().get(i).playSound();
+					currentObstacle.playSound();
+
+					if (currentObstacle.getBreaksOnConsumable()
+							.equals(this.spaceJunk.getLevel().getEquippedConsumable())) {
+						currentObstacle.setBroken(true);
+
+						int count = this.spaceJunk.getLevel().getInventory().get(this.spaceJunk.getLevel().getEquippedConsumable());
+						if (count > 0) {
+							this.spaceJunk.getLevel().getInventory().put(this.spaceJunk.getLevel().getEquippedConsumable(), count - 1);
+							if (count - 1 == 0) {
+								this.spaceJunk.getLevel().setEquippedConsumable(null);
+							}
+						}
+
+						return false;
+					}
+
+					currentObstacle.setBroken(true);
 
                     return spaceJunk.getCharacter().takesHit();
                 }
@@ -249,6 +284,48 @@ public class GameScreen implements Screen {
 
 		return false;
 
+	}
+
+	private boolean pickedConsumable() {
+		boolean status = false;
+
+		int numberOfConsumables = spaceJunk.getLevel().getConsumablesList().size();
+
+		int indexToRemove = -1;
+
+		for (int i = 0; i < numberOfConsumables; i++) {
+			Consumable currentConsumable = this.spaceJunk.getLevel().getConsumablesList().get(i);
+
+			if (Intersector.overlaps(
+					currentConsumable.getConsumableShape(),
+					this.spaceJunk.getCharacter().getCharacterShape()
+			)) {
+				indexToRemove = i;
+				status = true;
+
+				// have to deal with lives a little differently
+				if(currentConsumable.getType() == Consumable.CONSUMABLES.LIFE) {
+					this.spaceJunk.getCharacter().giveLife();
+					break;
+				}
+
+				// increment the count
+				int currentCount = this.spaceJunk.getLevel().getInventory().get(currentConsumable.getType());
+				if (currentCount < 4) {
+					this.spaceJunk.getLevel().getInventory().put(currentConsumable.getType(), currentCount + 1);
+
+					Gdx.app.log("applog", new StringBuilder().append("Adding consumable ").append(currentConsumable.getType().toString()).append(". Count: ").append(currentCount + 1).toString());
+				}
+
+				break;
+			}
+		}
+
+		if (status) {
+			this.spaceJunk.getLevel().getConsumablesList().remove(indexToRemove);
+		}
+
+		return status;
 	}
 
     // Returns true if pixmaps are found to overlap
@@ -301,6 +378,13 @@ public class GameScreen implements Screen {
 				if(controller.playPauseButtonisPressed()) {
 					pause();
 				}
+
+				else if (controller.consumablesMenuPressed()) {
+					this.justPressed = controller.getPressedConsumable();
+					if (this.spaceJunk.getLevel().getInventory().get(this.justPressed) > 0) {
+						this.spaceJunk.getLevel().setEquippedConsumable(this.justPressed);
+					}
+				}
 				// If all checks fail, this means the user meant to move the character
 				else {
 					spaceJunk.getCharacter().moveCharacter(controller.getTouchYCoordinate());
@@ -324,7 +408,6 @@ public class GameScreen implements Screen {
 		}
 
 	}
-
 
 	private void drawBackground() {
 		// canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

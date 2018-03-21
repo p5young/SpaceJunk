@@ -28,7 +28,8 @@ public class ConsumablesMenu {
 
         inventoryElementTextures = new Texture[MAX_CONSUMABLES];
 
-        // Use these textures to modify what's shown on the inventrory list
+        // Use these textures to modify what's shown on the inventory list
+        // TODO what are these??
         inventoryElementTextures[0] = new Texture("heart.png");
         inventoryElementTextures[0] = new Texture("heart.png");
         inventoryElementTextures[0] = new Texture("heart.png");
@@ -53,14 +54,24 @@ public class ConsumablesMenu {
     }
 
     private void renderInventoryElements(SpriteBatch canvas) {
-        ArrayList<Consumable> inventoryList = this.currentGame.getLevel().getInventoryList();
+        ArrayList<Consumable> inventoryObjects = this.currentGame.getLevel().getInventoryObjects();
 
         for(int i = 0; i < MAX_CONSUMABLES; i++) {
-            if(inventoryList.get(i) != null) {
-                canvas.draw(inventoryList.get(i).getTexture(),
+            if(inventoryObjects.get(i) != null) {
+
+                // there are a lot of magic numbers here
+                canvas.draw(inventoryObjects.get(i).getTexture(),
                         (this.currentGame.getxMax() - ((i + 1) * inventoryListTexture.getWidth() / 4) + (12 - (i * 2))),
                         inventoryListTexture.getHeight() / 7);
             }
         }
+    }
+
+    public int getInventoryWidth() {
+        return inventoryListTexture.getWidth();
+    }
+
+    public int getInventoryHeight() {
+        return inventoryListTexture.getHeight();
     }
 }
