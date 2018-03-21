@@ -10,8 +10,9 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.constants.GameConstants;
+import com.spacejunk.game.menus.RemainingLivesMenu;
+import com.spacejunk.game.utilities.SimpleDirectionGestureDetector;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.levels.Level;
 import com.spacejunk.game.menus.RemainingLivesMenu;
@@ -56,6 +57,7 @@ public class GameScreen implements Screen {
 
 	private RemainingLivesMenu remainingLivesMenu;
 
+
 	private SpaceJunk spaceJunk;
 
 	private float elapsedTime;
@@ -99,7 +101,11 @@ public class GameScreen implements Screen {
 		gameOver = new Texture("gameover.png");
 
 		elapsedTime = 0f;
+
+		controller.setupSwipeDetection();
+
 	}
+
 
 
 	@Override
@@ -113,7 +119,7 @@ public class GameScreen implements Screen {
 	 * */
 	private void renderAstronaut(boolean toAnimate) {
 
-		spaceJunk.getCharacter().updateCharacterPosition();
+		spaceJunk.getCharacter().updateCharacterPosition(toAnimate);
 		spaceJunk.getCharacter().updateCharacterShapeCoordinates();
 
 		if(toAnimate) {
@@ -153,7 +159,7 @@ public class GameScreen implements Screen {
 				}
 				break;
 			case PAUSE:
-				renderScreenEssentials();
+				renderPauseScreenEssentials();
 				if(controller.isTouched() && controller.playPauseButtonisPressed()) {
 					resume();
 				}
@@ -181,13 +187,13 @@ public class GameScreen implements Screen {
 		shapeRenderer.end();
 	}
 
-	private void renderScreenEssentials() {
+	private void renderPauseScreenEssentials() {
 		canvas.begin();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
 		// We are making use of the painters algorithm here
 		drawBackground();
-
+		drawPauseScreenTexture();
 		renderController();
 
         shapeRenderer.setColor(Color.GREEN);
@@ -233,18 +239,26 @@ public class GameScreen implements Screen {
 
 			Obstacle currentObstacle = this.spaceJunk.getLevel().getObstaclesList().get(i);
 
-			if (currentObstacle.isBroken())
+			// Move on if the obstacle is already broken, nothing to do here....
+			if (currentObstacle.isBroken()) {
 				continue;
+			}
 
+			/*
+			 *  Collision detection
+			 */
 			if(Intersector.overlaps(
 					currentObstacle.getObstacleShape(),
 					this.spaceJunk.getCharacter().getCharacterShape())) {
-				////// MY SHITTT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 				if (collisionDetector(
 						currentObstacle.getPixmap(),
 						this.spaceJunk.getCharacter().getPixmap(),
                         currentObstacle.getCoordinates(),
                         this.spaceJunk.getCharacter().getCoordinates())) {
+
+					currentObstacle.playSound();
 
 					if (currentObstacle.getBreaksOnConsumable()
 							.equals(this.spaceJunk.getLevel().getEquippedConsumable())) {
@@ -416,6 +430,10 @@ public class GameScreen implements Screen {
 		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
 	}
 
+	private void drawPauseScreenTexture() {
+		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
+	}
+
 	private void displayScore() {
 		GlyphLayout layout = new GlyphLayout(font, String.valueOf(spaceJunk.getCurrentGameScore()));
 		font.draw(canvas, String.valueOf(spaceJunk.getCurrentGameScore()),
@@ -451,6 +469,10 @@ public class GameScreen implements Screen {
 	@Override
 	public void hide() {
 
+	}
+
+	public SpaceJunk getSpaceJunk() {
+		return spaceJunk;
 	}
 
 }

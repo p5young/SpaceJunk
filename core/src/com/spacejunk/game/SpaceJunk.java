@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.spacejunk.game.characters.Astronaut;
 import com.spacejunk.game.characters.Character;
 import com.spacejunk.game.levels.Level;
+import com.spacejunk.game.utilities.SimpleDirectionGestureDetector;
 
 /**
  * Created by vidxyz on 2/4/18.
@@ -45,8 +46,8 @@ public class SpaceJunk extends Game {
 
         setUpGame();
         this.setScreen(new GameScreen(this));
-
     }
+
 
     public void setUpGame() {
         xMax = Gdx.graphics.getWidth();

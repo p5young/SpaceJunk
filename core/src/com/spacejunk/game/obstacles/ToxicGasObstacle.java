@@ -23,6 +23,9 @@ public class ToxicGasObstacle extends Obstacle {
 
         this.level = level;
         this.obstacleType = OBSTACLES.TOXIC_GAS;
+
+        this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/gas_sound.mp3"));
+
         this.breaksOnConsumable = Consumable.CONSUMABLES.GAS_MASK;
     }
 

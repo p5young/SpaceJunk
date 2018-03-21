@@ -21,6 +21,8 @@ public class AsteroidObstacle extends Obstacle {
         FileHandle handle = Gdx.files.internal("asteroid.png");
         this.pixmap = new Pixmap(handle);
 
+        this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/asteroid_sound.mp3"));
+
         this.level = level;
         this.obstacleType = OBSTACLES.ASTEROID;
         this.breaksOnConsumable = Consumable.CONSUMABLES.SPACE_HAMMER;
