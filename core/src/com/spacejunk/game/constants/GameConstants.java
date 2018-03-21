@@ -18,4 +18,7 @@ public class GameConstants {
 
     /* Background Speed Constant */
     public static final int BACKGROUND_SPEED = 4;
+
+    /* Vertical Speed Constant */
+    public static final int VERTICAL_SPEED = 10;
 }
