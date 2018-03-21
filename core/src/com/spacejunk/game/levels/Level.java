@@ -1,5 +1,6 @@
 package com.spacejunk.game.levels;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,6 +21,8 @@ import com.spacejunk.game.obstacles.AsteroidObstacle;
 import com.spacejunk.game.obstacles.ToxicGasObstacle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -32,7 +35,11 @@ public class Level {
     private ArrayList<Obstacle> obstaclesList;
     private ArrayList<Consumable> consumablesList;
 
-    private ArrayList<Consumable> inventoryList;
+    // Following two fields are for inventory management
+    private ArrayList<Consumable> inventoryObjects;
+    private Map<Consumable.CONSUMABLES, Integer> inventory;
+    private Consumable.CONSUMABLES equippedConsumable = Consumable.CONSUMABLES.SPACE_HAMMER;
+
 
     // Co-ordinates for platform boundaries
     int topPlatformY;
@@ -66,13 +73,23 @@ public class Level {
         this.consumablesList = new ArrayList<Consumable>();
 
         this.levelGenerator = new LevelGenerator(this);
-        this.inventoryList = new ArrayList<Consumable>();
-        // Temporary
-        inventoryList.add(new InvisibilityConsumable(this));
-        inventoryList.add(new SpaceHammerConsumable(this));
-        inventoryList.add(new GasMaskConsumable(this));
-        inventoryList.add(new FireSuitConsumable(this));
 
+        /* initialize the map with the obstacles
+        *  we are kind of hard coding what the consumables are at first
+        */
+        this.inventory = new HashMap<Consumable.CONSUMABLES, Integer>();
+        this.inventory.put(Consumable.CONSUMABLES.SPACE_HAMMER, 0);
+        this.inventory.put(Consumable.CONSUMABLES.FIRESUIT, 0);
+        this.inventory.put(Consumable.CONSUMABLES.GAS_MASK, 0);
+        this.inventory.put(Consumable.CONSUMABLES.INVISIBILITY, 0);
+
+        this.equippedConsumable = null;
+
+        this.inventoryObjects = new ArrayList<Consumable>();
+        this.inventoryObjects.add(new SpaceHammerConsumable(this));
+        this.inventoryObjects.add(new FireSuitConsumable(this));
+        this.inventoryObjects.add(new GasMaskConsumable(this));
+        this.inventoryObjects.add(new InvisibilityConsumable(this));
 
         this.currentGame = currentGame;
         this.minimumDistanceBetweenObstacles = (int)currentGame.getCharacter().getCharacterShape().getWidth() + 100;
@@ -199,8 +216,20 @@ public class Level {
         return this.maxLives;
     }
 
-    public ArrayList<Consumable> getInventoryList() {
-        return this.inventoryList;
+    public Map<Consumable.CONSUMABLES, Integer> getInventory() {
+        return inventory;
+    }
+
+    public Consumable.CONSUMABLES getEquippedConsumable() {
+        return equippedConsumable;
+    }
+
+    public void setEquippedConsumable(Consumable.CONSUMABLES consumable) {
+        this.equippedConsumable = consumable;
+    }
+
+    public ArrayList<Consumable> getInventoryObjects() {
+        return inventoryObjects;
     }
 
     public ArrayList<Obstacle> getObstaclesList() {

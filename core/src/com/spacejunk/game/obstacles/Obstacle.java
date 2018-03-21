@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
+import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.levels.Level;
 
 import org.w3c.dom.css.Rect;
@@ -25,6 +26,7 @@ public abstract class Obstacle {
     protected OBSTACLES obstacleType;
 
     protected Texture obstacleTexture;
+    protected Texture brokenTexture;
     protected Level level;
 
     protected Rectangle obstacleShape;
@@ -37,6 +39,9 @@ public abstract class Obstacle {
     or using a consumable on. In both cases, we don't want the collision to be detected.
      */
     private boolean isBroken = false;
+
+    // for matching with a consumable
+    protected Consumable.CONSUMABLES breaksOnConsumable;
 
     public Obstacle() {
         this.obstacleShape = new Rectangle();
@@ -68,7 +73,12 @@ public abstract class Obstacle {
     }
 
     public Texture getTexture() {
-        return this.obstacleTexture;
+        if (this.isBroken()) {
+            return this.brokenTexture;
+        } else {
+
+            return this.obstacleTexture;
+        }
     }
 
     public Rectangle getObstacleShape() {
@@ -84,4 +94,13 @@ public abstract class Obstacle {
 
     // MY SHIT!!!!! DELETE THIS IF IT FAILS
     public Pixmap getPixmap() { return this.pixmap; }
+
+    public Consumable.CONSUMABLES getBreaksOnConsumable() {
+        return breaksOnConsumable;
+    }
+
+    public void setBreaksOnConsumable(Consumable.CONSUMABLES breaksOnConsumable) {
+        this.breaksOnConsumable = breaksOnConsumable;
+    }
+
 }

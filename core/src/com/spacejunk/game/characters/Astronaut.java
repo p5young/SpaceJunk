@@ -25,8 +25,8 @@ public class Astronaut extends Character  {
         // Load the sprite sheet as a Texture
         animationSheet = new Texture(Gdx.files.internal("astronaut_animation_sheet.png"));
 
-        FRAME_COLS = 5;
-        FRAME_ROWS = 2;
+        FRAME_COLS = 3;
+        FRAME_ROWS = 1;
 
         super.create();
 

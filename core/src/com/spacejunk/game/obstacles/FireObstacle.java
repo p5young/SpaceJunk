@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.levels.Level;
 
 import static com.badlogic.gdx.Gdx.files;
@@ -17,6 +18,7 @@ public class FireObstacle extends Obstacle {
 
     public FireObstacle(Level level) {
         this.obstacleTexture = new Texture("fire.png");
+        this.brokenTexture = new Texture("fire.png");
 
         // MY SHIT - DELETE IF THIS FAILS
         FileHandle handle = Gdx.files.internal("fire.png");
@@ -24,7 +26,7 @@ public class FireObstacle extends Obstacle {
 
         this.level = level;
         this.obstacleType = OBSTACLES.FIRE;
-
+        this.breaksOnConsumable = Consumable.CONSUMABLES.FIRESUIT;
     }
 
 }
