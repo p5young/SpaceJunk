@@ -300,28 +300,33 @@ public class GameScreen implements Screen {
 					currentConsumable.getConsumableShape(),
 					this.spaceJunk.getCharacter().getCharacterShape()
 			)) {
-				indexToRemove = i;
+
 				status = true;
 
 				// have to deal with lives a little differently
 				if(currentConsumable.getType() == Consumable.CONSUMABLES.LIFE) {
-					this.spaceJunk.getCharacter().giveLife();
+					// this check is to see if getting a life made a difference
+					if(this.spaceJunk.getCharacter().giveLife()) {
+						indexToRemove = i;
+					}
 					break;
 				}
 
 				// increment the count
 				int currentCount = this.spaceJunk.getLevel().getInventory().get(currentConsumable.getType());
+				// don't assign to index to remove if inventory is full
 				if (currentCount < 4) {
 					this.spaceJunk.getLevel().getInventory().put(currentConsumable.getType(), currentCount + 1);
 
 					Gdx.app.log("applog", new StringBuilder().append("Adding consumable ").append(currentConsumable.getType().toString()).append(". Count: ").append(currentCount + 1).toString());
+					indexToRemove = i;
 				}
 
 				break;
 			}
 		}
 
-		if (status) {
+		if (status && indexToRemove != -1) {
 			this.spaceJunk.getLevel().getConsumablesList().remove(indexToRemove);
 		}
 

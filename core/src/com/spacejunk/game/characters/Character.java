@@ -234,11 +234,13 @@ public abstract class Character {
         return (--this.remainingLives <= 0);
     }
 
-    public void giveLife() {
+    public boolean giveLife() {
         if (this.remainingLives < GameConstants.MAX_LIVES) {
             this.remainingLives++;
+            return true;
         }
 
+        return false;
     }
 
     public void resetLives() {
