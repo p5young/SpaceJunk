@@ -120,22 +120,21 @@ public abstract class Character {
                 this.characterTextures[0].getHeight()); //XY Coordinate and radius
     }
 
-    public void updateCharacterPosition() {
+    public void updateCharacterPosition(boolean toAnimate) {
 
-        if(this.currentY < this.targetY) {
-            if(this.currentY + 10 < this.targetY) {
-                this.currentY += 10;
-            }
-            else {
-                this.currentY = this.targetY;
-            }
-        }
-        else if (this.currentY > this.targetY){
-            if(this.currentY - 10 > this.targetY) {
-                this.currentY -= 10;
-            }
-            else {
-                this.currentY = this.targetY;
+        if(toAnimate) {
+            if (this.currentY < this.targetY) {
+                if (this.currentY + 10 < this.targetY) {
+                    this.currentY += 10;
+                } else {
+                    this.currentY = this.targetY;
+                }
+            } else if (this.currentY > this.targetY) {
+                if (this.currentY - 10 > this.targetY) {
+                    this.currentY -= 10;
+                } else {
+                    this.currentY = this.targetY;
+                }
             }
         }
     }

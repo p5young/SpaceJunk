@@ -119,7 +119,7 @@ public class GameScreen implements Screen {
 	 * */
 	private void renderAstronaut(boolean toAnimate) {
 
-		spaceJunk.getCharacter().updateCharacterPosition();
+		spaceJunk.getCharacter().updateCharacterPosition(toAnimate);
 		spaceJunk.getCharacter().updateCharacterShapeCoordinates();
 
 		if(toAnimate) {
