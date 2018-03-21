@@ -15,6 +15,7 @@ import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.levels.Level;
 import com.spacejunk.game.menus.RemainingLivesMenu;
+import com.spacejunk.game.obstacles.Obstacle;
 
 import org.w3c.dom.css.Rect;
 
@@ -60,6 +61,9 @@ public class GameScreen implements Screen {
 	private float elapsedTime;
 
 	private State state;
+
+	// this field is just for avoiding a local field instantiated every tap
+	private Consumable.CONSUMABLES justPressed;
 
 	public GameScreen(final SpaceJunk game) {
 		startGame(game);
@@ -227,20 +231,37 @@ public class GameScreen implements Screen {
 
 		for(int i = 0; i < numberOfObstacles; i++) {
 
-			if (this.spaceJunk.getLevel().getObstaclesList().get(i).isBroken())
+			Obstacle currentObstacle = this.spaceJunk.getLevel().getObstaclesList().get(i);
+
+			if (currentObstacle.isBroken())
 				continue;
 
 			if(Intersector.overlaps(
-					this.spaceJunk.getLevel().getObstaclesList().get(i).getObstacleShape(),
+					currentObstacle.getObstacleShape(),
 					this.spaceJunk.getCharacter().getCharacterShape())) {
 				////// MY SHITTT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 				if (collisionDetector(
-						this.spaceJunk.getLevel().getObstaclesList().get(i).getPixmap(),
+						currentObstacle.getPixmap(),
 						this.spaceJunk.getCharacter().getPixmap(),
-                        this.spaceJunk.getLevel().getObstaclesList().get(i).getCoordinates(),
+                        currentObstacle.getCoordinates(),
                         this.spaceJunk.getCharacter().getCoordinates())) {
 
-                    this.spaceJunk.getLevel().getObstaclesList().get(i).setBroken(true);
+					if (currentObstacle.getBreaksOnConsumable()
+							.equals(this.spaceJunk.getLevel().getEquippedConsumable())) {
+						currentObstacle.setBroken(true);
+
+						int count = this.spaceJunk.getLevel().getInventory().get(this.spaceJunk.getLevel().getEquippedConsumable());
+						if (count > 0) {
+							this.spaceJunk.getLevel().getInventory().put(this.spaceJunk.getLevel().getEquippedConsumable(), count - 1);
+							if (count - 1 == 0) {
+								this.spaceJunk.getLevel().setEquippedConsumable(null);
+							}
+						}
+
+						return false;
+					}
+
+					currentObstacle.setBroken(true);
 
                     return spaceJunk.getCharacter().takesHit();
                 }
@@ -288,7 +309,6 @@ public class GameScreen implements Screen {
 
 		if (status) {
 			this.spaceJunk.getLevel().getConsumablesList().remove(indexToRemove);
-			Gdx.app.log("applog", "removed a consumable");
 		}
 
 		return status;
@@ -343,6 +363,13 @@ public class GameScreen implements Screen {
 				// Check if options menu is interacted with
 				if(controller.playPauseButtonisPressed()) {
 					pause();
+				}
+
+				else if (controller.consumablesMenuPressed()) {
+					this.justPressed = controller.getPressedConsumable();
+					if (this.spaceJunk.getLevel().getInventory().get(this.justPressed) > 0) {
+						this.spaceJunk.getLevel().setEquippedConsumable(this.justPressed);
+					}
 				}
 				// If all checks fail, this means the user meant to move the character
 				else {

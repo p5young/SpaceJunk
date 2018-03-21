@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.levels.Level;
 
 /**
@@ -22,6 +23,7 @@ public class AlienObstacle extends Obstacle {
 
         this.level = level;
         this.obstacleType = OBSTACLES.ALIEN;
+        this.breaksOnConsumable = Consumable.CONSUMABLES.INVISIBILITY;
     }
 
 }

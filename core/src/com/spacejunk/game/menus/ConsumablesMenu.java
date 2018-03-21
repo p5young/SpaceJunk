@@ -28,7 +28,8 @@ public class ConsumablesMenu {
 
         inventoryElementTextures = new Texture[MAX_CONSUMABLES];
 
-        // Use these textures to modify what's shown on the inventrory list
+        // Use these textures to modify what's shown on the inventory list
+        // TODO what are these??
         inventoryElementTextures[0] = new Texture("heart.png");
         inventoryElementTextures[0] = new Texture("heart.png");
         inventoryElementTextures[0] = new Texture("heart.png");
@@ -64,5 +65,13 @@ public class ConsumablesMenu {
                         inventoryListTexture.getHeight() / 7);
             }
         }
+    }
+
+    public int getInventoryWidth() {
+        return inventoryListTexture.getWidth();
+    }
+
+    public int getInventoryHeight() {
+        return inventoryListTexture.getHeight();
     }
 }

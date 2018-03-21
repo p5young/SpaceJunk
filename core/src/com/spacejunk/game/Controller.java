@@ -3,11 +3,13 @@ package com.spacejunk.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.menus.ConsumablesMenu;
 import com.spacejunk.game.menus.OptionsMenu;
 
 /**
  * Created by vidxyz on 2/9/18.
+ * This class handles user input
  */
 
 public class Controller {
@@ -16,6 +18,8 @@ public class Controller {
 
     private OptionsMenu optionsMenu;
     private ConsumablesMenu consumablesMenu;
+
+    private Consumable.CONSUMABLES pressedConsumable = null;
 
     public Controller(SpaceJunk currentGame) {
         this.currentGame = currentGame;
@@ -33,6 +37,34 @@ public class Controller {
                 optionsMenu.getOptionsMenuTexures()[1].getWidth() &&
                 Gdx.input.getY() <= optionsMenu.getOptionsMenuTexures()[0].getHeight() &&
                 Gdx.input.getY() >= 0;
+    }
+
+    public boolean consumablesMenuPressed() {
+        if (Gdx.input.getX() > (currentGame.getxMax() - consumablesMenu.getInventoryWidth()) &&
+                Gdx.input.getY() > (currentGame.getyMax() - consumablesMenu.getInventoryHeight())) {
+
+            int inventoryXCoordinate = Gdx.input.getX() - (currentGame.getxMax() - consumablesMenu.getInventoryWidth());
+            float xCoordFraction = inventoryXCoordinate / (float) consumablesMenu.getInventoryWidth();
+
+            if (xCoordFraction < 0.25) {
+                this.pressedConsumable = Consumable.CONSUMABLES.INVISIBILITY;
+            } else if (xCoordFraction < 0.5) {
+                this.pressedConsumable = Consumable.CONSUMABLES.GAS_MASK;
+            } else if (xCoordFraction < 0.75) {
+                this.pressedConsumable = Consumable.CONSUMABLES.FIRESUIT;
+            } else if (xCoordFraction < 1) {
+                this.pressedConsumable = Consumable.CONSUMABLES.SPACE_HAMMER;
+            } else {
+                // this else statement should never be reached
+                return false;
+            }
+            return true;
+
+
+        } else {
+            return false;
+        }
+
     }
 
     public void render(SpriteBatch canvas) {
@@ -56,4 +88,9 @@ public class Controller {
     public int getTouchXCoordinate() {
         return Gdx.input.getX();
     }
+
+    public Consumable.CONSUMABLES getPressedConsumable() {
+        return pressedConsumable;
+    }
+
 }

@@ -224,6 +224,10 @@ public class Level {
         return equippedConsumable;
     }
 
+    public void setEquippedConsumable(Consumable.CONSUMABLES consumable) {
+        this.equippedConsumable = consumable;
+    }
+
     public ArrayList<Consumable> getInventoryObjects() {
         return inventoryObjects;
     }
