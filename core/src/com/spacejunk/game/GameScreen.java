@@ -14,8 +14,6 @@ import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.obstacles.Obstacle;
-import com.squareup.gifencoder.GifEncoder;
-import com.squareup.gifencoder.ImageOptions;
 
 import java.lang.Math;
 import java.nio.ByteBuffer;
@@ -71,7 +69,6 @@ public class GameScreen implements Screen {
 
 	private ArrayList<ArrayList<Integer>> screenShots = new ArrayList<ArrayList<Integer>>();
 	private List<Pixmap> frames = new ArrayList<Pixmap>();
-	private GifEncoder gifEncoder;
 
 	// this field is just for avoiding a local field instantiated every tap
 	private Consumable.CONSUMABLES justPressed;
@@ -247,6 +244,7 @@ public class GameScreen implements Screen {
 	private void recordScreen() {
 
 		if(elapsedTime < 7 && !isRecordingComplete) {
+			drawRecordingScreenBorder();
 			spaceJunk.getSystemServices().startRecording("Test_path");
 		}
 		else {
@@ -299,122 +297,6 @@ public class GameScreen implements Screen {
 		}
 	}
 	*/
-
-	public static int[] convertIntegers(ArrayList<Integer> integers)
-	{
-		int[] ret = new int[integers.size()];
-		for (int i=0; i < ret.length; i++)
-		{
-			ret[i] = integers.get(i);
-		}
-		return ret;
-	}
-
-	private void saveGif() throws Exception {
-
-		Gdx.app.log("giflog", "Start of save gif");
-
-		gifEncoder = new GifEncoder(Gdx.files.local("testgif.gif").write(false),
-				spaceJunk.getxMax()	, spaceJunk.getyMax(), 1);
-
-		ImageOptions options = new ImageOptions();
-
-		// Frame rate / Time between each frame
-		options.setDelay(50, TimeUnit.MILLISECONDS);
-
-		Gdx.app.log("giflog", "Before for loop");
-		Gdx.app.log("giflog", "NBumber of frames is " + frames.size());
-
-
-
-		for (Pixmap pixmap : frames) {
-			Gdx.app.log("giflog", "Loop iteration here");
-
-			int width = pixmap.getWidth();
-			int height = pixmap.getHeight();
-
-
-			Gdx.app.log("giflog", "Width of pixmap is  : " + width);
-			Gdx.app.log("giflog", "Height of pixamp is : " + height);
-
-
-			int[][] pixels = new int[height][width];
-
-			for (int x = 0; x < width; ++x) {
-//				Gdx.app.log("giflog", "In first inner loop");
-
-				for (int y = 0; y < height; ++y) {
-//					Gdx.app.log("giflog", "In Second inner loop");
-					int pixel = pixmap.getPixel(x, y);
-
-
-					pixels[y][x] = pixel;
-				}
-			}
-
-			Gdx.app.log("giflog", "Inner for loops done");
-
-
-			gifEncoder.addImage(pixels, options);
-		}
-
-		Gdx.app.log("giflog", "Finish Encoding method being called here");
-
-		gifEncoder.finishEncoding();
-
-		for (Pixmap pixmap : frames)
-			pixmap.dispose();
-
-		Gdx.app.log("giflog", "Disposed of the pixmap");
-
-
-		frames.clear();
-
-	}
-
-
-	private void takeScreenshotOfScreen() {
-
-//		gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
-//
-//		Pixmap pixmap = new Pixmap(spaceJunk.getxMax(), spaceJunk.getyMax(), Pixmap.Format.RGBA8888);
-//
-//		gl.glReadPixels(0, 0, spaceJunk.getxMax(), spaceJunk.getyMax(), GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-//
-//		int width = pixmap.getWidth(), height = pixmap.getHeight();
-//		Pixmap flipped = new Pixmap(width, height, pixmap.getFormat());
-//
-//		for (int x = 0; x < width; ++x)
-//			for (int y = 0; y < height; ++y)
-//				flipped.drawPixel(x, y, pixmap.getPixel(x, height - y - 1));
-//
-//		pixmap.dispose();
-//		pixmap = flipped;
-//
-//
-//		ByteBuffer pixels = pixmap.getPixels();
-//		byte[] bytes = new byte[pixels.remaining()];
-//
-//		pixels.get(bytes);
-//
-//		int bytesSize = bytes.length;
-////		int[] arrayWitoutAlpha = new int[bytesSize/4];
-//		ArrayList<Integer> arrayWithoutAlpha = new ArrayList<Integer>();
-//
-//		for(int i = 0; i < bytesSize; i+=4) {
-//			arrayWithoutAlpha.add(((bytes[i]&0x0ff) << 16) | ((bytes[i+1]&0x0ff) << 8) | (bytes[i+2]&0x0ff));
-//		}
-
-		int width = spaceJunk.getxMax();
-		int height = spaceJunk.getyMax();
-
-		Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
-		ByteBuffer pixels = pixmap.getPixels();
-		gl.glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-		frames.add(pixmap);
-
-//		screenShots.add(arrayWithoutAlpha);
-	}
 
 	private void drawRecordingScreenBorder() {
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

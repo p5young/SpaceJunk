@@ -9,8 +9,10 @@ import android.hardware.display.VirtualDisplay;
 import android.media.MediaRecorder;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,9 +23,18 @@ import android.widget.ToggleButton;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.ShareVideo;
+import com.facebook.share.model.ShareVideoContent;
+import com.facebook.share.widget.ShareDialog;
 import com.spacejunk.game.SpaceJunk;
 import com.spacejunk.game.interfaces.SystemServices;
 
+import java.io.File;
 import java.io.IOException;
 
 public class AndroidLauncher extends AndroidApplication implements SystemServices {
@@ -31,6 +42,8 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	private static String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE"};
 	private static final int PERMS_REQUEST_CODE = 200;
+
+	private static final String SCREEN_SHARE_FILE_PATH = "/sdcard/Android/data/screen_capture.mp4";
 
 	public static final String TAG = "AndroidLauncher";
 
@@ -43,6 +56,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 
 	private static final int PERMISSION_CODE = 1;
+	private static final int FACEBOOK_CODE = 3;
 	private int mScreenDensity;
 	private MediaProjectionManager mProjectionManager;
 
@@ -50,6 +64,9 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	private static final int DISPLAY_WIDTH = 480;
 	private static final int DISPLAY_HEIGHT = 640;
 
+
+	CallbackManager callbackManager;
+	ShareDialog shareDialog;
 
 
 	private MediaProjection mMediaProjection;
@@ -70,6 +87,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		ContextCompat.checkSelfPermission(this, perms[0]);
 		Log.i("androidlog", "About to ask initialzie recording tools");
 		initializeScreenRecordingTools();
+		initializeFacebookSDK();
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useAccelerometer = false;
@@ -99,22 +117,38 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode != PERMISSION_CODE) {
-			Log.e(TAG, "Unknown request code: " + requestCode);
-			return;
-		}
-		if (resultCode != RESULT_OK) {
-			Toast.makeText(this,
-					"Screen Cast Permission Denied", Toast.LENGTH_SHORT).show();
-			mToggleButton.setChecked(false);
+
+
+		if (requestCode == FACEBOOK_CODE) {
+
+
+			if(resultCode != RESULT_OK) {
+				Log.i("facebooklog", "BAD RESULT RETURN FACEBOOK");
+				return;
+			}
+
+			callbackManager.onActivityResult(requestCode, resultCode, data);
+
 			return;
 		}
 
-		Toast.makeText(this, "on Activity result here", Toast.LENGTH_SHORT).show();
-		mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
-		mMediaProjection.registerCallback(mMediaProjectionCallback, null);
-		mVirtualDisplay = createVirtualDisplay();
-		mMediaRecorder.start();
+
+		if(requestCode == PERMS_REQUEST_CODE) {
+
+			if (resultCode != RESULT_OK) {
+				Toast.makeText(this,
+						"Screen Cast Permission Denied", Toast.LENGTH_SHORT).show();
+				mToggleButton.setChecked(false);
+				return;
+			}
+
+			Toast.makeText(this, "on Activity result here", Toast.LENGTH_SHORT).show();
+			mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
+			mMediaProjection.registerCallback(mMediaProjectionCallback, null);
+			mVirtualDisplay = createVirtualDisplay();
+			mMediaRecorder.start();
+		}
+
 	}
 
 
@@ -126,6 +160,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 			case PERMS_REQUEST_CODE:
 				writeAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
 				break;
+			default:
 
 		}
 
@@ -153,7 +188,76 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 			Log.i("androidlog", "In android mode now stopRecodring: ");
 			hasRecordingStopped = true;
 			stopScreenSharing();
+
+			beginVideoSharing();
 		}
+	}
+
+
+	private void beginVideoSharing() {
+
+
+		File dir = Environment.getExternalStorageDirectory();
+		File dcim = new File(dir.getAbsolutePath() + "/Android/data/screen_capture.mp4");
+		Uri videoUri = Uri.fromFile(dcim);
+		Log.i("facebooklog", Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android");
+		Uri shareFileUri = Uri.parse("/storage/emulated/0/Android/data/screen_capture.mp4");
+
+
+		if (ShareDialog.canShow(ShareLinkContent.class)) {
+
+			ShareVideo shareVideo = new ShareVideo.Builder()
+					.setLocalUrl(videoUri)
+					.build();
+
+			ShareVideoContent videoContent = new ShareVideoContent.Builder()
+					.setVideo(shareVideo)
+					.setContentDescription("description of the video")
+					.setContentTitle("content title")
+					.build();
+
+			ShareLinkContent linkContent = new ShareLinkContent.Builder()
+					.setContentTitle("Some title")
+					.setContentDescription("some description")
+					.setImageUrl(Uri.parse("http://png-3.findicons.com/files/icons/1782/classic_blue/256/classic_blue_android.png"))
+					.setContentUrl(Uri.parse("https://fb.me/390376541148098"))
+					.build();
+
+			Log.i("facebooklog", "About to show share dialog");
+//            shareDialog.show(content);
+
+			ShareDialog.show(this, videoContent);
+		}
+
+
+	}
+
+
+
+
+
+	private void initializeFacebookSDK() {
+		callbackManager = CallbackManager.Factory.create();
+//		shareDialog = new ShareDialog(this);
+
+
+		// this part is optional
+//		shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+//			@Override
+//			public void onSuccess(Sharer.Result result) {
+//				Log.i("facebooklog","Successsss!");
+//			}
+//
+//			@Override
+//			public void onCancel() {
+//
+//			}
+//
+//			@Override
+//			public void onError(FacebookException error) {
+//
+//			}
+//		});
 	}
 
 
@@ -249,7 +353,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		mMediaRecorder.setVideoEncodingBitRate(512 * 1000);
 		mMediaRecorder.setVideoFrameRate(30);
 		mMediaRecorder.setVideoSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-		mMediaRecorder.setOutputFile("/sdcard/Android/data/screen_capture.mp4");
+		mMediaRecorder.setOutputFile(SCREEN_SHARE_FILE_PATH);
 	}
 
 
