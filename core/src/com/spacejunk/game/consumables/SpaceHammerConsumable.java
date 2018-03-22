@@ -11,6 +11,7 @@ public class SpaceHammerConsumable extends Consumable {
 
     public SpaceHammerConsumable(Level level) {
         this.consumableTexture = new Texture("space_hammer.png");
+        this.consumableTextureSmall = new Texture("space_hammer_small.png");
         this.level = level;
         this.consumableType = CONSUMABLES.SPACE_HAMMER;
     }

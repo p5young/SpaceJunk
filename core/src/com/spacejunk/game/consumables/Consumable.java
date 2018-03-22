@@ -24,6 +24,8 @@ public abstract class Consumable {
     protected CONSUMABLES consumableType;
 
     protected Texture consumableTexture;
+
+    protected Texture consumableTextureSmall;
     protected Level level;
 
     protected Rectangle consumableShape;
@@ -60,6 +62,10 @@ public abstract class Consumable {
 
     public Texture getTexture() {
         return this.consumableTexture;
+    }
+
+    public Texture getConsumableTextureSmall() {
+        return consumableTextureSmall;
     }
 
 }

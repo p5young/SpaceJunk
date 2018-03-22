@@ -11,6 +11,7 @@ public class LifeConsumable extends Consumable {
 
     public LifeConsumable(Level level) {
         this.consumableTexture = new Texture("heart.png");
+        this.consumableTextureSmall = new Texture("heart.png");
         this.level = level;
         this.consumableType = CONSUMABLES.LIFE;
     }

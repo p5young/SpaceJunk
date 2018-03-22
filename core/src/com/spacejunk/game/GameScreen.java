@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL20.GL_RGBA;
 import static com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_BYTE;
+import static com.spacejunk.game.constants.GameConstants.MAX_INVENTORY_COUNT;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -98,7 +99,7 @@ public class GameScreen implements Screen {
 		canvas.enableBlending();
 
 
-		background = new Texture("background_space_without_bar.jpg");
+		background = new Texture("background.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 		font = new BitmapFont();
@@ -134,7 +135,8 @@ public class GameScreen implements Screen {
 			elapsedTime += Gdx.graphics.getDeltaTime();
 		}
 
-		spaceJunk.getCharacter().render(canvas, elapsedTime, shapeRenderer, toAnimate);
+		spaceJunk.getCharacter().render(canvas, elapsedTime, shapeRenderer, toAnimate,
+				spaceJunk.getLevel().getEquippedConsumable());
 	}
 
 	private void renderObstacles(boolean toMove) {
@@ -381,28 +383,32 @@ public class GameScreen implements Screen {
 					currentConsumable.getConsumableShape(),
 					this.spaceJunk.getCharacter().getCharacterShape()
 			)) {
-				indexToRemove = i;
+
 				status = true;
 
 				// have to deal with lives a little differently
 				if(currentConsumable.getType() == Consumable.CONSUMABLES.LIFE) {
-					this.spaceJunk.getCharacter().giveLife();
+					// this check is to see if getting a life made a difference
+					if(this.spaceJunk.getCharacter().giveLife()) {
+						indexToRemove = i;
+					}
 					break;
 				}
 
 				// increment the count
 				int currentCount = this.spaceJunk.getLevel().getInventory().get(currentConsumable.getType());
-				if (currentCount < 4) {
+				// don't assign to index to remove if inventory is full
+				if (currentCount < MAX_INVENTORY_COUNT) {
 					this.spaceJunk.getLevel().getInventory().put(currentConsumable.getType(), currentCount + 1);
 
-					Gdx.app.log("applog", new StringBuilder().append("Adding consumable ").append(currentConsumable.getType().toString()).append(". Count: ").append(currentCount + 1).toString());
+					indexToRemove = i;
 				}
 
 				break;
 			}
 		}
 
-		if (status) {
+		if (status && indexToRemove != -1) {
 			this.spaceJunk.getLevel().getConsumablesList().remove(indexToRemove);
 		}
 

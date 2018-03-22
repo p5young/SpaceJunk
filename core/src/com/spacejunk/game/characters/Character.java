@@ -2,18 +2,17 @@ package com.spacejunk.game.characters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.GameScreen;
 import com.spacejunk.game.SpaceJunk;
 import com.spacejunk.game.constants.GameConstants;
+import com.spacejunk.game.consumables.Consumable;
 
 /**
  * Created by vidxyz on 2/9/18.
@@ -38,8 +37,20 @@ public abstract class Character {
 
     Rectangle characterShape;
 
-    Animation<TextureRegion> characterAnimation; // Must declare frame type (TextureRegion)
-    Texture animationSheet;
+    Animation<TextureRegion> defaultCharacterAnimation; // Must declare frame type (TextureRegion)
+    Texture defaultAnimationSheet;
+
+    Animation<TextureRegion> hammerCharacterAnimation;
+    Texture hammerAnimationSheet;
+
+    Animation<TextureRegion> fireSuitCharacterAnimation;
+    Texture fireSuitAnimationSheet;
+
+    Animation<TextureRegion> gasMaskCharacterAnimation;
+    Texture gasMaskAnimationSheet;
+
+    Animation<TextureRegion> invisibilityCharacterAnimation;
+    Texture invisibilityAnimationSheet;
 
     protected int FRAME_COLS;
     protected int FRAME_ROWS;
@@ -77,9 +88,9 @@ public abstract class Character {
         // Use the split utility method to create a 2D array of TextureRegions. This is
         // possible because this sprite sheet contains frames of equal size and they are
         // all aligned.
-        TextureRegion[][] tmp = TextureRegion.split(animationSheet,
-                animationSheet.getWidth() / FRAME_COLS,
-                animationSheet.getHeight() / FRAME_ROWS);
+        TextureRegion[][] tmp = TextureRegion.split(defaultAnimationSheet,
+                defaultAnimationSheet.getWidth() / FRAME_COLS,
+                defaultAnimationSheet.getHeight() / FRAME_ROWS);
 
         // Place the regions into a 1D array in the correct order, starting from the top
         // left, going across first. The Animation constructor requires a 1D array.
@@ -93,7 +104,62 @@ public abstract class Character {
         }
 
         // Initialize the Animation with the frame interval and array of frames
-        characterAnimation = new Animation<TextureRegion>(1f/(FRAME_COLS * FRAME_COLS), characterFrames);
+        defaultCharacterAnimation = new Animation<TextureRegion>(1f/(FRAME_COLS * FRAME_COLS), characterFrames);
+
+
+        // Have to do this 4 more times for each equipped Consumable
+        characterFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        tmp = TextureRegion.split(hammerAnimationSheet,
+                hammerAnimationSheet.getWidth() / FRAME_COLS,
+                hammerAnimationSheet.getHeight() / FRAME_ROWS);
+        index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                characterFrames[index++] = tmp[i][j];
+            }
+        }
+        hammerCharacterAnimation = new Animation<TextureRegion>(1f/(FRAME_COLS * FRAME_COLS), characterFrames);
+
+        // Now for firesuit
+        characterFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        tmp = TextureRegion.split(fireSuitAnimationSheet,
+                fireSuitAnimationSheet.getWidth() / FRAME_COLS,
+                fireSuitAnimationSheet.getHeight() / FRAME_ROWS);
+        index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                characterFrames[index++] = tmp[i][j];
+            }
+        }
+        fireSuitCharacterAnimation = new Animation<TextureRegion>(1f/(FRAME_COLS * FRAME_COLS), characterFrames);
+
+        // now for gas mask
+        characterFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        tmp = TextureRegion.split(gasMaskAnimationSheet,
+                gasMaskAnimationSheet.getWidth() / FRAME_COLS,
+                gasMaskAnimationSheet.getHeight() / FRAME_ROWS);
+        index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                characterFrames[index++] = tmp[i][j];
+            }
+        }
+        gasMaskCharacterAnimation = new Animation<TextureRegion>(1f/(FRAME_COLS * FRAME_COLS), characterFrames);
+
+
+        // now finally for invisibility
+        characterFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        tmp = TextureRegion.split(invisibilityAnimationSheet,
+                invisibilityAnimationSheet.getWidth() / FRAME_COLS,
+                invisibilityAnimationSheet.getHeight() / FRAME_ROWS);
+        index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                characterFrames[index++] = tmp[i][j];
+            }
+        }
+        invisibilityCharacterAnimation = new Animation<TextureRegion>(1f/(FRAME_COLS * FRAME_COLS), characterFrames);
+
     }
 
     // MY SHIT DELETE ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -164,10 +230,36 @@ public abstract class Character {
         }
     }
 
-    public void render(SpriteBatch canvas, float elapsedTime, ShapeRenderer shapeRenderer, boolean toAnimate) {
+    public void render(SpriteBatch canvas, float elapsedTime, ShapeRenderer shapeRenderer, boolean toAnimate, Consumable.CONSUMABLES equipped) {
 
         if(toAnimate) {
-            currentFrame = this.getCharacterAnimation().getKeyFrame(elapsedTime, true);
+            if (equipped == null) {
+                currentFrame = this.defaultCharacterAnimation.getKeyFrame(elapsedTime, true);
+            }
+            else {
+                switch (equipped) {
+                    case FIRESUIT:
+                        currentFrame = this.fireSuitCharacterAnimation.getKeyFrame(elapsedTime, true);
+                        break;
+
+                    case SPACE_HAMMER:
+                        currentFrame = this.hammerCharacterAnimation.getKeyFrame(elapsedTime, true);
+                        break;
+
+                    case GAS_MASK:
+                        currentFrame = this.gasMaskCharacterAnimation.getKeyFrame(elapsedTime, true);
+                        break;
+
+                    case INVISIBILITY:
+                        currentFrame = this.invisibilityCharacterAnimation.getKeyFrame(elapsedTime, true);
+                        break;
+
+                    default:
+                        currentFrame = this.defaultCharacterAnimation.getKeyFrame(elapsedTime, true);
+                        break;
+
+                }
+            }
         }
 
         canvas.draw(currentFrame,
@@ -216,8 +308,8 @@ public abstract class Character {
         return characterTextures;
     }
 
-    public Animation<TextureRegion> getCharacterAnimation() {
-        return characterAnimation;
+    public Animation<TextureRegion> getDefaultCharacterAnimation() {
+        return defaultCharacterAnimation;
     }
 
     public Rectangle getCharacterShape() {
@@ -234,11 +326,13 @@ public abstract class Character {
         return (--this.remainingLives <= 0);
     }
 
-    public void giveLife() {
+    public boolean giveLife() {
         if (this.remainingLives < GameConstants.MAX_LIVES) {
             this.remainingLives++;
+            return true;
         }
 
+        return false;
     }
 
     public void resetLives() {

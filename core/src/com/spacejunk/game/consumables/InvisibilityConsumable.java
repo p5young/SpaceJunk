@@ -11,6 +11,7 @@ public class InvisibilityConsumable extends Consumable {
 
     public InvisibilityConsumable(Level level) {
         this.consumableTexture = new Texture("invisibility.png");
+        this.consumableTextureSmall = new Texture("invisibility_small.png");
         this.level = level;
         this.consumableType = CONSUMABLES.INVISIBILITY;
     }
