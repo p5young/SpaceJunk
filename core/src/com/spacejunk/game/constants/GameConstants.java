@@ -21,4 +21,7 @@ public class GameConstants {
 
     /* Vertical Speed Constant */
     public static final int VERTICAL_SPEED = 10;
+
+    /* Maximum count of an item in inventory */
+    public static final int MAX_INVENTORY_COUNT = 4;
 }

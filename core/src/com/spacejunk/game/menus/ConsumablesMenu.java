@@ -60,7 +60,7 @@ public class ConsumablesMenu {
             if(inventoryObjects.get(i) != null) {
 
                 // there are a lot of magic numbers here
-                canvas.draw(inventoryObjects.get(i).getTexture(),
+                canvas.draw(inventoryObjects.get(i).getConsumableTextureSmall(),
                         (this.currentGame.getxMax() - ((i + 1) * inventoryListTexture.getWidth() / 4) + (12 - (i * 2))),
                         inventoryListTexture.getHeight() / 7);
             }

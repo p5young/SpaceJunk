@@ -2,7 +2,6 @@ package com.spacejunk.game.characters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.spacejunk.game.SpaceJunk;
 
 /**
@@ -23,7 +22,11 @@ public class Astronaut extends Character  {
         characterTextures[2] = new Texture("astronaut_texture_3.png");
 
         // Load the sprite sheet as a Texture
-        animationSheet = new Texture(Gdx.files.internal("astronaut_animation_sheet.png"));
+        defaultAnimationSheet = new Texture(Gdx.files.internal("astronaut_animation_sheet.png"));
+        hammerAnimationSheet = new Texture(Gdx.files.internal("hammer_animation_sheet.png"));
+        gasMaskAnimationSheet = new Texture(Gdx.files.internal("gasmask_animation_sheet.png"));
+        fireSuitAnimationSheet = new Texture(Gdx.files.internal("firesuit_animation_sheet.png"));
+        invisibilityAnimationSheet = new Texture(Gdx.files.internal("invisibility_animation_sheet.png"));
 
         FRAME_COLS = 3;
         FRAME_ROWS = 1;
