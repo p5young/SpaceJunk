@@ -24,7 +24,7 @@ public class OptionsMenu {
 
         optionsMenuTexures[0] = new Texture("main_menu.png");
         optionsMenuTexures[1] = new Texture("pause_button.png");
-        optionsMenuTexures[2] = new Texture("restart_button.png");
+        optionsMenuTexures[2] = new Texture("settings_menu.png");
     }
 
     public void render(SpriteBatch canvas) {

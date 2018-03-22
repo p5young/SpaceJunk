@@ -46,7 +46,10 @@ public class Controller {
 
     public boolean pauseScreenResumeButtonIsPressed() {
         return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 70 &&
-                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 70;
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 70 &&
+                /*Check y coordinates now*/
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) &&
+                Gdx.input.getY() <=  (currentGame.getyMax() / 2) + 140;
     }
 
 
