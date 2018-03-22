@@ -13,25 +13,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.ShareVideo;
 import com.facebook.share.model.ShareVideoContent;
 import com.facebook.share.widget.ShareDialog;
-import com.spacejunk.game.SpaceJunk;
 import com.spacejunk.game.interfaces.SystemServices;
 
 import java.io.File;
@@ -40,7 +32,9 @@ import java.io.IOException;
 public class AndroidLauncher extends AndroidApplication implements SystemServices {
 
 
-	private static String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE"};
+	private static String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE",
+			"android.permission.READ_EXTERNAL_STORAGE",
+			"android.permission.READ_PHONE_STATE"};
 
 	private static final int PERMS_REQUEST_CODE = 200;
 
@@ -49,12 +43,15 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	public static final String TAG = "AndroidLauncher";
 
 	public static final int WRITE_REQUEST_CODE = 7;
+	public static final int READ_REQUEST_CODE = 9;
+	public static final int READ_PHONE_STATE = 11;
 
 	private static boolean hasRecordingStarted;
 	private static boolean hasRecordingStopped;
 
 	private static boolean writeAccepted = false;
-	private static boolean screenRecordAccepted = false;
+	private static boolean readAccepted = false;
+	private static boolean phoneStateAccepted = false;
 
 
 	private static final int PERMISSION_CODE = 1;
@@ -77,6 +74,23 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	private MediaRecorder mMediaRecorder;
 
 
+	private void requestAllPermissions() {
+		Log.i("androidlog", "About to ask permissions");
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+			if (this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+				this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST_CODE);
+			}
+
+			if (this.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+				this.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
+			}
+
+
+		}
+	}
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +98,11 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 		hasRecordingStarted = false;
 
-		Log.i("androidlog", "About to ask permissions");
-		ContextCompat.checkSelfPermission(this, perms[0]);
+
+		requestAllPermissions();
+//		ContextCompat.checkSelfPermission(this, perms[0]);
+//		ContextCompat.checkSelfPermission(this, perms[1]);
+//		ContextCompat.checkSelfPermission(this, perms[2]);
 		Log.i("androidlog", "About to ask initialzie recording tools");
 
 
@@ -99,13 +116,8 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		initialize(new SpaceJunk(SpaceJunk.DIFFICULTY_LEVEL.EASY, this), config);
 
 
-//		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//			if (this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//				this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST_CODE);
-//			}
-//
-//
-//		}
+
+
 	}
 
 	@Override
@@ -174,18 +186,25 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 		switch(permsRequestCode){
 
-			case PERMS_REQUEST_CODE:
+			case WRITE_REQUEST_CODE:
 				writeAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
 				if(writeAccepted) {
 					Log.i("androidlog", "Success! Permission granted!");
 				}
 				break;
 
-			case PERMISSION_CODE:
-				screenRecordAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
-				if(screenRecordAccepted) {
+			case READ_REQUEST_CODE:
+				readAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
+				if(readAccepted) {
 					Log.i("androidlog", "Success! Permission granted for screen recording!");
 				}
+				break;
+			case READ_PHONE_STATE:
+				phoneStateAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
+				if(phoneStateAccepted) {
+					Log.i("androidlog", "Success! Permission granted for screen recording!");
+				}
+				break;
 			default:
 
 		}
@@ -370,11 +389,11 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	private void initRecorder() {
 
 		Log.i("facebooklog", "initRecorder method called here");
-		mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//		mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
 		mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 		mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-		mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+//		mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 		mMediaRecorder.setVideoEncodingBitRate(512 * 1000);
 		mMediaRecorder.setVideoFrameRate(30);
 		mMediaRecorder.setVideoSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
