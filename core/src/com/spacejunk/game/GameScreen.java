@@ -55,6 +55,7 @@ public class GameScreen implements Screen {
 	private Texture gameOver;
 	private Texture pauseScreen;
 
+
 	private Boolean isGameActive = false;
 	private Boolean isCrashed = false;
 
@@ -84,7 +85,7 @@ public class GameScreen implements Screen {
 		this.spaceJunk = game;
 		this.state =  State.RUN;
 
-		this.controller = new Controller(this.spaceJunk);
+		this.controller = new Controller(this.spaceJunk, this);
 		this.remainingLivesMenu = new RemainingLivesMenu(this.spaceJunk);
 
 		create();
@@ -171,8 +172,10 @@ public class GameScreen implements Screen {
 				break;
 			case PAUSE:
 				renderPauseScreenEssentials();
-				if(controller.isTouched() && controller.playPauseButtonisPressed()) {
-					resume();
+				if(controller.isTouched()) {
+					if(controller.playPauseButtonisPressed() || controller.pauseScreenResumeButtonIsPressed()) {
+						resume();
+					}
 				}
 				break;
 			default:
@@ -187,13 +190,16 @@ public class GameScreen implements Screen {
 		shapeRenderer.setColor(Color.GREEN);
 		// We are making use of the painters algorithm here
 		drawBackground();
-		renderController();
 		renderAstronaut(false);
 		shapeRenderer.setColor(Color.RED);
 		renderObstacles(false);
+
+		// All these are painted on top of the background/astronaut/obstacles
 		renderRemainingLives();
 		displayScore();
+		renderController();
 		drawGameOverScreen();
+
 		canvas.end();
 		shapeRenderer.end();
 	}
@@ -204,16 +210,18 @@ public class GameScreen implements Screen {
 
 		// We are making use of the painters algorithm here
 		drawBackground();
-		drawPauseScreenTexture();
-		renderController();
 
         shapeRenderer.setColor(Color.GREEN);
 		renderAstronaut(false);
 		shapeRenderer.setColor(Color.RED);
 		renderObstacles(false);
 
+		// Done at the end so that the pause screen is on top
 		renderRemainingLives();
 		displayScore();
+		renderController();
+		drawPauseScreenTexture();
+
 
 		canvas.end();
 		shapeRenderer.end();
@@ -301,6 +309,16 @@ public class GameScreen implements Screen {
 		}
 	}
 	*/
+
+
+	public Texture getGameOver() {
+		return gameOver;
+	}
+
+	public Texture getPauseScreen() {
+		return pauseScreen;
+	}
+
 
 	private void drawRecordingScreenBorder() {
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -465,6 +483,7 @@ public class GameScreen implements Screen {
 			if(controller.isTouched()) {
 				// Check if options menu is interacted with
 				if(controller.playPauseButtonisPressed()) {
+					Gdx.app.log("gdxlog", "Pause button is pressed");
 					pause();
 				}
 
