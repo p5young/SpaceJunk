@@ -11,6 +11,7 @@ public class GasMaskConsumable extends Consumable {
 
     public GasMaskConsumable(Level level) {
         this.consumableTexture = new Texture("gas_mask.png");
+        this.consumableTextureSmall = new Texture("gas_mask_small.png");
         this.level = level;
         this.consumableType = CONSUMABLES.GAS_MASK;
     }

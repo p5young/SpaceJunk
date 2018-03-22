@@ -23,6 +23,7 @@ import org.w3c.dom.css.Rect;
 import java.lang.Math;
 import java.util.ArrayList;
 
+import static com.spacejunk.game.constants.GameConstants.MAX_INVENTORY_COUNT;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -91,7 +92,7 @@ public class GameScreen implements Screen {
 		shapeRenderer = new ShapeRenderer();
 		canvas.enableBlending();
 
-		background = new Texture("background_space_without_bar.jpg");
+		background = new Texture("background.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 		font = new BitmapFont();
@@ -127,7 +128,8 @@ public class GameScreen implements Screen {
 			elapsedTime += Gdx.graphics.getDeltaTime();
 		}
 
-		spaceJunk.getCharacter().render(canvas, elapsedTime, shapeRenderer, toAnimate);
+		spaceJunk.getCharacter().render(canvas, elapsedTime, shapeRenderer, toAnimate,
+				spaceJunk.getLevel().getEquippedConsumable());
 	}
 
 	private void renderObstacles(boolean toMove) {
@@ -315,10 +317,9 @@ public class GameScreen implements Screen {
 				// increment the count
 				int currentCount = this.spaceJunk.getLevel().getInventory().get(currentConsumable.getType());
 				// don't assign to index to remove if inventory is full
-				if (currentCount < 4) {
+				if (currentCount < MAX_INVENTORY_COUNT) {
 					this.spaceJunk.getLevel().getInventory().put(currentConsumable.getType(), currentCount + 1);
 
-					Gdx.app.log("applog", new StringBuilder().append("Adding consumable ").append(currentConsumable.getType().toString()).append(". Count: ").append(currentCount + 1).toString());
 					indexToRemove = i;
 				}
 

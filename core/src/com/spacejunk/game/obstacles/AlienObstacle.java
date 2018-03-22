@@ -15,10 +15,10 @@ public class AlienObstacle extends Obstacle {
 
     public AlienObstacle(Level level) {
         super();
-        this.obstacleTexture = new Texture("alien_security.png");
-        this.brokenTexture = new Texture("alien_security.png");
+        this.obstacleTexture = new Texture("alien.png");
+        this.brokenTexture = new Texture("alien.png");
 
-        FileHandle handle = Gdx.files.internal("alien_security.png");
+        FileHandle handle = Gdx.files.internal("alien.png");
         this.pixmap = new Pixmap(handle);
 
         this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/alien_sound.mp3"));
