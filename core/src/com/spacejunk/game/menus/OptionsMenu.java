@@ -18,6 +18,8 @@ public class OptionsMenu {
 
     private Texture[] optionsMenuTexures;
 
+    private Texture screenRecordButton;
+
     public OptionsMenu() {
 
         optionsMenuTexures = new Texture[MAX_BUTTONS];
@@ -25,10 +27,14 @@ public class OptionsMenu {
         optionsMenuTexures[0] = new Texture("main_menu.png");
         optionsMenuTexures[1] = new Texture("pause_button.png");
         optionsMenuTexures[2] = new Texture("settings_menu.png");
+
+        screenRecordButton = new Texture("screen_record.png");
     }
 
     public void render(SpriteBatch canvas) {
 
+
+        // Render the options menu buttons
         for(int i = 0; i < MAX_BUTTONS; i++) {
             if(i != 0) {
                 canvas.draw(optionsMenuTexures[i], 0,
@@ -38,6 +44,9 @@ public class OptionsMenu {
                 canvas.draw(optionsMenuTexures[i], 0, Gdx.graphics.getHeight() - ((i+1) * optionsMenuTexures[i].getHeight()));
             }
         }
+
+        // Render the screen record button
+        canvas.draw(screenRecordButton, (int) (screenRecordButton.getWidth() * 0.1), 0);
     }
 
     public Texture[] getOptionsMenuTexures() {
@@ -52,4 +61,7 @@ public class OptionsMenu {
         optionsMenuTexures[1] = new Texture("pause_button.png");
     }
 
+    public Texture getScreenRecordButton() {
+        return screenRecordButton;
+    }
 }

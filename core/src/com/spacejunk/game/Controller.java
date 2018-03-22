@@ -43,6 +43,19 @@ public class Controller {
                         optionsMenu.getOptionsMenuTexures()[1].getHeight();
     }
 
+    public boolean screenRecordButtonIsPressed() {
+        Gdx.app.log("gdxlog", "(x,y) = " + Gdx.input.getX() + ":" + Gdx.input.getY());
+        boolean toReturn = Gdx.input.getX() >= 0 &&
+                Gdx.input.getX() <= optionsMenu.getScreenRecordButton().getWidth() +
+                                (int) (optionsMenu.getScreenRecordButton().getWidth() * 0.1) &&
+                /*Check y coorindates now*/
+                Gdx.input.getY() <= currentGame.getyMax() &&
+                Gdx.input.getY() >= currentGame.getyMax() - optionsMenu.getScreenRecordButton().getHeight();
+
+        Gdx.app.log("gdxlog", "Going to return " + String.valueOf(toReturn));
+        return toReturn;
+    }
+
 
     public boolean pauseScreenResumeButtonIsPressed() {
         return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 70 &&

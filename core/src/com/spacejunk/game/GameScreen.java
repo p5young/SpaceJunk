@@ -57,7 +57,6 @@ public class GameScreen implements Screen {
 	private Texture gameOver;
 	private Texture pauseScreen;
 
-
 	private Boolean isGameActive = false;
 	private Boolean isCrashed = false;
 
@@ -258,8 +257,6 @@ public class GameScreen implements Screen {
 		canvas.end();
 		shapeRenderer.end();
 
-//		recordScreen();
-
 		pickedConsumable();
 		isCrashed = hasCharacterDied();
 	}
@@ -275,51 +272,7 @@ public class GameScreen implements Screen {
 			spaceJunk.getSystemServices().stopRecording();
 		}
 
-//		if(isRecordingComplete) {
-//
-//		}
 	}
-
-	/*
-	private void recordScreen() {
-
-		if(elapsedTime < 1) {
-			drawRecordingScreenBorder();
-
-//		Runtime rt = Runtime.getRuntime();
-//		rt.exec()
-
-//		recorder.update();
-//		Gdx.app.log("recorderlog", recorder.getExportFileHandle().file().getAbsolutePath());
-			takeScreenshotOfScreen();
-		}
-		else {
-			if(!isRecordingComplete) {
-
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							saveGif();
-						}
-						catch (Exception e) {
-							e.printStackTrace();
-							Gdx.app.log("errorlog", "ERROR ERROR");
-						}
-
-					}
-				}).start();
-
-
-
-
-				Gdx.app.log("giflog", "File has been saved to : " + Gdx.files.local("testgif.gif").file().getAbsolutePath());
-
-				isRecordingComplete = true;
-			}
-		}
-	}
-	*/
 
 
 	public Texture getGameOver() {
@@ -492,10 +445,15 @@ public class GameScreen implements Screen {
 
 			// There has been on on screen touch action being done
 			if(controller.isTouched()) {
+
 				// Check if options menu is interacted with
 				if(controller.playPauseButtonisPressed()) {
 					Gdx.app.log("gdxlog", "Pause button is pressed");
 					pause();
+				}
+
+				else if (controller.screenRecordButtonIsPressed()) {
+					Gdx.app.log("gdxlog", "Screen record button is pressed");
 				}
 
 				else if (controller.consumablesMenuPressed()) {
