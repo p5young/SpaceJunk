@@ -25,4 +25,6 @@ public class GameConstants {
     public static final int BORDER_WIDTH = 10;
     /* Maximum count of an item in inventory */
     public static final int MAX_INVENTORY_COUNT = 4;
+
+    public static final int MIN_GAP = 430;
 }
