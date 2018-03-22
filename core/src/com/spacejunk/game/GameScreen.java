@@ -53,6 +53,7 @@ public class GameScreen implements Screen {
 	private BitmapFont font;
 
 	private Texture gameOver;
+	private Texture pauseScreen;
 
 	private Boolean isGameActive = false;
 	private Boolean isCrashed = false;
@@ -107,6 +108,7 @@ public class GameScreen implements Screen {
 		font.getData().setScale(7);
 
 		gameOver = new Texture("gameover.png");
+		pauseScreen = new Texture("pause_screen.png");
 
 		elapsedTime = 0f;
 
@@ -237,7 +239,7 @@ public class GameScreen implements Screen {
 		canvas.end();
 		shapeRenderer.end();
 
-		recordScreen();
+//		recordScreen();
 
 		pickedConsumable();
 		isCrashed = hasCharacterDied();
@@ -519,7 +521,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void drawPauseScreenTexture() {
-		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
+		canvas.draw(pauseScreen, Gdx.graphics.getWidth()/2 - pauseScreen.getWidth()/2, Gdx.graphics.getHeight()/2 - pauseScreen.getHeight()/2);
 	}
 
 	private void displayScore() {
