@@ -16,6 +16,8 @@ import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.obstacles.Obstacle;
 
 import java.lang.Math;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,6 +119,15 @@ public class GameScreen implements Screen {
 
 	}
 
+
+	private static double round(double value, int places) {
+
+		if (places < 0) throw new IllegalArgumentException();
+
+		BigDecimal bd = new BigDecimal(value);
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
+	}
 
 
 	@Override
@@ -540,12 +551,22 @@ public class GameScreen implements Screen {
 	}
 
 	private void drawPauseScreenTexture() {
-		canvas.draw(pauseScreen, Gdx.graphics.getWidth()/2 - pauseScreen.getWidth()/2, Gdx.graphics.getHeight()/2 - pauseScreen.getHeight()/2);
+
+//		if(elapsedScoreDisplayTime >= 0.250) {
+//			Gdx.app.log("timelog", "elapsedScoreDisplayTimeIs: " + elapsedScoreDisplayTime);
+//			elapsedScoreDisplayTime = 0;
+			canvas.draw(pauseScreen, Gdx.graphics.getWidth() / 2 - pauseScreen.getWidth() / 2, Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2);
+//		}
 	}
 
 	private void displayScore() {
-		GlyphLayout layout = new GlyphLayout(font, String.valueOf(spaceJunk.getCurrentGameScore()));
-		font.draw(canvas, String.valueOf(spaceJunk.getCurrentGameScore()),
+
+		double currentGameScore = round(spaceJunk.getCurrentGameScore(), 2);
+
+		GlyphLayout layout = new GlyphLayout(font, String.valueOf(currentGameScore));
+
+
+		font.draw(canvas, String.valueOf(currentGameScore),
 				Gdx.graphics.getWidth() / 2 - layout.width / 2,
 				Gdx.graphics.getHeight());
 	}
