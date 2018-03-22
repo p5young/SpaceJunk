@@ -1,13 +1,12 @@
 package com.spacejunk.game;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.spacejunk.game.characters.Astronaut;
 import com.spacejunk.game.characters.Character;
+import com.spacejunk.game.interfaces.SystemServices;
 import com.spacejunk.game.levels.Level;
-import com.spacejunk.game.utilities.SimpleDirectionGestureDetector;
 
 /**
  * Created by vidxyz on 2/4/18.
@@ -16,7 +15,7 @@ import com.spacejunk.game.utilities.SimpleDirectionGestureDetector;
  */
 
 
-public class SpaceJunk extends Game {
+public class SpaceJunk extends Game implements ApplicationListener {
 
 
     public enum DIFFICULTY_LEVEL {EASY, MEDIUM, HARD};
@@ -27,14 +26,16 @@ public class SpaceJunk extends Game {
     int xMax, yMax;
 
     private double currentGameScore;
+    private SystemServices systemServices;
 
     private Level level;
     private Character character;
 
 
-    public SpaceJunk(DIFFICULTY_LEVEL level) {
+    public SpaceJunk(DIFFICULTY_LEVEL level, SystemServices systemServices) {
 
         this.currentDifficultyLevel = level;
+        this.systemServices = systemServices;
         // This can be changed as needed
         this.character = new Astronaut(this);
         this.currentGameScore = 0;
@@ -111,6 +112,10 @@ public class SpaceJunk extends Game {
 
     public DIFFICULTY_LEVEL getCurrentDifficultyLevel() {
         return currentDifficultyLevel;
+    }
+
+    public SystemServices getSystemServices() {
+        return systemServices;
     }
 }
 

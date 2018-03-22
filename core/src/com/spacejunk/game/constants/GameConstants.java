@@ -21,4 +21,6 @@ public class GameConstants {
 
     /* Vertical Speed Constant */
     public static final int VERTICAL_SPEED = 10;
+
+    public static final int BORDER_WIDTH = 10;
 }

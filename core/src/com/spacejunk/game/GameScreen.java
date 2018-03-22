@@ -12,17 +12,20 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.menus.RemainingLivesMenu;
-import com.spacejunk.game.utilities.SimpleDirectionGestureDetector;
 import com.spacejunk.game.consumables.Consumable;
-import com.spacejunk.game.levels.Level;
-import com.spacejunk.game.menus.RemainingLivesMenu;
 import com.spacejunk.game.obstacles.Obstacle;
-
-import org.w3c.dom.css.Rect;
+import com.squareup.gifencoder.GifEncoder;
+import com.squareup.gifencoder.ImageOptions;
 
 import java.lang.Math;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import static com.badlogic.gdx.Gdx.gl;
+import static com.badlogic.gdx.graphics.GL20.GL_RGBA;
+import static com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_BYTE;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -55,6 +58,8 @@ public class GameScreen implements Screen {
 	private Boolean isGameActive = false;
 	private Boolean isCrashed = false;
 
+	private boolean isRecordingComplete = false;
+
 	private RemainingLivesMenu remainingLivesMenu;
 
 
@@ -63,6 +68,10 @@ public class GameScreen implements Screen {
 	private float elapsedTime;
 
 	private State state;
+
+	private ArrayList<ArrayList<Integer>> screenShots = new ArrayList<ArrayList<Integer>>();
+	private List<Pixmap> frames = new ArrayList<Pixmap>();
+	private GifEncoder gifEncoder;
 
 	// this field is just for avoiding a local field instantiated every tap
 	private Consumable.CONSUMABLES justPressed;
@@ -90,6 +99,7 @@ public class GameScreen implements Screen {
 		canvas = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		canvas.enableBlending();
+
 
 		background = new Texture("background_space_without_bar.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -145,7 +155,7 @@ public class GameScreen implements Screen {
 
 		switch (state) {
 			case RUN:
-				renderScreen();
+				renderRunningScreen();
 				break;
 			case CRASHED:
 				renderCrashedScreenEssentials();
@@ -209,7 +219,7 @@ public class GameScreen implements Screen {
 	}
 
 	// Note :- Rendering each on screen component that 'moves' updates its internal coordinates
-	private void renderScreen() {
+	private void renderRunningScreen() {
 		canvas.begin();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
@@ -228,8 +238,197 @@ public class GameScreen implements Screen {
 		canvas.end();
 		shapeRenderer.end();
 
+		recordScreen();
+
 		pickedConsumable();
 		isCrashed = hasCharacterDied();
+	}
+
+	private void recordScreen() {
+
+		if(elapsedTime < 7 && !isRecordingComplete) {
+			spaceJunk.getSystemServices().startRecording("Test_path");
+		}
+		else {
+			isRecordingComplete = true;
+			spaceJunk.getSystemServices().stopRecording();
+		}
+
+//		if(isRecordingComplete) {
+//
+//		}
+	}
+
+	/*
+	private void recordScreen() {
+
+		if(elapsedTime < 1) {
+			drawRecordingScreenBorder();
+
+//		Runtime rt = Runtime.getRuntime();
+//		rt.exec()
+
+//		recorder.update();
+//		Gdx.app.log("recorderlog", recorder.getExportFileHandle().file().getAbsolutePath());
+			takeScreenshotOfScreen();
+		}
+		else {
+			if(!isRecordingComplete) {
+
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							saveGif();
+						}
+						catch (Exception e) {
+							e.printStackTrace();
+							Gdx.app.log("errorlog", "ERROR ERROR");
+						}
+
+					}
+				}).start();
+
+
+
+
+				Gdx.app.log("giflog", "File has been saved to : " + Gdx.files.local("testgif.gif").file().getAbsolutePath());
+
+				isRecordingComplete = true;
+			}
+		}
+	}
+	*/
+
+	public static int[] convertIntegers(ArrayList<Integer> integers)
+	{
+		int[] ret = new int[integers.size()];
+		for (int i=0; i < ret.length; i++)
+		{
+			ret[i] = integers.get(i);
+		}
+		return ret;
+	}
+
+	private void saveGif() throws Exception {
+
+		Gdx.app.log("giflog", "Start of save gif");
+
+		gifEncoder = new GifEncoder(Gdx.files.local("testgif.gif").write(false),
+				spaceJunk.getxMax()	, spaceJunk.getyMax(), 1);
+
+		ImageOptions options = new ImageOptions();
+
+		// Frame rate / Time between each frame
+		options.setDelay(50, TimeUnit.MILLISECONDS);
+
+		Gdx.app.log("giflog", "Before for loop");
+		Gdx.app.log("giflog", "NBumber of frames is " + frames.size());
+
+
+
+		for (Pixmap pixmap : frames) {
+			Gdx.app.log("giflog", "Loop iteration here");
+
+			int width = pixmap.getWidth();
+			int height = pixmap.getHeight();
+
+
+			Gdx.app.log("giflog", "Width of pixmap is  : " + width);
+			Gdx.app.log("giflog", "Height of pixamp is : " + height);
+
+
+			int[][] pixels = new int[height][width];
+
+			for (int x = 0; x < width; ++x) {
+//				Gdx.app.log("giflog", "In first inner loop");
+
+				for (int y = 0; y < height; ++y) {
+//					Gdx.app.log("giflog", "In Second inner loop");
+					int pixel = pixmap.getPixel(x, y);
+
+
+					pixels[y][x] = pixel;
+				}
+			}
+
+			Gdx.app.log("giflog", "Inner for loops done");
+
+
+			gifEncoder.addImage(pixels, options);
+		}
+
+		Gdx.app.log("giflog", "Finish Encoding method being called here");
+
+		gifEncoder.finishEncoding();
+
+		for (Pixmap pixmap : frames)
+			pixmap.dispose();
+
+		Gdx.app.log("giflog", "Disposed of the pixmap");
+
+
+		frames.clear();
+
+	}
+
+
+	private void takeScreenshotOfScreen() {
+
+//		gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+//
+//		Pixmap pixmap = new Pixmap(spaceJunk.getxMax(), spaceJunk.getyMax(), Pixmap.Format.RGBA8888);
+//
+//		gl.glReadPixels(0, 0, spaceJunk.getxMax(), spaceJunk.getyMax(), GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+//
+//		int width = pixmap.getWidth(), height = pixmap.getHeight();
+//		Pixmap flipped = new Pixmap(width, height, pixmap.getFormat());
+//
+//		for (int x = 0; x < width; ++x)
+//			for (int y = 0; y < height; ++y)
+//				flipped.drawPixel(x, y, pixmap.getPixel(x, height - y - 1));
+//
+//		pixmap.dispose();
+//		pixmap = flipped;
+//
+//
+//		ByteBuffer pixels = pixmap.getPixels();
+//		byte[] bytes = new byte[pixels.remaining()];
+//
+//		pixels.get(bytes);
+//
+//		int bytesSize = bytes.length;
+////		int[] arrayWitoutAlpha = new int[bytesSize/4];
+//		ArrayList<Integer> arrayWithoutAlpha = new ArrayList<Integer>();
+//
+//		for(int i = 0; i < bytesSize; i+=4) {
+//			arrayWithoutAlpha.add(((bytes[i]&0x0ff) << 16) | ((bytes[i+1]&0x0ff) << 8) | (bytes[i+2]&0x0ff));
+//		}
+
+		int width = spaceJunk.getxMax();
+		int height = spaceJunk.getyMax();
+
+		Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+		ByteBuffer pixels = pixmap.getPixels();
+		gl.glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+		frames.add(pixmap);
+
+//		screenShots.add(arrayWithoutAlpha);
+	}
+
+	private void drawRecordingScreenBorder() {
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+		shapeRenderer.setColor(Color.RED);
+
+		Gdx.gl20.glLineWidth(GameConstants.BORDER_WIDTH);
+
+		float w = spaceJunk.getxMax();
+		float h = spaceJunk.getyMax();
+		shapeRenderer.line(0, 0, w, 0);
+		shapeRenderer.line(0, h, w, h);
+		shapeRenderer.line(0, 0, 0, h);
+		shapeRenderer.line(w, 0, w, h);
+		shapeRenderer.end();
 	}
 
 	private boolean hasCharacterDied() {
@@ -397,6 +596,7 @@ public class GameScreen implements Screen {
 
 		else if(!isGameActive && !isCrashed){
 			if(controller.isTouched()) {
+				Gdx.app.log("applog", "ELSE IF CASE OF GAME LOGIC METHOD");
 				isGameActive = true;
 			}
 		}
