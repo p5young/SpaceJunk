@@ -113,7 +113,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 			mMediaProjection = null;
 		}
 
-		deleteTempFile();
+//		deleteTempFile();
 
 	}
 
@@ -188,8 +188,8 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	@Override
 	public void startRecording(int xMax, int yMax) {
-		DISPLAY_HEIGHT = yMax;
-		DISPLAY_WIDTH = xMax;
+//		DISPLAY_HEIGHT = yMax;
+//		DISPLAY_WIDTH = xMax;
 		initializeScreenRecordingTools();
 		shareScreen();
 	}
