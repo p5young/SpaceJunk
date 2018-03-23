@@ -322,11 +322,11 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	private void initRecorder() {
 		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
+		mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 		mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
 		mMediaRecorder.setVideoEncodingBitRate(512 * 1000);
 		mMediaRecorder.setVideoFrameRate(30);
 		mMediaRecorder.setVideoSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-		mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 		mMediaRecorder.setOutputFile(Environment.getExternalStorageDirectory().getAbsolutePath() + SCREEN_SHARE_FILE_PATH);
 	}
 
