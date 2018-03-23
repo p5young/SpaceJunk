@@ -57,8 +57,8 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	private MediaProjectionManager mProjectionManager;
 
 
-	private static int DISPLAY_WIDTH = 480;
-	private static int DISPLAY_HEIGHT = 640;
+	private static int DISPLAY_WIDTH = 640;
+	private static int DISPLAY_HEIGHT = 480;
 
 
 	CallbackManager callbackManager;
