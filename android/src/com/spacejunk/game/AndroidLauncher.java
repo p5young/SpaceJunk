@@ -116,7 +116,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		}
 
 		deleteTempFile();
-		Log.i("androidlog", "OnDestroyEndedHere");
 
 	}
 
@@ -192,6 +191,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	@Override
 	public void startRecording() {
+		initializeScreenRecordingTools();
 		shareScreen();
 	}
 
@@ -207,7 +207,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		File fdelete = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + SCREEN_SHARE_FILE_PATH);
 
 		if (fdelete.exists()) {
-			Log.i("androidlog", "The file exists");
 			if (fdelete.delete()) {
 				Log.i("androidlog", "Temp file deleted successfully!");
 			}
@@ -215,9 +214,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 				Log.i("androidlog", "Temp file deletion failure");
 			}
 		}
-		else {
-			Log.i("androidlog", "The file dos not exist");
-		}
+		
 	}
 
 	private void beginVideoSharing() {
@@ -284,7 +281,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 
 	private void shareScreen() {
-		initializeScreenRecordingTools();
 
 		if (mMediaProjection == null) {
 			startActivityForResult(mProjectionManager.createScreenCaptureIntent(), PERMISSION_CODE);
