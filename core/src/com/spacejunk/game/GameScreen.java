@@ -395,7 +395,6 @@ public class GameScreen implements Screen {
 
 				// put in set
 				if (this.spaceJunk.getLevel().getInventory().add(currentConsumable.getType())) {
-					this.spaceJunk.getLevel().setEquippedConsumable(currentConsumable.getType());
 					indexToRemove = i;
 				}
 
