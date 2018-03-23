@@ -1,12 +1,8 @@
 package com.spacejunk.game.consumables;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.levels.Level;
-import com.spacejunk.game.obstacles.AsteroidObstacle;
-import com.spacejunk.game.obstacles.FireObstacle;
-import com.spacejunk.game.obstacles.Obstacle;
 
 /**
  * Created by vidxyz on 2/10/18.

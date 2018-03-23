@@ -1,6 +1,5 @@
 package com.spacejunk.game.levels;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,19 +11,11 @@ import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.consumables.FireSuitConsumable;
 import com.spacejunk.game.consumables.GasMaskConsumable;
 import com.spacejunk.game.consumables.InvisibilityConsumable;
-import com.spacejunk.game.consumables.LifeConsumable;
 import com.spacejunk.game.consumables.SpaceHammerConsumable;
-import com.spacejunk.game.obstacles.AlienObstacle;
-import com.spacejunk.game.obstacles.FireObstacle;
 import com.spacejunk.game.obstacles.Obstacle;
-import com.spacejunk.game.obstacles.AsteroidObstacle;
-import com.spacejunk.game.obstacles.ToxicGasObstacle;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 

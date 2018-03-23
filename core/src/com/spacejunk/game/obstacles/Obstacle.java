@@ -1,16 +1,11 @@
 package com.spacejunk.game.obstacles;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.levels.Level;
-
-import org.w3c.dom.css.Rect;
 
 /**
  * Created by vidxyz on 2/8/18.

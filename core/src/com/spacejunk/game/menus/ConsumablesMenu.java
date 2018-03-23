@@ -1,7 +1,6 @@
 package com.spacejunk.game.menus;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.spacejunk.game.SpaceJunk;
 import com.spacejunk.game.consumables.Consumable;
