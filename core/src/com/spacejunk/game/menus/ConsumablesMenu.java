@@ -7,6 +7,7 @@ import com.spacejunk.game.SpaceJunk;
 import com.spacejunk.game.consumables.Consumable;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Created by vidxyz on 2/9/18.
@@ -55,9 +56,10 @@ public class ConsumablesMenu {
 
     private void renderInventoryElements(SpriteBatch canvas) {
         ArrayList<Consumable> inventoryObjects = this.currentGame.getLevel().getInventoryObjects();
+        Set<Consumable.CONSUMABLES> inventory = this.currentGame.getLevel().getInventory();
 
         for(int i = 0; i < MAX_CONSUMABLES; i++) {
-            if(inventoryObjects.get(i) != null) {
+            if(inventoryObjects.get(i) != null && inventory.contains(inventoryObjects.get(i).getType())) {
 
                 // there are a lot of magic numbers here
                 canvas.draw(inventoryObjects.get(i).getConsumableTextureSmall(),

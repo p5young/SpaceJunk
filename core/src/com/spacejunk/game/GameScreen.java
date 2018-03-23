@@ -346,14 +346,15 @@ public class GameScreen implements Screen {
 
 					currentObstacle.playSound();
 
+					// Remove Consumable from inventory Set if any
+					if (this.spaceJunk.getLevel().getEquippedConsumable() != null) {
+						this.spaceJunk.getLevel().getInventory().remove(this.spaceJunk.getLevel().getEquippedConsumable());
+						this.spaceJunk.getLevel().setEquippedConsumable(null);
+					}
+
 					if (currentObstacle.getBreaksOnConsumable()
 							.equals(this.spaceJunk.getLevel().getEquippedConsumable())) {
 						currentObstacle.setBroken(true);
-
-						// Remove Consumable from inventory Set
-						this.spaceJunk.getLevel().getInventory().remove(this.spaceJunk.getLevel().getEquippedConsumable());
-						this.spaceJunk.getLevel().setEquippedConsumable(null);
-
 						return false;
 					}
 
