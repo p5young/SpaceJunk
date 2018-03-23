@@ -13,7 +13,8 @@ public class GameConstants {
     public static final int TOTAL_NUMBER_OF_CONSUMABLE_TYPES = 4;
     public static final int MAX_PLATFORMS = 3;
     public static final int VELOCITY = 10;
-    public static final double SCORING_RATE = 0.25;
+    public static final double SCORING_RATE = 0.1;
+//    public static final double SCORING_RATE = 0.25;
     public static final int MAX_LIVES = 3;
 
     /* Background Speed Constant */
@@ -22,6 +23,9 @@ public class GameConstants {
     /* Vertical Speed Constant */
     public static final int VERTICAL_SPEED = 10;
 
+    public static final int BORDER_WIDTH = 40;
     /* Maximum count of an item in inventory */
     public static final int MAX_INVENTORY_COUNT = 4;
+
+    public static final int MIN_GAP = 430;
 }

@@ -25,7 +25,7 @@ public class LevelGenerator {
     private Level level;
     private Random randomGenerator;
 
-    private int MIN_GAP = 430;
+    private int MIN_GAP = GameConstants.MIN_GAP;
 
     public LevelGenerator(Level level) {
         this.level = level;

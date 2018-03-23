@@ -12,16 +12,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.menus.RemainingLivesMenu;
-import com.spacejunk.game.utilities.SimpleDirectionGestureDetector;
 import com.spacejunk.game.consumables.Consumable;
-import com.spacejunk.game.levels.Level;
-import com.spacejunk.game.menus.RemainingLivesMenu;
 import com.spacejunk.game.obstacles.Obstacle;
 
-import org.w3c.dom.css.Rect;
-
 import java.lang.Math;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.spacejunk.game.constants.GameConstants.MAX_INVENTORY_COUNT;
 import static java.lang.Math.max;
@@ -52,9 +50,12 @@ public class GameScreen implements Screen {
 	private BitmapFont font;
 
 	private Texture gameOver;
+	private Texture pauseScreen;
 
 	private Boolean isGameActive = false;
 	private Boolean isCrashed = false;
+
+	private boolean isRecordingInProgress = false;
 
 	private RemainingLivesMenu remainingLivesMenu;
 
@@ -64,6 +65,9 @@ public class GameScreen implements Screen {
 	private float elapsedTime;
 
 	private State state;
+
+	private ArrayList<ArrayList<Integer>> screenShots = new ArrayList<ArrayList<Integer>>();
+	private List<Pixmap> frames = new ArrayList<Pixmap>();
 
 	// this field is just for avoiding a local field instantiated every tap
 	private Consumable.CONSUMABLES justPressed;
@@ -77,7 +81,7 @@ public class GameScreen implements Screen {
 		this.spaceJunk = game;
 		this.state =  State.RUN;
 
-		this.controller = new Controller(this.spaceJunk);
+		this.controller = new Controller(this.spaceJunk, this);
 		this.remainingLivesMenu = new RemainingLivesMenu(this.spaceJunk);
 
 		create();
@@ -92,6 +96,7 @@ public class GameScreen implements Screen {
 		shapeRenderer = new ShapeRenderer();
 		canvas.enableBlending();
 
+
 		background = new Texture("background.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
@@ -100,11 +105,38 @@ public class GameScreen implements Screen {
 		font.getData().setScale(7);
 
 		gameOver = new Texture("gameover.png");
+		pauseScreen = new Texture("pause_screen.png");
 
 		elapsedTime = 0f;
 
 		controller.setupSwipeDetection();
 
+	}
+
+
+	private static double round(double value, int places) {
+
+		if (places < 0) throw new IllegalArgumentException();
+
+		BigDecimal bd = new BigDecimal(value);
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
+	}
+
+
+	private static boolean isInteger( double a ) {
+
+		int n;
+
+		try {
+			n = (int) a;
+		}
+
+		catch ( NumberFormatException e ) {
+			return false;
+		}
+
+		return true;
 	}
 
 
@@ -147,7 +179,7 @@ public class GameScreen implements Screen {
 
 		switch (state) {
 			case RUN:
-				renderScreen();
+				renderRunningScreen();
 				break;
 			case CRASHED:
 				renderCrashedScreenEssentials();
@@ -162,8 +194,10 @@ public class GameScreen implements Screen {
 				break;
 			case PAUSE:
 				renderPauseScreenEssentials();
-				if(controller.isTouched() && controller.playPauseButtonisPressed()) {
-					resume();
+				if(controller.isTouched()) {
+					if(controller.playPauseButtonisPressed() || controller.pauseScreenResumeButtonIsPressed()) {
+						resume();
+					}
 				}
 				break;
 			default:
@@ -178,13 +212,16 @@ public class GameScreen implements Screen {
 		shapeRenderer.setColor(Color.GREEN);
 		// We are making use of the painters algorithm here
 		drawBackground();
-		renderController();
 		renderAstronaut(false);
 		shapeRenderer.setColor(Color.RED);
 		renderObstacles(false);
+
+		// All these are painted on top of the background/astronaut/obstacles
 		renderRemainingLives();
 		displayScore();
+		renderController();
 		drawGameOverScreen();
+
 		canvas.end();
 		shapeRenderer.end();
 	}
@@ -195,23 +232,25 @@ public class GameScreen implements Screen {
 
 		// We are making use of the painters algorithm here
 		drawBackground();
-		drawPauseScreenTexture();
-		renderController();
 
         shapeRenderer.setColor(Color.GREEN);
 		renderAstronaut(false);
 		shapeRenderer.setColor(Color.RED);
 		renderObstacles(false);
 
+		// Done at the end so that the pause screen is on top
 		renderRemainingLives();
 		displayScore();
+		renderController();
+		drawPauseScreenTexture();
+
 
 		canvas.end();
 		shapeRenderer.end();
 	}
 
 	// Note :- Rendering each on screen component that 'moves' updates its internal coordinates
-	private void renderScreen() {
+	private void renderRunningScreen() {
 		canvas.begin();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
@@ -230,8 +269,53 @@ public class GameScreen implements Screen {
 		canvas.end();
 		shapeRenderer.end();
 
+		if(isRecordingInProgress) {
+
+			if ((int) elapsedTime % 2 == 0) {
+				drawRecordingScreenBorder();
+				// integer type
+			}
+		}
+
 		pickedConsumable();
 		isCrashed = hasCharacterDied();
+	}
+
+	private void beginRecordingScreen() {
+		isRecordingInProgress = true;
+		spaceJunk.getSystemServices().startRecording(spaceJunk.getxMax(), spaceJunk.getyMax());
+	}
+
+
+	private void stopRecordingScreen() {
+		isRecordingInProgress = false;
+		spaceJunk.getSystemServices().stopRecording();
+	}
+
+	public Texture getGameOver() {
+		return gameOver;
+	}
+
+	public Texture getPauseScreen() {
+		return pauseScreen;
+	}
+
+
+	private void drawRecordingScreenBorder() {
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+		shapeRenderer.setColor(Color.RED);
+
+		Gdx.gl20.glLineWidth(GameConstants.BORDER_WIDTH);
+
+		float w = spaceJunk.getxMax();
+		float h = spaceJunk.getyMax();
+
+		shapeRenderer.line(0, 0, w, 0);
+		shapeRenderer.line(0, h, w, h);
+		shapeRenderer.line(0, 0, 0, h);
+		shapeRenderer.line(w, 0, w, h);
+
+		shapeRenderer.end();
 	}
 
 	private boolean hasCharacterDied() {
@@ -285,6 +369,7 @@ public class GameScreen implements Screen {
 	}
 
 	private boolean pickedConsumable() {
+
 		boolean status = false;
 
 		int numberOfConsumables = spaceJunk.getLevel().getConsumablesList().size();
@@ -373,9 +458,20 @@ public class GameScreen implements Screen {
 
 			// There has been on on screen touch action being done
 			if(controller.isTouched()) {
+
 				// Check if options menu is interacted with
 				if(controller.playPauseButtonisPressed()) {
+					Gdx.app.log("gdxlog", "Pause button is pressed");
 					pause();
+				}
+
+				else if (controller.screenRecordButtonIsPressed()) {
+					if(isRecordingInProgress) {
+						stopRecordingScreen();
+					}
+					else {
+						beginRecordingScreen();
+					}
 				}
 
 				else if (controller.consumablesMenuPressed()) {
@@ -396,6 +492,7 @@ public class GameScreen implements Screen {
 
 		else if(!isGameActive && !isCrashed){
 			if(controller.isTouched()) {
+				Gdx.app.log("applog", "ELSE IF CASE OF GAME LOGIC METHOD");
 				isGameActive = true;
 			}
 		}
@@ -430,12 +527,18 @@ public class GameScreen implements Screen {
 	}
 
 	private void drawPauseScreenTexture() {
-		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
+
+			canvas.draw(pauseScreen, Gdx.graphics.getWidth() / 2 - pauseScreen.getWidth() / 2, Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2);
 	}
 
 	private void displayScore() {
-		GlyphLayout layout = new GlyphLayout(font, String.valueOf(spaceJunk.getCurrentGameScore()));
-		font.draw(canvas, String.valueOf(spaceJunk.getCurrentGameScore()),
+
+		double currentGameScore = round(spaceJunk.getCurrentGameScore(), 2);
+
+		GlyphLayout layout = new GlyphLayout(font, String.valueOf(currentGameScore));
+
+
+		font.draw(canvas, String.valueOf(currentGameScore),
 				Gdx.graphics.getWidth() / 2 - layout.width / 2,
 				Gdx.graphics.getHeight());
 	}

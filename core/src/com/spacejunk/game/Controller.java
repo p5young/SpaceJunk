@@ -20,10 +20,13 @@ public class Controller {
     private OptionsMenu optionsMenu;
     private ConsumablesMenu consumablesMenu;
 
+    private GameScreen gameScreen;
+
     private Consumable.CONSUMABLES pressedConsumable = null;
 
-    public Controller(SpaceJunk currentGame) {
+    public Controller(SpaceJunk currentGame, GameScreen gameScreen) {
         this.currentGame = currentGame;
+        this.gameScreen = gameScreen;
         this.optionsMenu = new OptionsMenu();
         this.consumablesMenu = new ConsumablesMenu(currentGame);
     }
@@ -33,12 +36,31 @@ public class Controller {
     }
 
     public boolean playPauseButtonisPressed() {
-        return Gdx.input.getX() >= optionsMenu.getOptionsMenuTexures()[0].getWidth() &&
-            Gdx.input.getX() <= optionsMenu.getOptionsMenuTexures()[0].getWidth() +
-                optionsMenu.getOptionsMenuTexures()[1].getWidth() &&
-                Gdx.input.getY() <= optionsMenu.getOptionsMenuTexures()[0].getHeight() &&
-                Gdx.input.getY() >= 0;
+        return Gdx.input.getX() >= 0 &&
+            Gdx.input.getX() <= optionsMenu.getOptionsMenuTexures()[0].getWidth() &&
+                Gdx.input.getY() >= optionsMenu.getOptionsMenuTexures()[0].getHeight() &&
+                Gdx.input.getY() <= optionsMenu.getOptionsMenuTexures()[0].getHeight() +
+                        optionsMenu.getOptionsMenuTexures()[1].getHeight();
     }
+
+    public boolean screenRecordButtonIsPressed() {
+        return Gdx.input.getX() >= 0 &&
+                Gdx.input.getX() <= optionsMenu.getScreenRecordButton().getWidth() +
+                        (int) (optionsMenu.getScreenRecordButton().getWidth() * 0.1) &&
+                /*Check y coorindates now*/
+                Gdx.input.getY() <= currentGame.getyMax() &&
+                Gdx.input.getY() >= currentGame.getyMax() - optionsMenu.getScreenRecordButton().getHeight();
+    }
+
+
+    public boolean pauseScreenResumeButtonIsPressed() {
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 70 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 70 &&
+                /*Check y coordinates now*/
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) &&
+                Gdx.input.getY() <=  (currentGame.getyMax() / 2) + 140;
+    }
+
 
     public boolean consumablesMenuPressed() {
         if (Gdx.input.getX() > (currentGame.getxMax() - consumablesMenu.getInventoryWidth()) &&
