@@ -113,7 +113,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 			mMediaProjection = null;
 		}
 
-//		deleteTempFile();
+		deleteTempFile();
 
 	}
 
