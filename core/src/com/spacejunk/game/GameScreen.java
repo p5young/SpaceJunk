@@ -33,6 +33,8 @@ public class GameScreen implements Screen {
 	public enum State
 	{
 		MAIN_MENU_SCREEN,
+		ABOUT_SCREEN,
+		HOW_TO_PLAY_SCREEN,
 		PAUSE,
 		RUN,
 		CRASHED,
@@ -170,6 +172,12 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 
 		switch (state) {
+			case ABOUT_SCREEN:
+				renderAboutScreen();
+				break;
+			case HOW_TO_PLAY_SCREEN:
+				renderHowToPlayScreen();
+				break;
 			case MAIN_MENU_SCREEN:
 				// Display main menu here, on interaction, move on to different game state
 				renderMainMenu();
@@ -245,6 +253,21 @@ public class GameScreen implements Screen {
 	}
 
 
+	//TODO: Fill in. Stub method
+	private void renderAboutScreen() {
+		canvas.begin();
+		canvas.draw(background, 0, 0);
+		canvas.end();
+	}
+
+
+	//TODO: Fill in. Stub method
+	private void renderHowToPlayScreen() {
+		canvas.begin();
+		canvas.draw(background, 0, 0);
+		canvas.end();
+	}
+
 	private void renderMainMenu() {
 		canvas.begin();
 
@@ -257,21 +280,29 @@ public class GameScreen implements Screen {
 				Gdx.graphics.getHeight()/2 - mainMenuMiddle.getHeight() / 2);
 
 
-		// Only move background is game is currently running
-		if (this.state == State.MAIN_MENU_SCREEN) {
-			mainMenuImageIndex += GameConstants.BACKGROUND_SPEED;
-		}
+		mainMenuImageIndex += GameConstants.BACKGROUND_SPEED;
 
 		if (mainMenuImageIndex > mainMenu.getWidth()) {
 			mainMenuImageIndex = 0;
 		}
 
-		
+
 		// Check for interactions with it
 		if(controller.isTouched()) {
+
 			if(controller.mainMenuPlayButtonIsTouched()) {
 				this.state = State.RUN;
 			}
+
+			if(controller.aboutButtonIsTouched()) {
+				this.state = State.ABOUT_SCREEN;
+			}
+
+			if(controller.howToPlayButtonIsTouched()) {
+				this.state = State.HOW_TO_PLAY_SCREEN;
+			}
+
+
 		}
 
 		canvas.end();

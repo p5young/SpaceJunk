@@ -39,6 +39,14 @@ public class Controller {
         return true;
     }
 
+    public boolean aboutButtonIsTouched() {
+        return true;
+    }
+
+    public boolean howToPlayButtonIsTouched() {
+        return true;
+    }
+
     public boolean playPauseButtonisPressed() {
         return Gdx.input.getX() >= 0 &&
             Gdx.input.getX() <= optionsMenu.getOptionsMenuTexures()[0].getWidth() &&
