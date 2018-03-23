@@ -283,7 +283,7 @@ public class GameScreen implements Screen {
 
 	private void beginRecordingScreen() {
 		isRecordingInProgress = true;
-		spaceJunk.getSystemServices().startRecording();
+		spaceJunk.getSystemServices().startRecording(spaceJunk.getxMax(), spaceJunk.getyMax());
 	}
 
 

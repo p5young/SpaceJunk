@@ -57,8 +57,8 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	private MediaProjectionManager mProjectionManager;
 
 
-	private static final int DISPLAY_WIDTH = 480;
-	private static final int DISPLAY_HEIGHT = 640;
+	private static int DISPLAY_WIDTH = 480;
+	private static int DISPLAY_HEIGHT = 640;
 
 
 	CallbackManager callbackManager;
@@ -190,7 +190,9 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 
 	@Override
-	public void startRecording() {
+	public void startRecording(int xMax, int yMax) {
+		DISPLAY_HEIGHT = yMax;
+		DISPLAY_WIDTH = xMax;
 		initializeScreenRecordingTools();
 		shareScreen();
 	}
@@ -214,7 +216,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 				Log.i("androidlog", "Temp file deletion failure");
 			}
 		}
-		
+
 	}
 
 	private void beginVideoSharing() {
@@ -320,11 +322,11 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	private void initRecorder() {
 		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
-		mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 		mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
 		mMediaRecorder.setVideoEncodingBitRate(512 * 1000);
 		mMediaRecorder.setVideoFrameRate(30);
 		mMediaRecorder.setVideoSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+		mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 		mMediaRecorder.setOutputFile(Environment.getExternalStorageDirectory().getAbsolutePath() + SCREEN_SHARE_FILE_PATH);
 	}
 
