@@ -46,8 +46,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	public static final int READ_REQUEST_CODE = 9;
 	public static final int READ_PHONE_STATE = 11;
 
-	private static boolean hasRecordingStarted;
-	private static boolean hasRecordingStopped;
 
 	private static boolean writeAccepted = false;
 	private static boolean readAccepted = false;
@@ -75,6 +73,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 
 	private void requestAllPermissions() {
+
 		Log.i("androidlog", "About to ask permissions");
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -87,7 +86,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 				this.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
 			}
 
-
 		}
 	}
 
@@ -96,15 +94,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		hasRecordingStarted = false;
-
-
 		requestAllPermissions();
-//		ContextCompat.checkSelfPermission(this, perms[0]);
-//		ContextCompat.checkSelfPermission(this, perms[1]);
-//		ContextCompat.checkSelfPermission(this, perms[2]);
-		Log.i("androidlog", "About to ask initialzie recording tools");
-
 
 		initializeScreenRecordingTools();
 		initializeFacebookSDK();
@@ -114,9 +104,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		config.useCompass = false;
 
 		initialize(new SpaceJunk(SpaceJunk.DIFFICULTY_LEVEL.EASY, this), config);
-
-
-
 
 	}
 
@@ -133,10 +120,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-
 		if (requestCode == FACEBOOK_CODE) {
-
-
 			if(resultCode != RESULT_OK) {
 				Log.i("facebooklog", "BAD RESULT RETURN FACEBOOK");
 				return;
@@ -146,7 +130,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 			}
 
 			callbackManager.onActivityResult(requestCode, resultCode, data);
-
 			return;
 		}
 
@@ -161,11 +144,9 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 			Log.i("androidlog", "Screen cast permission has been granted!");
 
-			Toast.makeText(this, "on Activity result here", Toast.LENGTH_SHORT).show();
 			mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
 			mMediaProjection.registerCallback(mMediaProjectionCallback, null);
 			mVirtualDisplay = createVirtualDisplay();
-
 
 			if(mVirtualDisplay == null) {
 				Log.i("androidlog", "Virtual display creation is NULL!!!");
@@ -176,6 +157,8 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 			}
 
 			mMediaRecorder.start();
+			Toast.makeText(this, "Screen recording in progress", Toast.LENGTH_SHORT).show();
+
 		}
 
 	}
@@ -213,30 +196,16 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 
 	@Override
-	public void startRecording(String filePath) {
-
-		if(!hasRecordingStarted) {
-
-			Log.i("androidlog", "In android mode now baby with filepath: " + filePath);
-			hasRecordingStarted = true;
-
-			shareScreen();
-
-		}
-
+	public void startRecording() {
+		shareScreen();
 	}
 
 	@Override
 	public void stopRecording() {
 
-		if(!hasRecordingStopped) {
-			Log.i("androidlog", "In android mode now stopRecodring: ");
-			hasRecordingStopped = true;
-
 			stopScreenSharing();
-
 			beginVideoSharing();
-		}
+
 	}
 
 
@@ -257,13 +226,10 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 			ShareVideoContent videoContent = new ShareVideoContent.Builder()
 					.setVideo(shareVideo)
-					.setContentDescription("description of the video")
-					.setContentTitle("content title")
 					.build();
 
 
 			Log.i("facebooklog", "About to show share dialog");
-//            shareDialog.show(content);
 
 			ShareDialog.show(this, videoContent);
 		}
@@ -271,32 +237,8 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	}
 
-
-
-
-
 	private void initializeFacebookSDK() {
 		callbackManager = CallbackManager.Factory.create();
-//		shareDialog = new ShareDialog(this);
-
-
-		// this part is optional
-//		shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-//			@Override
-//			public void onSuccess(Sharer.Result result) {
-//				Log.i("facebooklog","Successsss!");
-//			}
-//
-//			@Override
-//			public void onCancel() {
-//
-//			}
-//
-//			@Override
-//			public void onError(FacebookException error) {
-//
-//			}
-//		});
 	}
 
 
@@ -325,18 +267,15 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	private void stopScreenSharing() {
 		if (mVirtualDisplay == null) {
-			Log.i("androidlog", "Virtual display is null. ERROR");
 			return;
 		}
 		mVirtualDisplay.release();
 		mMediaRecorder.release();
-		Log.i("androidlog", "Virtual display released");
 	}
 
 
 	private void shareScreen() {
 		if (mMediaProjection == null) {
-			Log.i("androidlog", "Going to ask for permissions now");
 			startActivityForResult(mProjectionManager.createScreenCaptureIntent(), PERMISSION_CODE);
 			return;
 		}
@@ -344,33 +283,19 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		mMediaRecorder.start();
 	}
 
-
-	private boolean shouldAskPermission(){
-
-		return(Build.VERSION.SDK_INT>Build.VERSION_CODES.LOLLIPOP_MR1);
-
-	}
-
-
-
-
-
 	//---------------------------------------------
 	//---------------------------------------------
 
 	private class MediaProjectionCallback extends MediaProjection.Callback {
 		@Override
 		public void onStop() {
-			if (hasRecordingStarted) {
-				mMediaRecorder.stop();
-				mMediaRecorder.reset();
-				Log.v("facebooklog", "Recording Stopped onStop called here");
-				initRecorder();
-				prepareRecorder();
-			}
+			mMediaRecorder.stop();
+			mMediaRecorder.reset();
+			Log.v("facebooklog", "Recording Stopped onStop called here");
+			initRecorder();
+			prepareRecorder();
 			mMediaProjection = null;
 			stopScreenSharing();
-			Log.i(TAG, "MediaProjection Stopped");
 		}
 	}
 
@@ -387,13 +312,9 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	}
 
 	private void initRecorder() {
-
-		Log.i("facebooklog", "initRecorder method called here");
-//		mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
 		mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 		mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-//		mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 		mMediaRecorder.setVideoEncodingBitRate(512 * 1000);
 		mMediaRecorder.setVideoFrameRate(30);
 		mMediaRecorder.setVideoSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);

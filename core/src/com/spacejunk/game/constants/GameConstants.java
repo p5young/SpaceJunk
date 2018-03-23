@@ -23,7 +23,7 @@ public class GameConstants {
     /* Vertical Speed Constant */
     public static final int VERTICAL_SPEED = 10;
 
-    public static final int BORDER_WIDTH = 10;
+    public static final int BORDER_WIDTH = 20;
     /* Maximum count of an item in inventory */
     public static final int MAX_INVENTORY_COUNT = 4;
 

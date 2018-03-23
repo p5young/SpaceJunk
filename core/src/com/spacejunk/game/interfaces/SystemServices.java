@@ -6,6 +6,6 @@ package com.spacejunk.game.interfaces;
 
 public interface SystemServices {
 
-    public void startRecording(String filePath);
+    public void startRecording();
     public void stopRecording();
 }

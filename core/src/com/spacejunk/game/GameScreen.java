@@ -18,14 +18,9 @@ import com.spacejunk.game.obstacles.Obstacle;
 import java.lang.Math;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import static com.badlogic.gdx.Gdx.gl;
-import static com.badlogic.gdx.graphics.GL20.GL_RGBA;
-import static com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_BYTE;
 import static com.spacejunk.game.constants.GameConstants.MAX_INVENTORY_COUNT;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -60,7 +55,7 @@ public class GameScreen implements Screen {
 	private Boolean isGameActive = false;
 	private Boolean isCrashed = false;
 
-	private boolean isRecordingComplete = false;
+	private boolean isRecordingInProgress = false;
 
 	private RemainingLivesMenu remainingLivesMenu;
 
@@ -127,6 +122,23 @@ public class GameScreen implements Screen {
 		bd = bd.setScale(places, RoundingMode.HALF_UP);
 		return bd.doubleValue();
 	}
+
+
+	private static boolean isInteger( double a ) {
+
+		int n;
+
+		try {
+			n = (int) a;
+		}
+
+		catch ( NumberFormatException e ) {
+			return false;
+		}
+
+		return true;
+	}
+
 
 
 	@Override
@@ -257,23 +269,33 @@ public class GameScreen implements Screen {
 		canvas.end();
 		shapeRenderer.end();
 
+		if(isRecordingInProgress) {
+
+			if ((int) elapsedTime % 2 == 0) {
+				Gdx.app.log("gdxlog", "SHOOULD DRAW BORDER");
+				drawRecordingScreenBorder();
+				// integer type
+			}
+			else {
+				Gdx.app.log("gdxlog", "NO DRAW BORDER NOW");
+
+			}
+		}
+
 		pickedConsumable();
 		isCrashed = hasCharacterDied();
 	}
 
-	private void recordScreen() {
-
-		if(elapsedTime < 7 && !isRecordingComplete) {
-			drawRecordingScreenBorder();
-			spaceJunk.getSystemServices().startRecording("Test_path");
-		}
-		else {
-			isRecordingComplete = true;
-			spaceJunk.getSystemServices().stopRecording();
-		}
-
+	private void beginRecordingScreen() {
+		isRecordingInProgress = true;
+		spaceJunk.getSystemServices().startRecording();
 	}
 
+
+	private void stopRecordingScreen() {
+		isRecordingInProgress = false;
+		spaceJunk.getSystemServices().stopRecording();
+	}
 
 	public Texture getGameOver() {
 		return gameOver;
@@ -292,7 +314,9 @@ public class GameScreen implements Screen {
 
 		float w = spaceJunk.getxMax();
 		float h = spaceJunk.getyMax();
+
 		shapeRenderer.line(0, 0, w, 0);
+
 		shapeRenderer.line(0, h, w, h);
 		shapeRenderer.line(0, 0, 0, h);
 		shapeRenderer.line(w, 0, w, h);
@@ -354,6 +378,7 @@ public class GameScreen implements Screen {
 	}
 
 	private boolean pickedConsumable() {
+
 		boolean status = false;
 
 		int numberOfConsumables = spaceJunk.getLevel().getConsumablesList().size();
@@ -453,7 +478,12 @@ public class GameScreen implements Screen {
 				}
 
 				else if (controller.screenRecordButtonIsPressed()) {
-					Gdx.app.log("gdxlog", "Screen record button is pressed");
+					if(isRecordingInProgress) {
+						stopRecordingScreen();
+					}
+					else {
+						beginRecordingScreen();
+					}
 				}
 
 				else if (controller.consumablesMenuPressed()) {
@@ -510,11 +540,7 @@ public class GameScreen implements Screen {
 
 	private void drawPauseScreenTexture() {
 
-//		if(elapsedScoreDisplayTime >= 0.250) {
-//			Gdx.app.log("timelog", "elapsedScoreDisplayTimeIs: " + elapsedScoreDisplayTime);
-//			elapsedScoreDisplayTime = 0;
 			canvas.draw(pauseScreen, Gdx.graphics.getWidth() / 2 - pauseScreen.getWidth() / 2, Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2);
-//		}
 	}
 
 	private void displayScore() {
