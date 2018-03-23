@@ -272,13 +272,8 @@ public class GameScreen implements Screen {
 		if(isRecordingInProgress) {
 
 			if ((int) elapsedTime % 2 == 0) {
-				Gdx.app.log("gdxlog", "SHOOULD DRAW BORDER");
 				drawRecordingScreenBorder();
 				// integer type
-			}
-			else {
-				Gdx.app.log("gdxlog", "NO DRAW BORDER NOW");
-
 			}
 		}
 
@@ -316,10 +311,10 @@ public class GameScreen implements Screen {
 		float h = spaceJunk.getyMax();
 
 		shapeRenderer.line(0, 0, w, 0);
-
 		shapeRenderer.line(0, h, w, h);
 		shapeRenderer.line(0, 0, 0, h);
 		shapeRenderer.line(w, 0, w, h);
+
 		shapeRenderer.end();
 	}
 

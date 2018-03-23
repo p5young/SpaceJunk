@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
@@ -33,12 +34,9 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 
 	private static String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE",
-			"android.permission.READ_EXTERNAL_STORAGE",
-			"android.permission.READ_PHONE_STATE"};
+			"android.permission.READ_EXTERNAL_STORAGE"};
 
-	private static final int PERMS_REQUEST_CODE = 200;
-
-	private static final String SCREEN_SHARE_FILE_PATH = "/facebook_video.mp4";
+	private static final String SCREEN_SHARE_FILE_PATH = "/temp_facebook_video.mp4";
 
 	public static final String TAG = "AndroidLauncher";
 
@@ -54,6 +52,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	private static final int PERMISSION_CODE = 1;
 	private static final int FACEBOOK_CODE = 3;
+
 	private int mScreenDensity;
 	private MediaProjectionManager mProjectionManager;
 
@@ -63,13 +62,12 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 
 	CallbackManager callbackManager;
-	ShareDialog shareDialog;
-
 
 	private MediaProjection mMediaProjection;
 	private VirtualDisplay mVirtualDisplay;
-	private MediaProjectionCallback mMediaProjectionCallback;
 	private MediaRecorder mMediaRecorder;
+
+	private MediaProjectionCallback mMediaProjectionCallback;
 
 
 	private void requestAllPermissions() {
@@ -110,10 +108,16 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+
+
 		if (mMediaProjection != null) {
 			mMediaProjection.stop();
 			mMediaProjection = null;
 		}
+
+		deleteTempFile();
+		Log.i("androidlog", "OnDestroyEndedHere");
+
 	}
 
 
@@ -121,6 +125,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		if (requestCode == FACEBOOK_CODE) {
+
 			if(resultCode != RESULT_OK) {
 				Log.i("facebooklog", "BAD RESULT RETURN FACEBOOK");
 				return;
@@ -137,24 +142,14 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		if(requestCode == PERMISSION_CODE) {
 
 			if (resultCode != RESULT_OK) {
-				Toast.makeText(this,
-						"Screen Cast Permission Denied", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "Screen recording has been denied!", Toast.LENGTH_SHORT).show();
 				return;
 			}
 
-			Log.i("androidlog", "Screen cast permission has been granted!");
 
 			mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
-			mMediaProjection.registerCallback(mMediaProjectionCallback, null);
+//			mMediaProjection.registerCallback(mMediaProjectionCallback, null);
 			mVirtualDisplay = createVirtualDisplay();
-
-			if(mVirtualDisplay == null) {
-				Log.i("androidlog", "Virtual display creation is NULL!!!");
-			}
-			else {
-				Log.i("androidlog", "Virtual display creation SUCCESSFULL!!!");
-
-			}
 
 			mMediaRecorder.start();
 			Toast.makeText(this, "Screen recording in progress", Toast.LENGTH_SHORT).show();
@@ -165,7 +160,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 
 	@Override
-	public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults){
+	public void onRequestPermissionsResult(int permsRequestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
 
 		switch(permsRequestCode){
 
@@ -202,21 +197,33 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	@Override
 	public void stopRecording() {
-
-			stopScreenSharing();
-			beginVideoSharing();
-
+		stopScreenSharing();
+		beginVideoSharing();
 	}
 
 
-	private void beginVideoSharing() {
+	private void deleteTempFile() {
 
+		File fdelete = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + SCREEN_SHARE_FILE_PATH);
+
+		if (fdelete.exists()) {
+			Log.i("androidlog", "The file exists");
+			if (fdelete.delete()) {
+				Log.i("androidlog", "Temp file deleted successfully!");
+			}
+			else {
+				Log.i("androidlog", "Temp file deletion failure");
+			}
+		}
+		else {
+			Log.i("androidlog", "The file dos not exist");
+		}
+	}
+
+	private void beginVideoSharing() {
 
 		File dcim = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + SCREEN_SHARE_FILE_PATH);
 		Uri videoUri = Uri.fromFile(dcim);
-
-		Log.i("facebooklog", Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android");
-
 
 		if (ShareDialog.canShow(ShareLinkContent.class)) {
 
@@ -229,11 +236,8 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 					.build();
 
 
-			Log.i("facebooklog", "About to show share dialog");
-
 			ShareDialog.show(this, videoContent);
 		}
-
 
 	}
 
@@ -261,20 +265,27 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 		mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
-		mMediaProjectionCallback = new MediaProjectionCallback();
+//		mMediaProjectionCallback = new MediaProjectionCallback();
 	}
 
 
 	private void stopScreenSharing() {
+
 		if (mVirtualDisplay == null) {
 			return;
 		}
+
 		mVirtualDisplay.release();
 		mMediaRecorder.release();
+
+		// Preparing for any future recordings
+		mMediaRecorder = new MediaRecorder();
 	}
 
 
 	private void shareScreen() {
+		initializeScreenRecordingTools();
+
 		if (mMediaProjection == null) {
 			startActivityForResult(mProjectionManager.createScreenCaptureIntent(), PERMISSION_CODE);
 			return;
@@ -291,7 +302,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		public void onStop() {
 			mMediaRecorder.stop();
 			mMediaRecorder.reset();
-			Log.v("facebooklog", "Recording Stopped onStop called here");
+			Log.v("androidlog", "Recording Stopped onStop called here");
 			initRecorder();
 			prepareRecorder();
 			mMediaProjection = null;

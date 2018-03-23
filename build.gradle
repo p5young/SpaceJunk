@@ -59,10 +59,10 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
 
-        compile 'com.android.support:appcompat-v7:27.0.1'
-        compile 'com.facebook.android:facebook-share:[4,5)'
+        compile 'com.android.support:appcompat-v7:27.1.0'
+        compile 'com.facebook.android:facebook-share:4.31.0'
 
-        implementation 'com.facebook.android:facebook-login:[4,5)'
+        implementation 'com.facebook.android:facebook-login:4.31.0'
     }
 }
 
