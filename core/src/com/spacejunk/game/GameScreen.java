@@ -67,6 +67,11 @@ public class GameScreen implements Screen {
 	private boolean isRecordingInProgress = false;
 	private boolean thisIsTheFirstTimeMainMenuIsAccessed = true;
 
+	// This is only ever used in conjunction with STATE.PAUSE
+	// If this is true, settings menu is shown while in pause state
+	// If false, then we in pause state with the actual pause menu itself shown
+	private boolean isSettingsMenuShownOnScreen;
+
 	private RemainingLivesMenu remainingLivesMenu;
 
 	private SpaceJunk spaceJunk;
@@ -204,15 +209,24 @@ public class GameScreen implements Screen {
 				break;
 			case PAUSE:
 				renderPauseScreenEssentials();
+
 				if(controller.isTouched()) {
-					if(controller.playPauseButtonisPressed() || controller.pauseScreenResumeButtonIsPressed()) {
-						resume();
+					if(isSettingsMenuShownOnScreen) {
+						// If back button is touched, flip this boolean around so the else case is run next time out
+						if(controller.settingsMenuBackButtonIsPressed()) {
+							isSettingsMenuShownOnScreen = false;
+						}
 					}
-					if(controller.mainMenuButtonIsPressed() || controller.pauseScreenMainMenuButtonIsPressed()) {
-						goBackToMainMenu();
-					}
-					if(controller.settingsMenuButtonIsPressed() || controller.pauseScreenSettingsMenuButtonIsPressed()) {
-						showSettingsMenu();
+					else {
+						if (controller.playPauseButtonisPressed() || controller.pauseScreenResumeButtonIsPressed()) {
+							resume();
+						}
+						if (controller.mainMenuButtonIsPressed() || controller.pauseScreenMainMenuButtonIsPressed()) {
+							goBackToMainMenu();
+						}
+						if (controller.settingsMenuButtonIsPressed() || controller.pauseScreenSettingsMenuButtonIsPressed()) {
+							showSettingsMenu();
+						}
 					}
 				}
 				break;
@@ -261,7 +275,12 @@ public class GameScreen implements Screen {
 		renderRemainingLives();
 		displayScore();
 
-		drawPauseScreenTexture();
+		if(isSettingsMenuShownOnScreen) {
+			drawSettingsMenu();
+		}
+		else {
+			drawPauseScreenTexture();
+		}
 
 		canvas.end();
 		shapeRenderer.end();
@@ -365,7 +384,6 @@ public class GameScreen implements Screen {
 		}
 
 	}
-
 
 
 	private void beginRecordingScreen() {
@@ -541,6 +559,8 @@ public class GameScreen implements Screen {
 
 	private void showSettingsMenu() {
 		Gdx.app.log("settingslog", "Settings menu should be shown here");
+		this.state = State.PAUSE;
+		isSettingsMenuShownOnScreen = true;
 	}
 
 	private void gameLogic() {
@@ -649,6 +669,12 @@ public class GameScreen implements Screen {
 
 	private void drawGameOverScreen() {
 		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
+	}
+
+	private void drawSettingsMenu() {
+		Gdx.app.log("settingslog", "Setting menu is being shown now");
+		canvas.draw(gameOver, Gdx.graphics.getWidth() / 2 - pauseScreen.getWidth() / 2, Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2);
+
 	}
 
 	private void drawPauseScreenTexture() {

@@ -47,6 +47,10 @@ public class Controller {
         return true;
     }
 
+    public boolean settingsMenuBackButtonIsPressed() {
+        return true;
+    }
+
     public boolean settingsMenuButtonIsPressed() {
         return Gdx.input.getX() >= 0 &&
                 Gdx.input.getX() <= optionsMenu.getOptionsMenuTexures()[0].getWidth() &&
@@ -84,17 +88,18 @@ public class Controller {
     }
 
 
-    public boolean pauseScreenResumeButtonIsPressed() {
-        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 70 &&
-                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 70 &&
+    public boolean pauseScreenMainMenuButtonIsPressed() {
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 280 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) - 120 &&
                 /*Check y coordinates now*/
                 Gdx.input.getY() >= (currentGame.getyMax() / 2) &&
                 Gdx.input.getY() <=  (currentGame.getyMax() / 2) + 140;
     }
 
-    public boolean pauseScreenMainMenuButtonIsPressed() {
-        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 180 &&
-                Gdx.input.getX() <= (currentGame.getxMax() / 2) - 110 &&
+
+    public boolean pauseScreenResumeButtonIsPressed() {
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 80 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 80 &&
                 /*Check y coordinates now*/
                 Gdx.input.getY() >= (currentGame.getyMax() / 2) &&
                 Gdx.input.getY() <=  (currentGame.getyMax() / 2) + 140;
@@ -102,8 +107,8 @@ public class Controller {
 
 
     public boolean pauseScreenSettingsMenuButtonIsPressed() {
-        return Gdx.input.getX() >= (currentGame.getxMax() / 2) + 110 &&
-                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 180 &&
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) + 120 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 280 &&
                 /*Check y coordinates now*/
                 Gdx.input.getY() >= (currentGame.getyMax() / 2) &&
                 Gdx.input.getY() <=  (currentGame.getyMax() / 2) + 140;
