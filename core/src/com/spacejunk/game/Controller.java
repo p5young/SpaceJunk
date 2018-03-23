@@ -47,6 +47,16 @@ public class Controller {
         return true;
     }
 
+    public boolean settingsMenuButtonIsPressed() {
+        return Gdx.input.getX() >= 0 &&
+                Gdx.input.getX() <= optionsMenu.getOptionsMenuTexures()[0].getWidth() &&
+                Gdx.input.getY() >= optionsMenu.getOptionsMenuTexures()[0].getHeight() +
+                        optionsMenu.getOptionsMenuTexures()[1].getHeight() &&
+                Gdx.input.getY() <= optionsMenu.getOptionsMenuTexures()[0].getHeight() +
+                        optionsMenu.getOptionsMenuTexures()[1].getHeight() +
+                        optionsMenu.getOptionsMenuTexures()[2].getHeight();
+    }
+
 
     public boolean mainMenuButtonIsPressed() {
         return Gdx.input.getX() >= 0 &&
@@ -90,6 +100,14 @@ public class Controller {
                 Gdx.input.getY() <=  (currentGame.getyMax() / 2) + 140;
     }
 
+
+    public boolean pauseScreenSettingsMenuButtonIsPressed() {
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) + 110 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 180 &&
+                /*Check y coordinates now*/
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) &&
+                Gdx.input.getY() <=  (currentGame.getyMax() / 2) + 140;
+    }
 
     public boolean consumablesMenuPressed() {
         if (Gdx.input.getX() > (currentGame.getxMax() - consumablesMenu.getInventoryWidth()) &&

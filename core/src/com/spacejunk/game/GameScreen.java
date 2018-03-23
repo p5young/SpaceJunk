@@ -211,6 +211,9 @@ public class GameScreen implements Screen {
 					if(controller.mainMenuButtonIsPressed() || controller.pauseScreenMainMenuButtonIsPressed()) {
 						goBackToMainMenu();
 					}
+					if(controller.settingsMenuButtonIsPressed() || controller.pauseScreenSettingsMenuButtonIsPressed()) {
+						showSettingsMenu();
+					}
 				}
 				break;
 			default:
@@ -536,6 +539,10 @@ public class GameScreen implements Screen {
 		this.state = State.MAIN_MENU_SCREEN;
 	}
 
+	private void showSettingsMenu() {
+		Gdx.app.log("settingslog", "Settings menu should be shown here");
+	}
+
 	private void gameLogic() {
 
 		if(isGameActive && !isCrashed) {
@@ -553,6 +560,11 @@ public class GameScreen implements Screen {
 				// Checking for main menu button press
 				else if(controller.mainMenuButtonIsPressed()) {
 					goBackToMainMenu();
+				}
+
+				// Checking for settings menu button press
+				else if(controller.settingsMenuButtonIsPressed()) {
+					showSettingsMenu();
 				}
 
 				// Checking for screen record tap
