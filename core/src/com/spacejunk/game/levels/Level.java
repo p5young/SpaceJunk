@@ -40,7 +40,7 @@ public class Level {
     // Following two fields are for inventory management
     private ArrayList<Consumable> inventoryObjects;
     private Set<Consumable.CONSUMABLES> inventory;
-    private Consumable.CONSUMABLES equippedConsumable = Consumable.CONSUMABLES.SPACE_HAMMER;
+    private Consumable.CONSUMABLES equippedConsumable;
 
 
     // Co-ordinates for platform boundaries
@@ -81,7 +81,7 @@ public class Level {
         */
         this.inventory = new HashSet<Consumable.CONSUMABLES>();
 
-        this.equippedConsumable = null;
+        this.equippedConsumable = Consumable.CONSUMABLES.UNEQUIPPED;
 
         this.inventoryObjects = new ArrayList<Consumable>();
         this.inventoryObjects.add(new SpaceHammerConsumable(this));

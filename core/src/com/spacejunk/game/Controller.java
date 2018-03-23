@@ -3,6 +3,7 @@ package com.spacejunk.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.menus.ConsumablesMenu;
 import com.spacejunk.game.menus.OptionsMenu;
@@ -88,6 +89,13 @@ public class Controller {
             return false;
         }
 
+    }
+
+    public boolean astronautTapped() {
+        float x = Gdx.input.getX();
+        float y = getTouchYCoordinate();
+
+        return this.currentGame.getCharacter().getCharacterShape().contains(x, y);
     }
 
     public void render(SpriteBatch canvas) {

@@ -346,19 +346,16 @@ public class GameScreen implements Screen {
 
 					currentObstacle.playSound();
 
-					// Remove Consumable from inventory Set if any
-					if (this.spaceJunk.getLevel().getEquippedConsumable() != null) {
-						this.spaceJunk.getLevel().getInventory().remove(this.spaceJunk.getLevel().getEquippedConsumable());
-						this.spaceJunk.getLevel().setEquippedConsumable(null);
-					}
+					boolean passesObstacle = currentObstacle.getBreaksOnConsumable()
+											.equals(this.spaceJunk.getLevel().getEquippedConsumable());
 
-					if (currentObstacle.getBreaksOnConsumable()
-							.equals(this.spaceJunk.getLevel().getEquippedConsumable())) {
-						currentObstacle.setBroken(true);
+					this.spaceJunk.getLevel().getInventory().remove(this.spaceJunk.getLevel().getEquippedConsumable());
+					this.spaceJunk.getLevel().setEquippedConsumable(Consumable.CONSUMABLES.UNEQUIPPED);
+					currentObstacle.setBroken(true);
+
+					if (passesObstacle) {
 						return false;
 					}
-
-					currentObstacle.setBroken(true);
 
                     return spaceJunk.getCharacter().takesHit();
                 }
@@ -480,6 +477,11 @@ public class GameScreen implements Screen {
 					if (this.spaceJunk.getLevel().getInventory().contains(this.justPressed)) {
 						this.spaceJunk.getLevel().setEquippedConsumable(this.justPressed);
 					}
+				}
+
+				// this is for unequipping the current consumable
+				else if (controller.astronautTapped()) {
+					this.spaceJunk.getLevel().setEquippedConsumable(Consumable.CONSUMABLES.UNEQUIPPED);
 				}
 				// If all checks fail, this means the user meant to move the character
 				else {

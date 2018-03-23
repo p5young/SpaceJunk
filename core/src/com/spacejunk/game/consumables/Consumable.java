@@ -14,7 +14,7 @@ import com.spacejunk.game.obstacles.Obstacle;
 
 public abstract class Consumable {
 
-    public enum CONSUMABLES {LIFE, INVISIBILITY, FIRESUIT, GAS_MASK, SPACE_HAMMER};
+    public enum CONSUMABLES {LIFE, INVISIBILITY, FIRESUIT, GAS_MASK, SPACE_HAMMER, UNEQUIPPED};
 
 
     // Initial dummy setting
