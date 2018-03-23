@@ -67,8 +67,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	private VirtualDisplay mVirtualDisplay;
 	private MediaRecorder mMediaRecorder;
 
-	private MediaProjectionCallback mMediaProjectionCallback;
-
 
 	private void requestAllPermissions() {
 
@@ -147,7 +145,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 
 			mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
-//			mMediaProjection.registerCallback(mMediaProjectionCallback, null);
 			mVirtualDisplay = createVirtualDisplay();
 
 			mMediaRecorder.start();
@@ -264,7 +261,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 		mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
-//		mMediaProjectionCallback = new MediaProjectionCallback();
 	}
 
 
@@ -292,21 +288,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		mMediaRecorder.start();
 	}
 
-	//---------------------------------------------
-	//---------------------------------------------
-
-	private class MediaProjectionCallback extends MediaProjection.Callback {
-		@Override
-		public void onStop() {
-			mMediaRecorder.stop();
-			mMediaRecorder.reset();
-			Log.v("androidlog", "Recording Stopped onStop called here");
-			initRecorder();
-			prepareRecorder();
-			mMediaProjection = null;
-			stopScreenSharing();
-		}
-	}
 
 	private void prepareRecorder() {
 		try {
