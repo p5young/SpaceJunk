@@ -22,8 +22,10 @@ import com.spacejunk.game.obstacles.ToxicGasObstacle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 
 /**
@@ -37,7 +39,7 @@ public class Level {
 
     // Following two fields are for inventory management
     private ArrayList<Consumable> inventoryObjects;
-    private Map<Consumable.CONSUMABLES, Integer> inventory;
+    private Set<Consumable.CONSUMABLES> inventory;
     private Consumable.CONSUMABLES equippedConsumable = Consumable.CONSUMABLES.SPACE_HAMMER;
 
 
@@ -77,11 +79,7 @@ public class Level {
         /* initialize the map with the obstacles
         *  we are kind of hard coding what the consumables are at first
         */
-        this.inventory = new HashMap<Consumable.CONSUMABLES, Integer>();
-        this.inventory.put(Consumable.CONSUMABLES.SPACE_HAMMER, 0);
-        this.inventory.put(Consumable.CONSUMABLES.FIRESUIT, 0);
-        this.inventory.put(Consumable.CONSUMABLES.GAS_MASK, 0);
-        this.inventory.put(Consumable.CONSUMABLES.INVISIBILITY, 0);
+        this.inventory = new HashSet<Consumable.CONSUMABLES>();
 
         this.equippedConsumable = null;
 
@@ -216,7 +214,7 @@ public class Level {
         return this.maxLives;
     }
 
-    public Map<Consumable.CONSUMABLES, Integer> getInventory() {
+    public Set<Consumable.CONSUMABLES> getInventory() {
         return inventory;
     }
 

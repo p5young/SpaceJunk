@@ -350,13 +350,9 @@ public class GameScreen implements Screen {
 							.equals(this.spaceJunk.getLevel().getEquippedConsumable())) {
 						currentObstacle.setBroken(true);
 
-						int count = this.spaceJunk.getLevel().getInventory().get(this.spaceJunk.getLevel().getEquippedConsumable());
-						if (count > 0) {
-							this.spaceJunk.getLevel().getInventory().put(this.spaceJunk.getLevel().getEquippedConsumable(), count - 1);
-							if (count - 1 == 0) {
-								this.spaceJunk.getLevel().setEquippedConsumable(null);
-							}
-						}
+						// Remove Consumable from inventory Set
+						this.spaceJunk.getLevel().getInventory().remove(this.spaceJunk.getLevel().getEquippedConsumable());
+						this.spaceJunk.getLevel().setEquippedConsumable(null);
 
 						return false;
 					}
@@ -399,12 +395,9 @@ public class GameScreen implements Screen {
 					break;
 				}
 
-				// increment the count
-				int currentCount = this.spaceJunk.getLevel().getInventory().get(currentConsumable.getType());
-				// don't assign to index to remove if inventory is full
-				if (currentCount < MAX_INVENTORY_COUNT) {
-					this.spaceJunk.getLevel().getInventory().put(currentConsumable.getType(), currentCount + 1);
-
+				// put in set
+				if (this.spaceJunk.getLevel().getInventory().add(currentConsumable.getType())) {
+					this.spaceJunk.getLevel().setEquippedConsumable(currentConsumable.getType());
 					indexToRemove = i;
 				}
 
@@ -483,7 +476,7 @@ public class GameScreen implements Screen {
 
 				else if (controller.consumablesMenuPressed()) {
 					this.justPressed = controller.getPressedConsumable();
-					if (this.spaceJunk.getLevel().getInventory().get(this.justPressed) > 0) {
+					if (this.spaceJunk.getLevel().getInventory().contains(this.justPressed)) {
 						this.spaceJunk.getLevel().setEquippedConsumable(this.justPressed);
 					}
 				}
