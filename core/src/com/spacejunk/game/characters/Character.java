@@ -55,7 +55,6 @@ public abstract class Character {
     protected int FRAME_COLS;
     protected int FRAME_ROWS;
 
-    // MY SHIT  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     protected Pixmap pixmap;
 
     // Remaining Lives; how many hits can be taken
@@ -64,7 +63,6 @@ public abstract class Character {
 
     public void create() {
 
-        // MY SHIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         FileHandle handle = Gdx.files.internal("astronaut_texture_1.png");
         this.pixmap = new Pixmap(handle);
 
@@ -162,7 +160,6 @@ public abstract class Character {
 
     }
 
-    // MY SHIT DELETE ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public Pixmap getPixmap() { return pixmap; }
 
     public void moveCharacter(int y) {

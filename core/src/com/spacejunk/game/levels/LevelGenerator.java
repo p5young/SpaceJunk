@@ -37,56 +37,82 @@ public class LevelGenerator {
     public int generateObstacles() {
         Gdx.app.log("applog", "Making new batch of obstacles");
         Gdx.app.log("applog", "MinGap: " + MIN_GAP);
-        int randomInt = randomGenerator.nextInt(7);
-        switch (randomInt) {
-            // layout 0
-            case 0:
-                Gdx.app.log("applog", "Layout 0");
-                makeUnbreakable(0, level.getBottomPlatformY());
-                int a0 = makeUnbreakable(30, level.getMiddlePlatformY());
-                int b0 = makeUnbreakable(a0 + MIN_GAP, level.getTopPlatformY());
-                return b0 + MIN_GAP;
-            // layout 1
-            case 1:
+        int randomInt = randomGenerator.nextInt(21);
+        if (randomInt < 3) {
+            /*
+            layout 0
+                U
+            U
+            U
+             */
+            Gdx.app.log("applog", "Layout 0");
+            makeUnbreakable(0, level.getBottomPlatformY());
+            int a0 = makeUnbreakable(30, level.getMiddlePlatformY());
+            int b0 = makeUnbreakable(a0 + MIN_GAP, level.getTopPlatformY());
+            return b0 + MIN_GAP;
+        } else if (randomInt < 6) {
+            /*
+            layout 1
+             U
+            U
+                U
+             */
                 Gdx.app.log("applog", "Layout 1");
                 makeUnbreakable(0, level.getMiddlePlatformY());
                 int a1 = makeUnbreakable(30, level.getTopPlatformY());
                 int b1 = makeUnbreakable(a1 + MIN_GAP, level.getBottomPlatformY());
                 return b1 + MIN_GAP;
-            // layout 2
-            case 2:
+        } else if (randomInt < 9) {
+            /*
+            layout 2
+              U
+            U U
+
+             */
                 Gdx.app.log("applog", "Layout 2");
                 int a2 = makeUnbreakable(0, level.getMiddlePlatformY());
                 int b2 = makeUnbreakable(a2, level.getMiddlePlatformY());
                 makeUnbreakable(a2, level.getTopPlatformY());
                 return b2 + MIN_GAP;
-            // layout 3
-            case 3:
+        } else if (randomInt < 12) {
+            /*
+            layout 3
+
+            U C
+              C
+             */
                 Gdx.app.log("applog", "Layout 3");
                 int a3 = makeUnbreakable(0, level.getMiddlePlatformY());
                 int b3 = makeConsumable(a3, level.getMiddlePlatformY());
                 makeConsumable(a3, level.getBottomPlatformY());
                 return b3 + MIN_GAP;
-            // layout 4
-            case 4:
-                Gdx.app.log("applog", "Layout 4");
-                int a4 = makeLife(0, randomLevel());
-                return a4 + MIN_GAP;
-            // layout 5
-            case 5:
-                Gdx.app.log("applog", "Layout 5");
-                int randomLevel5 = randomLevel();
-                int a5 = makeConsumable(0, randomLevel5);
-                int b5 = makeUnbreakable(a5, randomLevel5);
-                return b5 + MIN_GAP;
-            // layout 6
-            case 6:
-                Gdx.app.log("applog", "Layout 6");
-                int a6 = makeConsumable(0, randomLevel());
-                return a6 + MIN_GAP;
-            default:
-                Gdx.app.log("applog", "Error: generateObstacles' switch broke");
-                return 500;
+        } else if (randomInt < 15) {
+            /*
+            layout 4
+            U C (random level)
+             */
+            Gdx.app.log("applog", "Layout 4");
+            int randomLevel5 = randomLevel();
+            int a5 = makeConsumable(0, randomLevel5);
+            int b5 = makeUnbreakable(a5, randomLevel5);
+            return b5 + MIN_GAP;
+        } else if (randomInt < 18 && level.getCurrentGame().getCharacter().getRemainingLives() < GameConstants.MAX_LIVES) {
+            /*
+            layout 5
+            L (random level)
+             */
+            Gdx.app.log("applog", "Layout 5");
+            int a4 = makeLife(0, randomLevel());
+            return a4 + MIN_GAP;
+
+        } else {
+            /*
+            layout 6
+            C (random level)
+             */
+            Gdx.app.log("applog", "Layout 6");
+            int a6 = makeConsumable(0, randomLevel());
+            return a6 + MIN_GAP;
         }
     }
 
@@ -116,7 +142,7 @@ public class LevelGenerator {
         Obstacle o = getRandomObstacle();
         o.setCoordinates(level.getXMax() + x, y);
         level.getObstaclesList().add(o);
-        return x + o.getTexture().getWidth() + 10;  // NOTE: CHANGE 10 TO NUMBER AFFECTED BY DIFFICULTY
+        return x + o.getTexture().getWidth() + 10;
     }
 
     private Obstacle getRandomObstacle() {

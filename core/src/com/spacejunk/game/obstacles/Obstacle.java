@@ -95,7 +95,6 @@ public abstract class Obstacle {
         isBroken = broken;
     }
 
-    // MY SHIT!!!!! DELETE THIS IF IT FAILS
     public Pixmap getPixmap() { return this.pixmap; }
 
     public void playSound() {
