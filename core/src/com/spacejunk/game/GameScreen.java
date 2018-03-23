@@ -32,6 +32,7 @@ public class GameScreen implements Screen {
 
 	public enum State
 	{
+		MAIN_MENU_SCREEN,
 		PAUSE,
 		RUN,
 		CRASHED,
@@ -43,7 +44,11 @@ public class GameScreen implements Screen {
 	private SpriteBatch canvas;
 
 	private Texture background;
+	private Texture mainMenu;
+	private Texture mainMenuMiddle;
+
 	private int backgroundImageIndex = 0;
+	private int mainMenuImageIndex = 0;
 
 	private Controller controller;
 
@@ -79,7 +84,7 @@ public class GameScreen implements Screen {
 	private void startGame(SpaceJunk game) {
 
 		this.spaceJunk = game;
-		this.state =  State.RUN;
+		this.state =  State.MAIN_MENU_SCREEN;
 
 		this.controller = new Controller(this.spaceJunk, this);
 		this.remainingLivesMenu = new RemainingLivesMenu(this.spaceJunk);
@@ -99,6 +104,9 @@ public class GameScreen implements Screen {
 
 		background = new Texture("background.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+		mainMenu = new Texture("main_menu.jpg");
+		mainMenuMiddle = new Texture("main_menu_middle.png");
 
 		font = new BitmapFont();
 		font.setColor(Color.WHITE);
@@ -121,22 +129,6 @@ public class GameScreen implements Screen {
 		BigDecimal bd = new BigDecimal(value);
 		bd = bd.setScale(places, RoundingMode.HALF_UP);
 		return bd.doubleValue();
-	}
-
-
-	private static boolean isInteger( double a ) {
-
-		int n;
-
-		try {
-			n = (int) a;
-		}
-
-		catch ( NumberFormatException e ) {
-			return false;
-		}
-
-		return true;
 	}
 
 
@@ -178,6 +170,10 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 
 		switch (state) {
+			case MAIN_MENU_SCREEN:
+				// Display main menu here, on interaction, move on to different game state
+				renderMainMenu();
+				break;
 			case RUN:
 				renderRunningScreen();
 				break;
@@ -244,9 +240,41 @@ public class GameScreen implements Screen {
 		renderController();
 		drawPauseScreenTexture();
 
-
 		canvas.end();
 		shapeRenderer.end();
+	}
+
+
+	private void renderMainMenu() {
+		canvas.begin();
+
+		// Draw main menu here
+		canvas.draw(mainMenu, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), mainMenuImageIndex,
+				0, Gdx.graphics.getWidth(), Math.min(mainMenu.getHeight(),
+						Gdx.graphics.getHeight()), false, false);
+
+		canvas.draw(mainMenuMiddle, Gdx.graphics.getWidth()/2 - mainMenuMiddle.getWidth() / 2,
+				Gdx.graphics.getHeight()/2 - mainMenuMiddle.getHeight() / 2);
+
+
+		// Only move background is game is currently running
+		if (this.state == State.MAIN_MENU_SCREEN) {
+			mainMenuImageIndex += GameConstants.BACKGROUND_SPEED;
+		}
+
+		if (mainMenuImageIndex > mainMenu.getWidth()) {
+			mainMenuImageIndex = 0;
+		}
+
+		
+		// Check for interactions with it
+		if(controller.isTouched()) {
+			if(controller.mainMenuPlayButtonIsTouched()) {
+				this.state = State.RUN;
+			}
+		}
+
+		canvas.end();
 	}
 
 	// Note :- Rendering each on screen component that 'moves' updates its internal coordinates
@@ -273,7 +301,6 @@ public class GameScreen implements Screen {
 
 			if ((int) elapsedTime % 2 == 0) {
 				drawRecordingScreenBorder();
-				// integer type
 			}
 		}
 
@@ -494,8 +521,11 @@ public class GameScreen implements Screen {
 		}
 
 		else if(!isGameActive && !isCrashed){
+			// Game only starts IF user touches once more
+			// If not, we display a prompt on screen telling them to tap anywhere to start
+			// TODO:
 			if(controller.isTouched()) {
-				Gdx.app.log("applog", "ELSE IF CASE OF GAME LOGIC METHOD");
+				Gdx.app.log("applog", "THE GAME STARTS NOW");
 				isGameActive = true;
 			}
 		}
@@ -514,8 +544,11 @@ public class GameScreen implements Screen {
 		// Using the width as the "u" parameter implies that image width is greater than screen width
 		// If it's not the background is tiled.
 
-		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), backgroundImageIndex, 0, Gdx.graphics.getWidth(), Math.min(background.getHeight(), Gdx.graphics.getHeight()), false, false);
+		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
+				backgroundImageIndex, 0, Gdx.graphics.getWidth(), Math.min(background.getHeight(),
+						Gdx.graphics.getHeight()), false, false);
 
+		// Only move background is game is currently running
 		if (this.state == State.RUN) {
 			backgroundImageIndex += GameConstants.BACKGROUND_SPEED;
 		}
