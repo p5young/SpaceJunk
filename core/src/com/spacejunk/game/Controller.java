@@ -35,6 +35,41 @@ public class Controller {
         return Gdx.input.justTouched();
     }
 
+    public boolean mainMenuPlayButtonIsTouched() {
+        return true;
+    }
+
+    public boolean aboutButtonIsTouched() {
+        return true;
+    }
+
+    public boolean howToPlayButtonIsTouched() {
+        return true;
+    }
+
+    public boolean settingsMenuBackButtonIsPressed() {
+        return true;
+    }
+
+    public boolean settingsMenuButtonIsPressed() {
+        return Gdx.input.getX() >= 0 &&
+                Gdx.input.getX() <= optionsMenu.getOptionsMenuTexures()[0].getWidth() &&
+                Gdx.input.getY() >= optionsMenu.getOptionsMenuTexures()[0].getHeight() +
+                        optionsMenu.getOptionsMenuTexures()[1].getHeight() &&
+                Gdx.input.getY() <= optionsMenu.getOptionsMenuTexures()[0].getHeight() +
+                        optionsMenu.getOptionsMenuTexures()[1].getHeight() +
+                        optionsMenu.getOptionsMenuTexures()[2].getHeight();
+    }
+
+
+    public boolean mainMenuButtonIsPressed() {
+        return Gdx.input.getX() >= 0 &&
+                Gdx.input.getX() <= optionsMenu.getOptionsMenuTexures()[0].getWidth() &&
+                Gdx.input.getY() >= 0 &&
+                Gdx.input.getY() <= optionsMenu.getOptionsMenuTexures()[0].getHeight();
+    }
+
+
     public boolean playPauseButtonisPressed() {
         return Gdx.input.getX() >= 0 &&
             Gdx.input.getX() <= optionsMenu.getOptionsMenuTexures()[0].getWidth() &&
@@ -53,14 +88,31 @@ public class Controller {
     }
 
 
-    public boolean pauseScreenResumeButtonIsPressed() {
-        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 70 &&
-                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 70 &&
+    public boolean pauseScreenMainMenuButtonIsPressed() {
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 280 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) - 120 &&
                 /*Check y coordinates now*/
                 Gdx.input.getY() >= (currentGame.getyMax() / 2) &&
                 Gdx.input.getY() <=  (currentGame.getyMax() / 2) + 140;
     }
 
+
+    public boolean pauseScreenResumeButtonIsPressed() {
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 80 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 80 &&
+                /*Check y coordinates now*/
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) &&
+                Gdx.input.getY() <=  (currentGame.getyMax() / 2) + 140;
+    }
+
+
+    public boolean pauseScreenSettingsMenuButtonIsPressed() {
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) + 120 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 280 &&
+                /*Check y coordinates now*/
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) &&
+                Gdx.input.getY() <=  (currentGame.getyMax() / 2) + 140;
+    }
 
     public boolean consumablesMenuPressed() {
         if (Gdx.input.getX() > (currentGame.getxMax() - consumablesMenu.getInventoryWidth()) &&
