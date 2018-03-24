@@ -246,6 +246,7 @@ public class GameScreen implements Screen {
 
 						else if(controller.settingsMenuSoundsSettingIsPressed()) {
 							soundSetting = !soundSetting;
+							updateBackgroundMusic();
 							updateSettingsMenuTexture();
 						}
 
@@ -315,6 +316,16 @@ public class GameScreen implements Screen {
 		}
 
 
+	}
+
+
+	private void updateBackgroundMusic() {
+		if (!soundSetting && backgroundMusic.isPlaying()) {
+			backgroundMusic.stop();
+
+		} else if (soundSetting && !backgroundMusic.isPlaying()) {
+			backgroundMusic.play();
+		}
 	}
 
 	private void renderCrashedScreenEssentials() {
