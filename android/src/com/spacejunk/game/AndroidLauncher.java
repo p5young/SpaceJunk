@@ -34,7 +34,8 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 
 	private static String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE",
-			"android.permission.READ_EXTERNAL_STORAGE"};
+			"android.permission.READ_EXTERNAL_STORAGE",
+			"android.permission.RECORD_AUDIO"};
 
 	private static final String SCREEN_SHARE_FILE_PATH = "/temp_facebook_video.mp4";
 
@@ -43,11 +44,13 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	public static final int WRITE_REQUEST_CODE = 7;
 	public static final int READ_REQUEST_CODE = 9;
 	public static final int READ_PHONE_STATE = 11;
+	public static final int AUDIO_REQUEST_CODE = 13;
 
 
 	private static boolean writeAccepted = false;
 	private static boolean readAccepted = false;
 	private static boolean phoneStateAccepted = false;
+	private static boolean recordAudioAccepted = false;
 
 
 	private static final int PERMISSION_CODE = 1;
@@ -82,6 +85,11 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 				this.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
 			}
 
+			if (this.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+				this.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_REQUEST_CODE);
+			}
+
+
 		}
 	}
 
@@ -92,7 +100,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 		requestAllPermissions();
 
-		initializeScreenRecordingTools();
+		initializeScreenRecordingTools(false);
 		initializeFacebookSDK();
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
@@ -179,6 +187,12 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 					Log.i("androidlog", "Success! Permission granted for screen recording!");
 				}
 				break;
+			case AUDIO_REQUEST_CODE:
+				recordAudioAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
+				if(recordAudioAccepted) {
+					Log.i("androidlog", "Success! Permission granted for recording audio!");
+				}
+				break;
 			default:
 
 		}
@@ -187,10 +201,10 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 
 	@Override
-	public void startRecording(int xMax, int yMax) {
+	public void startRecording(int xMax, int yMax, boolean recordAudioSetting) {
 //		DISPLAY_HEIGHT = yMax;
 //		DISPLAY_WIDTH = xMax;
-		initializeScreenRecordingTools();
+		initializeScreenRecordingTools(recordAudioSetting);
 		shareScreen();
 	}
 
@@ -249,14 +263,14 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 				mMediaRecorder.getSurface(), null /*Callbacks*/, null /*Handler*/);
 	}
 
-	private void initializeScreenRecordingTools() {
+	private void initializeScreenRecordingTools(boolean recordAudioSetting) {
 
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		mScreenDensity = metrics.densityDpi;
 
 		mMediaRecorder = new MediaRecorder();
-		initRecorder();
+		initRecorder(recordAudioSetting);
 		prepareRecorder();
 
 		mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
@@ -301,10 +315,20 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		}
 	}
 
-	private void initRecorder() {
+	private void initRecorder(boolean recordAudioSetting) {
+
+		if (recordAudioAccepted && recordAudioSetting) {
+			mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+		}
+
 		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
 		mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 		mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+
+		if (recordAudioAccepted && recordAudioSetting) {
+			mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+		}
+
 		mMediaRecorder.setVideoEncodingBitRate(512 * 1000);
 		mMediaRecorder.setVideoFrameRate(30);
 		mMediaRecorder.setVideoSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);

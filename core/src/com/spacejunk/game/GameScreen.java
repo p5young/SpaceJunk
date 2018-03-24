@@ -31,6 +31,11 @@ public class GameScreen implements Screen {
 //	public static boolean DEBUG = true;
 	public static boolean DEBUG = false;
 
+	// These booleans specify the settings selected by user
+	private boolean soundSetting;
+	private boolean vibrationSetting;
+	private boolean recordAudioSetting;
+
 	public static final String GAME_START_PROMPT = "Press anywhere on the screen to begin playing";
 
 	public enum State
@@ -64,6 +69,7 @@ public class GameScreen implements Screen {
 
 	private Texture gameOver;
 	private Texture pauseScreen;
+	private Texture settingsMenu;
 
 	private Boolean isGameActive = false;
 	private Boolean isCrashed = false;
@@ -91,7 +97,15 @@ public class GameScreen implements Screen {
 	private Consumable.CONSUMABLES justPressed;
 
 	public GameScreen(final SpaceJunk game) {
+
+		// Start the game off on the main menu
 		this.state =  State.MAIN_MENU_SCREEN;
+
+		// Make all settings to be true
+		soundSetting = true;
+		recordAudioSetting = true;
+		vibrationSetting = true;
+
 		startGame(game);
 	}
 
@@ -123,7 +137,9 @@ public class GameScreen implements Screen {
 		backgroundMusic.setVolume(BACKGROUND_MUSIC_VOLUME);
 		backgroundMusic.play();
 
-		mainMenu = new Texture("main_menu.jpg");
+		mainMenu = new Texture("main_menu_background.jpg");
+		mainMenu.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
 		mainMenuMiddle = new Texture("main_menu_middle.png");
 
 		scoreFont = new BitmapFont();
@@ -134,8 +150,10 @@ public class GameScreen implements Screen {
 		promptFont.setColor(Color.WHITE);
 		promptFont.getData().setScale(4);
 
-		gameOver = new Texture("gameover.png");
+		gameOver = new Texture("gameover.jpg");
 		pauseScreen = new Texture("pause_screen.png");
+
+		updateSettingsMenuTexture();
 
 		elapsedTime = 0f;
 
@@ -225,15 +243,32 @@ public class GameScreen implements Screen {
 						if(controller.settingsMenuBackButtonIsPressed()) {
 							isSettingsMenuShownOnScreen = false;
 						}
+
+						else if(controller.settingsMenuSoundsSettingIsPressed()) {
+							soundSetting = !soundSetting;
+							updateSettingsMenuTexture();
+						}
+
+						else if(controller.settingsMenuVibrateSettingIsPressed()) {
+							vibrationSetting = !vibrationSetting;
+							updateSettingsMenuTexture();
+						}
+
+						else if(controller.settingsMenuRecordAudioSettingIsPressed()) {
+							recordAudioSetting = !recordAudioSetting;
+							updateSettingsMenuTexture();
+						}
+
+
 					}
 					else {
 						if (controller.playPauseButtonisPressed() || controller.pauseScreenResumeButtonIsPressed()) {
 							resume();
 						}
-						if (controller.mainMenuButtonIsPressed() || controller.pauseScreenMainMenuButtonIsPressed()) {
+						else if (controller.mainMenuButtonIsPressed() || controller.pauseScreenMainMenuButtonIsPressed()) {
 							goBackToMainMenu();
 						}
-						if (controller.settingsMenuButtonIsPressed() || controller.pauseScreenSettingsMenuButtonIsPressed()) {
+						else if (controller.settingsMenuButtonIsPressed() || controller.pauseScreenSettingsMenuButtonIsPressed()) {
 							showSettingsMenu();
 						}
 					}
@@ -242,6 +277,43 @@ public class GameScreen implements Screen {
 			default:
 				break;
 		}
+
+	}
+
+	private void updateSettingsMenuTexture() {
+
+		if(soundSetting && recordAudioSetting && vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_all_selected.jpg");
+		}
+
+		else if(soundSetting && recordAudioSetting && !vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_sound_and_record_selected.jpg");
+		}
+
+		else if(soundSetting && !recordAudioSetting && vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_vibration_and_sound_selected.jpg");
+		}
+
+		else if(soundSetting && !recordAudioSetting && !vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_sound_selected.jpg");
+		}
+
+		else if(!soundSetting && recordAudioSetting && vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_vibration_record_selected.jpg");
+		}
+
+		else if(!soundSetting && recordAudioSetting && !vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_record_selected.jpg");
+		}
+
+		else if(!soundSetting && !recordAudioSetting && vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_vibration_selected.jpg");
+		}
+
+		else if(!soundSetting && !recordAudioSetting && !vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_none_selected.jpg");
+		}
+
 
 	}
 
@@ -272,7 +344,6 @@ public class GameScreen implements Screen {
 
 		// We are making use of the painters algorithm here
 		drawBackground();
-
 
 		shapeRenderer.setColor(Color.RED);
 		renderObstacles(false);
@@ -332,16 +403,24 @@ public class GameScreen implements Screen {
 	//TODO: Fill in. Stub method
 	private void renderAboutScreen() {
 		canvas.begin();
-		canvas.draw(background, 0, 0);
+		canvas.draw(mainMenu, 0, 0);
 		canvas.end();
+
+		if(controller.isTouched()) {
+			this.state = State.MAIN_MENU_SCREEN;
+		}
 	}
 
 
 	//TODO: Fill in. Stub method
 	private void renderHowToPlayScreen() {
 		canvas.begin();
-		canvas.draw(background, 0, 0);
+		canvas.draw(mainMenu, 0, 0);
 		canvas.end();
+
+		if(controller.isTouched()) {
+			this.state = State.MAIN_MENU_SCREEN;
+		}
 	}
 
 	private void renderMainMenu() {
@@ -358,7 +437,7 @@ public class GameScreen implements Screen {
 		canvas.end();
 
 
-		mainMenuImageIndex += GameConstants.BACKGROUND_SPEED;
+		mainMenuImageIndex += GameConstants.MAIN_MENU_BACKGROUND_SPEED;
 
 		if (mainMenuImageIndex > mainMenu.getWidth()) {
 			mainMenuImageIndex = 0;
@@ -371,12 +450,11 @@ public class GameScreen implements Screen {
 			if(controller.mainMenuPlayButtonIsTouched()) {
 				this.state = State.RUN;
 
-				Gdx.app.log("applog", "Play now button is pressed");
+				Gdx.app.log("mainmenulog", "Play now button is pressed");
 				if(!thisIsTheFirstTimeMainMenuIsAccessed) {
 					restartGame();
 				}
 				else {
-					Gdx.app.log("applog", "Not restarting game now because you just started playing!");
 					thisIsTheFirstTimeMainMenuIsAccessed = false;
 				}
 			}
@@ -397,7 +475,7 @@ public class GameScreen implements Screen {
 
 	private void beginRecordingScreen() {
 		isRecordingInProgress = true;
-		spaceJunk.getSystemServices().startRecording(spaceJunk.getxMax(), spaceJunk.getyMax());
+		spaceJunk.getSystemServices().startRecording(spaceJunk.getxMax(), spaceJunk.getyMax(), recordAudioSetting);
 	}
 
 
@@ -458,7 +536,10 @@ public class GameScreen implements Screen {
                         currentObstacle.getCoordinates(),
                         this.spaceJunk.getCharacter().getCoordinates())) {
 
-					currentObstacle.playSound();
+
+					if(soundSetting) {
+						currentObstacle.playSound();
+					}
 
 					boolean passesObstacle = currentObstacle.getBreaksOnConsumable()
 											.equals(this.spaceJunk.getLevel().getEquippedConsumable());
@@ -469,6 +550,11 @@ public class GameScreen implements Screen {
 
 					if (passesObstacle) {
 						return false;
+					}
+					else {
+						if(vibrationSetting) {
+							Gdx.input.vibrate(500);
+						}
 					}
 
                     return spaceJunk.getCharacter().takesHit();
@@ -672,7 +758,7 @@ public class GameScreen implements Screen {
 			backgroundImageIndex += GameConstants.BACKGROUND_SPEED;
 		}
 
-		if (backgroundImageIndex > background.getWidth()) {
+		if ( backgroundImageIndex > background.getWidth()) {
 			backgroundImageIndex = 0;
 		}
 	}
@@ -682,14 +768,15 @@ public class GameScreen implements Screen {
 	}
 
 	private void drawSettingsMenu() {
-		Gdx.app.log("settingslog", "Setting menu is being shown now");
-		canvas.draw(gameOver, Gdx.graphics.getWidth() / 2 - pauseScreen.getWidth() / 2, Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2);
+		canvas.draw(settingsMenu, Gdx.graphics.getWidth() / 2 - settingsMenu.getWidth() / 2,
+				Gdx.graphics.getHeight() / 2 - settingsMenu.getHeight() / 2);
 
 	}
 
 	private void drawPauseScreenTexture() {
 
-			canvas.draw(pauseScreen, Gdx.graphics.getWidth() / 2 - pauseScreen.getWidth() / 2, Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2);
+			canvas.draw(pauseScreen, Gdx.graphics.getWidth() / 2 - pauseScreen.getWidth() / 2,
+					Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2);
 	}
 
 	private void displayScore() {
@@ -737,4 +824,19 @@ public class GameScreen implements Screen {
 		return spaceJunk;
 	}
 
+	public Texture getSettingsMenu() {
+		return settingsMenu;
+	}
+
+	public boolean isSoundSetting() {
+		return soundSetting;
+	}
+
+	public boolean isVibrationSetting() {
+		return vibrationSetting;
+	}
+
+	public boolean isRecordAudioSetting() {
+		return recordAudioSetting;
+	}
 }

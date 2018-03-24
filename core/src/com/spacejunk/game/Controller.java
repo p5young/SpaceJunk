@@ -36,20 +36,35 @@ public class Controller {
     }
 
     public boolean mainMenuPlayButtonIsTouched() {
-        return true;
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 450 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 450 &&
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) - 10 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 120;
+
     }
 
     public boolean aboutButtonIsTouched() {
-        return true;
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 450 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 450 &&
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) + 120 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 250;
+
     }
 
     public boolean howToPlayButtonIsTouched() {
-        return true;
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 450 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 450 &&
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) + 250 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 380;
+
     }
 
+
+    // Returns true if none of the settings menu is interacted with
     public boolean settingsMenuBackButtonIsPressed() {
-        return true;
+        return !(settingsMenuSoundsSettingIsPressed() || settingsMenuVibrateSettingIsPressed() || settingsMenuRecordAudioSettingIsPressed());
     }
+
 
     public boolean settingsMenuButtonIsPressed() {
         return Gdx.input.getX() >= 0 &&
@@ -113,6 +128,31 @@ public class Controller {
                 Gdx.input.getY() >= (currentGame.getyMax() / 2) &&
                 Gdx.input.getY() <=  (currentGame.getyMax() / 2) + 140;
     }
+
+
+    public boolean settingsMenuSoundsSettingIsPressed() {
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 280 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 280 &&
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) - 70 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 10;
+    }
+
+
+    public boolean settingsMenuVibrateSettingIsPressed() {
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 280 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 280 &&
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) + 10 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 90;
+    }
+
+    public boolean settingsMenuRecordAudioSettingIsPressed() {
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 280 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 280 &&
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) + 90 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 170;
+    }
+
+
 
     public boolean consumablesMenuPressed() {
         if (Gdx.input.getX() > (currentGame.getxMax() - consumablesMenu.getInventoryWidth()) &&
