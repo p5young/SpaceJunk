@@ -29,6 +29,11 @@ public class GameScreen implements Screen {
 //	public static boolean DEBUG = true;
 	public static boolean DEBUG = false;
 
+	// These booleans specify the settings selected by user
+	private boolean soundSetting;
+	private boolean vibrationSetting;
+	private boolean recordAudioSetting;
+
 	public static final String GAME_START_PROMPT = "Press anywhere on the screen to begin playing";
 
 	public enum State
@@ -60,6 +65,7 @@ public class GameScreen implements Screen {
 
 	private Texture gameOver;
 	private Texture pauseScreen;
+	private Texture settingsMenu;
 
 	private Boolean isGameActive = false;
 	private Boolean isCrashed = false;
@@ -114,6 +120,10 @@ public class GameScreen implements Screen {
 		background = new Texture("background.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
+		soundSetting = true;
+		recordAudioSetting = true;
+		vibrationSetting = true;
+
 
 		mainMenu = new Texture("main_menu_background.jpg");
 		mainMenu.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -130,6 +140,7 @@ public class GameScreen implements Screen {
 
 		gameOver = new Texture("gameover.jpg");
 		pauseScreen = new Texture("pause_screen.png");
+		settingsMenu = new Texture("settings_menu_all_selected.jpg");
 
 		elapsedTime = 0f;
 
@@ -219,15 +230,32 @@ public class GameScreen implements Screen {
 						if(controller.settingsMenuBackButtonIsPressed()) {
 							isSettingsMenuShownOnScreen = false;
 						}
+
+						else if(controller.settingsMenuSoundsSettingIsPressed()) {
+							soundSetting = !soundSetting;
+							updateSettingsMenuTexture();
+						}
+
+						else if(controller.settingsMenuVibrateSettingIsPressed()) {
+							vibrationSetting = !vibrationSetting;
+							updateSettingsMenuTexture();
+						}
+
+						else if(controller.settingsMenuRecordAudioSettingIsPressed()) {
+							recordAudioSetting = !recordAudioSetting;
+							updateSettingsMenuTexture();
+						}
+
+
 					}
 					else {
 						if (controller.playPauseButtonisPressed() || controller.pauseScreenResumeButtonIsPressed()) {
 							resume();
 						}
-						if (controller.mainMenuButtonIsPressed() || controller.pauseScreenMainMenuButtonIsPressed()) {
+						else if (controller.mainMenuButtonIsPressed() || controller.pauseScreenMainMenuButtonIsPressed()) {
 							goBackToMainMenu();
 						}
-						if (controller.settingsMenuButtonIsPressed() || controller.pauseScreenSettingsMenuButtonIsPressed()) {
+						else if (controller.settingsMenuButtonIsPressed() || controller.pauseScreenSettingsMenuButtonIsPressed()) {
 							showSettingsMenu();
 						}
 					}
@@ -236,6 +264,43 @@ public class GameScreen implements Screen {
 			default:
 				break;
 		}
+
+	}
+
+	private void updateSettingsMenuTexture() {
+
+		if(soundSetting && recordAudioSetting && vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_all_selected.jpg");
+		}
+
+		else if(soundSetting && recordAudioSetting && !vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_sound_and_record_selected.jpg");
+		}
+
+		else if(soundSetting && !recordAudioSetting && vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_vibration_and_sound_selected.jpg");
+		}
+
+		else if(soundSetting && !recordAudioSetting && !vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_sound_selected.jpg");
+		}
+
+		else if(!soundSetting && recordAudioSetting && vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_vibration_record_selected.jpg");
+		}
+
+		else if(!soundSetting && recordAudioSetting && !vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_record_selected.jpg");
+		}
+
+		else if(!soundSetting && !recordAudioSetting && vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_vibration_selected.jpg");
+		}
+
+		else if(!soundSetting && !recordAudioSetting && !vibrationSetting) {
+			settingsMenu = new Texture("settings_menu_non_selected.jpg");
+		}
+
 
 	}
 
@@ -681,14 +746,15 @@ public class GameScreen implements Screen {
 	}
 
 	private void drawSettingsMenu() {
-		Gdx.app.log("settingslog", "Setting menu is being shown now");
-		canvas.draw(gameOver, Gdx.graphics.getWidth() / 2 - pauseScreen.getWidth() / 2, Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2);
+		canvas.draw(settingsMenu, Gdx.graphics.getWidth() / 2 - settingsMenu.getWidth() / 2,
+				Gdx.graphics.getHeight() / 2 - settingsMenu.getHeight() / 2);
 
 	}
 
 	private void drawPauseScreenTexture() {
 
-			canvas.draw(pauseScreen, Gdx.graphics.getWidth() / 2 - pauseScreen.getWidth() / 2, Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2);
+			canvas.draw(pauseScreen, Gdx.graphics.getWidth() / 2 - pauseScreen.getWidth() / 2,
+					Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2);
 	}
 
 	private void displayScore() {

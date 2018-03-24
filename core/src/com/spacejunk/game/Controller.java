@@ -127,6 +127,22 @@ public class Controller {
                 Gdx.input.getY() <=  (currentGame.getyMax() / 2) + 140;
     }
 
+
+    public boolean settingsMenuSoundsSettingIsPressed() {
+        return true;
+    }
+
+
+    public boolean settingsMenuVibrateSettingIsPressed() {
+        return true;
+    }
+
+    public boolean settingsMenuRecordAudioSettingIsPressed() {
+        return true;
+    }
+
+
+
     public boolean consumablesMenuPressed() {
         if (Gdx.input.getX() > (currentGame.getxMax() - consumablesMenu.getInventoryWidth()) &&
                 Gdx.input.getY() > (currentGame.getyMax() - consumablesMenu.getInventoryHeight())) {
