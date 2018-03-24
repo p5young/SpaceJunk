@@ -46,17 +46,31 @@ public class Controller {
     public boolean aboutButtonIsTouched() {
         return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 450 &&
                 Gdx.input.getX() <= (currentGame.getxMax() / 2) + 450 &&
-                Gdx.input.getY() >= (currentGame.getyMax() / 2) + 120 &&
-                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 250;
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) + 250 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 380;
 
     }
 
     public boolean howToPlayButtonIsTouched() {
         return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 450 &&
                 Gdx.input.getX() <= (currentGame.getxMax() / 2) + 450 &&
-                Gdx.input.getY() >= (currentGame.getyMax() / 2) + 250 &&
-                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 380;
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) + 120 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 250;
 
+    }
+
+    public boolean howToPlayBackButtonPressed() {
+        return Gdx.input.getX() >= (currentGame.getxMax() / 9) - 150 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 9) + 150 &&
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) - 75 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 75;
+    }
+
+    public boolean howToPlayPlayButtonPressed() {
+        return Gdx.input.getX() >= ((8 * currentGame.getxMax()) / 9) - 150 &&
+                Gdx.input.getX() <= ((8 *currentGame.getxMax()) / 9) + 150 &&
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) - 75 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 75;
     }
 
 
@@ -199,8 +213,10 @@ public class Controller {
 
             @Override
             public void onUp() {
-                currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight());
-                Gdx.app.log("swipelog", "onUp caled");
+                if (gameScreen.getState() == GameScreen.State.RUN) {
+                    currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight());
+                    Gdx.app.log("swipelog", "onUp caled");
+                }
             }
 
             @Override
@@ -215,8 +231,10 @@ public class Controller {
 
             @Override
             public void onDown() {
-                currentGame.getCharacter().moveCharacter(0);
-                Gdx.app.log("swipelog", "onDown caled");
+                if (gameScreen.getState() == GameScreen.State.RUN) {
+                    currentGame.getCharacter().moveCharacter(0);
+                    Gdx.app.log("swipelog", "onDown caled");
+                }
             }
 
         }));
@@ -241,6 +259,10 @@ public class Controller {
 
     public Consumable.CONSUMABLES getPressedConsumable() {
         return pressedConsumable;
+    }
+
+    public boolean touching() {
+        return Gdx.input.isTouched();
     }
 
 }
