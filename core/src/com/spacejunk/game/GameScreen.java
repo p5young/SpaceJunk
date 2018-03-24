@@ -394,7 +394,7 @@ public class GameScreen implements Screen {
 	//TODO: Fill in. Stub method
 	private void renderAboutScreen() {
 		canvas.begin();
-		canvas.draw(background, 0, 0);
+		canvas.draw(mainMenu, 0, 0);
 		canvas.end();
 
 		if(controller.isTouched()) {
@@ -406,7 +406,7 @@ public class GameScreen implements Screen {
 	//TODO: Fill in. Stub method
 	private void renderHowToPlayScreen() {
 		canvas.begin();
-		canvas.draw(background, 0, 0);
+		canvas.draw(mainMenu, 0, 0);
 		canvas.end();
 
 		if(controller.isTouched()) {
