@@ -523,7 +523,10 @@ public class GameScreen implements Screen {
                         currentObstacle.getCoordinates(),
                         this.spaceJunk.getCharacter().getCoordinates())) {
 
-					currentObstacle.playSound();
+
+					if(soundSetting) {
+						currentObstacle.playSound();
+					}
 
 					boolean passesObstacle = currentObstacle.getBreaksOnConsumable()
 											.equals(this.spaceJunk.getLevel().getEquippedConsumable());
@@ -534,6 +537,11 @@ public class GameScreen implements Screen {
 
 					if (passesObstacle) {
 						return false;
+					}
+					else {
+						if(vibrationSetting) {
+							Gdx.input.vibrate(500);
+						}
 					}
 
                     return spaceJunk.getCharacter().takesHit();
@@ -804,5 +812,17 @@ public class GameScreen implements Screen {
 
 	public Texture getSettingsMenu() {
 		return settingsMenu;
+	}
+
+	public boolean isSoundSetting() {
+		return soundSetting;
+	}
+
+	public boolean isVibrationSetting() {
+		return vibrationSetting;
+	}
+
+	public boolean isRecordAudioSetting() {
+		return recordAudioSetting;
 	}
 }

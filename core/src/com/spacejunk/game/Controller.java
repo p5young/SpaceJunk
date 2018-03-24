@@ -62,7 +62,6 @@ public class Controller {
 
     // Returns true if none of the settings menu is interacted with
     public boolean settingsMenuBackButtonIsPressed() {
-        Gdx.app.log("settingslog", "(x,y) : " + Gdx.input.getX() + ":" + Gdx.input.getY());
         return !(settingsMenuSoundsSettingIsPressed() || settingsMenuVibrateSettingIsPressed() || settingsMenuRecordAudioSettingIsPressed());
     }
 
@@ -132,25 +131,25 @@ public class Controller {
 
 
     public boolean settingsMenuSoundsSettingIsPressed() {
-        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 230 &&
-                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 230 &&
-                Gdx.input.getY() >= (currentGame.getyMax() / 2) - 50 &&
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 280 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 280 &&
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) - 70 &&
                 Gdx.input.getY() <= (currentGame.getyMax() / 2) + 10;
     }
 
 
     public boolean settingsMenuVibrateSettingIsPressed() {
-        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 230 &&
-                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 230 &&
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 280 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 280 &&
                 Gdx.input.getY() >= (currentGame.getyMax() / 2) + 10 &&
-                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 70;
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 90;
     }
 
     public boolean settingsMenuRecordAudioSettingIsPressed() {
-        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 230 &&
-                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 230 &&
-                Gdx.input.getY() >= (currentGame.getyMax() / 2) + 70 &&
-                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 130;
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 280 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 280 &&
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) + 90 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 170;
     }
 
 
