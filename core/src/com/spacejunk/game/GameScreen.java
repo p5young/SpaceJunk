@@ -464,8 +464,10 @@ public class GameScreen implements Screen {
             // !scrolling means this is the first touch (not dragging yet)
             if (!scrolling) {
                 if (controller.howToPlayBackButtonPressed()) {
+					howToPlayImageIndex = 0;	// return scrolling image to top of screen
                     this.state = State.MAIN_MENU_SCREEN;
                 } else if (controller.howToPlayPlayButtonPressed()) {
+					howToPlayImageIndex = 0;	// return scrolling image to top of screen
                     this.state = State.RUN;
                 } else {
                     scrollIndex = controller.getTouchYCoordinate();
