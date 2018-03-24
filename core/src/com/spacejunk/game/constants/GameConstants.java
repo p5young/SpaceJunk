@@ -28,4 +28,6 @@ public class GameConstants {
     public static final int MAX_INVENTORY_COUNT = 4;
 
     public static final int MIN_GAP = 430;
+
+    public static final float BACKGROUND_MUSIC_VOLUME = (float) 0.5;
 }

@@ -2,6 +2,7 @@ package com.spacejunk.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,6 +22,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.spacejunk.game.constants.GameConstants.BACKGROUND_MUSIC_VOLUME;
 import static com.spacejunk.game.constants.GameConstants.MAX_INVENTORY_COUNT;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -44,6 +46,8 @@ public class GameScreen implements Screen {
 
 	private Texture background;
 	private int backgroundImageIndex = 0;
+
+	private Music backgroundMusic;
 
 	private Controller controller;
 
@@ -99,6 +103,11 @@ public class GameScreen implements Screen {
 
 		background = new Texture("background.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/Retro-Frantic-bkg.mp3"));
+		backgroundMusic.setLooping(true);
+		backgroundMusic.setVolume(BACKGROUND_MUSIC_VOLUME);
+		backgroundMusic.play();
 
 		font = new BitmapFont();
 		font.setColor(Color.WHITE);
