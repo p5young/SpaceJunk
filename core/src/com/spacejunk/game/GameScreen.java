@@ -57,6 +57,14 @@ public class GameScreen implements Screen {
 	private Texture mainMenu;
 	private Texture mainMenuMiddle;
 
+	// "how to play" screen textures & variables
+	private Texture howToPlay;
+	private Texture back;
+	private Texture play;
+	private int howToPlayImageIndex = 0;
+	private int scrollIndex = 0;
+	private boolean scrolling = false;
+
 	private int backgroundImageIndex = 0;
 	private int mainMenuImageIndex = 0;
 
@@ -89,9 +97,6 @@ public class GameScreen implements Screen {
 	private float elapsedTime;
 
 	private State state;
-
-	private ArrayList<ArrayList<Integer>> screenShots = new ArrayList<ArrayList<Integer>>();
-	private List<Pixmap> frames = new ArrayList<Pixmap>();
 
 	// this field is just for avoiding a local field instantiated every tap
 	private Consumable.CONSUMABLES justPressed;
@@ -141,6 +146,10 @@ public class GameScreen implements Screen {
 		mainMenu.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 		mainMenuMiddle = new Texture("main_menu_middle.png");
+
+		howToPlay = new Texture("howToPlay.png");
+        back = new Texture("back.png");
+        play = new Texture("play.png");
 
 		scoreFont = new BitmapFont();
 		scoreFont.setColor(Color.WHITE);
@@ -412,15 +421,57 @@ public class GameScreen implements Screen {
 	}
 
 
-	//TODO: Fill in. Stub method
 	private void renderHowToPlayScreen() {
 		canvas.begin();
-		canvas.draw(mainMenu, 0, 0);
+
+        // draw background
+        canvas.draw(mainMenu, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), mainMenuImageIndex,
+                0, Gdx.graphics.getWidth(), Math.min(mainMenu.getHeight(),
+                        Gdx.graphics.getHeight()), false, false);
+
+        // draw back button
+        canvas.draw(back, Gdx.graphics.getWidth()/9 - back.getWidth() / 2,
+                Gdx.graphics.getHeight()/2 - back.getHeight() / 2);
+
+        // draw play button
+        canvas.draw(play, (8 * Gdx.graphics.getWidth())/9 - play.getWidth() / 2,
+                Gdx.graphics.getHeight()/2 - play.getHeight() / 2);
+
+        // draw how to play instructions
+        canvas.draw(howToPlay, Gdx.graphics.getWidth()/2 - howToPlay.getWidth() / 2,
+                Gdx.graphics.getHeight() - howToPlay.getHeight() + howToPlayImageIndex);
+
 		canvas.end();
 
-		if(controller.isTouched()) {
-			this.state = State.MAIN_MENU_SCREEN;
-		}
+        mainMenuImageIndex += GameConstants.MAIN_MENU_BACKGROUND_SPEED;
+
+        if (mainMenuImageIndex > mainMenu.getWidth()) {
+            mainMenuImageIndex = 0;
+        }
+
+		if(controller.touching()) {
+            // !scrolling means this is the first touch (not dragging yet)
+            if (!scrolling) {
+                if (controller.howToPlayBackButtonPressed()) {
+                    this.state = State.MAIN_MENU_SCREEN;
+                } else if (controller.howToPlayPlayButtonPressed()) {
+                    this.state = State.RUN;
+                } else {
+                    scrollIndex = controller.getTouchYCoordinate();
+                    scrolling = true;   // no buttons pressed, start dragging (scrolling)
+                }
+            } else {
+                howToPlayImageIndex += controller.getTouchYCoordinate() - scrollIndex;
+                scrollIndex = controller.getTouchYCoordinate();
+                // set boundaries
+                if (howToPlayImageIndex < 0)
+                    howToPlayImageIndex = 0;
+                if (howToPlayImageIndex > howToPlay.getHeight() - Gdx.graphics.getHeight())
+                    howToPlayImageIndex = howToPlay.getHeight() - Gdx.graphics.getHeight();
+            }
+		} else {
+            if (scrolling) scrolling = false;  // no touch detected: stop scrolling
+        }
 	}
 
 	private void renderMainMenu() {
@@ -819,6 +870,10 @@ public class GameScreen implements Screen {
 	public void hide() {
 
 	}
+
+	public State getState() {
+	    return this.state;
+    }
 
 	public SpaceJunk getSpaceJunk() {
 		return spaceJunk;
