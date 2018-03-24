@@ -93,7 +93,15 @@ public class GameScreen implements Screen {
 	private Consumable.CONSUMABLES justPressed;
 
 	public GameScreen(final SpaceJunk game) {
+
+		// Start the game off on the main menu
 		this.state =  State.MAIN_MENU_SCREEN;
+
+		// Make all settings to be true
+		soundSetting = true;
+		recordAudioSetting = true;
+		vibrationSetting = true;
+
 		startGame(game);
 	}
 
@@ -120,11 +128,6 @@ public class GameScreen implements Screen {
 		background = new Texture("background.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
-		soundSetting = true;
-		recordAudioSetting = true;
-		vibrationSetting = true;
-
-
 		mainMenu = new Texture("main_menu_background.jpg");
 		mainMenu.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
@@ -140,7 +143,8 @@ public class GameScreen implements Screen {
 
 		gameOver = new Texture("gameover.jpg");
 		pauseScreen = new Texture("pause_screen.png");
-		settingsMenu = new Texture("settings_menu_all_selected.jpg");
+
+		updateSettingsMenuTexture();
 
 		elapsedTime = 0f;
 
