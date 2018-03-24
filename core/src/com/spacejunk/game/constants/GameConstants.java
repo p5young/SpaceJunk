@@ -29,5 +29,5 @@ public class GameConstants {
 
     public static final int MIN_GAP = 430;
 
-    public static final float BACKGROUND_MUSIC_VOLUME = (float) 0.5;
+    public static final float BACKGROUND_MUSIC_VOLUME = 0.5f;
 }
