@@ -126,7 +126,7 @@ public class GameScreen implements Screen {
 		promptFont.setColor(Color.WHITE);
 		promptFont.getData().setScale(4);
 
-		gameOver = new Texture("gameover.png");
+		gameOver = new Texture("gameover.jpg");
 		pauseScreen = new Texture("pause_screen.png");
 
 		elapsedTime = 0f;
@@ -326,6 +326,10 @@ public class GameScreen implements Screen {
 		canvas.begin();
 		canvas.draw(background, 0, 0);
 		canvas.end();
+
+		if(controller.isTouched()) {
+			this.state = State.MAIN_MENU_SCREEN;
+		}
 	}
 
 
@@ -334,6 +338,10 @@ public class GameScreen implements Screen {
 		canvas.begin();
 		canvas.draw(background, 0, 0);
 		canvas.end();
+
+		if(controller.isTouched()) {
+			this.state = State.MAIN_MENU_SCREEN;
+		}
 	}
 
 	private void renderMainMenu() {
@@ -363,12 +371,11 @@ public class GameScreen implements Screen {
 			if(controller.mainMenuPlayButtonIsTouched()) {
 				this.state = State.RUN;
 
-				Gdx.app.log("applog", "Play now button is pressed");
+				Gdx.app.log("mainmenulog", "Play now button is pressed");
 				if(!thisIsTheFirstTimeMainMenuIsAccessed) {
 					restartGame();
 				}
 				else {
-					Gdx.app.log("applog", "Not restarting game now because you just started playing!");
 					thisIsTheFirstTimeMainMenuIsAccessed = false;
 				}
 			}

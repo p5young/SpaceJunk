@@ -36,20 +36,34 @@ public class Controller {
     }
 
     public boolean mainMenuPlayButtonIsTouched() {
-        return true;
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 450 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 450 &&
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) - 10 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 120;
+
     }
 
     public boolean aboutButtonIsTouched() {
-        return true;
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 450 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 450 &&
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) + 120 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 250;
+
     }
 
     public boolean howToPlayButtonIsTouched() {
-        return true;
+        return Gdx.input.getX() >= (currentGame.getxMax() / 2) - 450 &&
+                Gdx.input.getX() <= (currentGame.getxMax() / 2) + 450 &&
+                Gdx.input.getY() >= (currentGame.getyMax() / 2) + 250 &&
+                Gdx.input.getY() <= (currentGame.getyMax() / 2) + 380;
+
     }
 
     public boolean settingsMenuBackButtonIsPressed() {
         return true;
     }
+
+
 
     public boolean settingsMenuButtonIsPressed() {
         return Gdx.input.getX() >= 0 &&
