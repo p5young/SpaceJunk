@@ -114,7 +114,8 @@ public class GameScreen implements Screen {
 		background = new Texture("background.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
-		mainMenu = new Texture("main_menu.jpg");
+
+		mainMenu = new Texture("main_menu_background.jpg");
 		mainMenuMiddle = new Texture("main_menu_middle.png");
 
 		scoreFont = new BitmapFont();
