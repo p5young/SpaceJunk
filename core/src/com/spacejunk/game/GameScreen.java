@@ -642,6 +642,7 @@ public class GameScreen implements Screen {
 		//Code for if crash occurs
 		if(isCrashed) {
 			this.state = State.CRASHED;
+			this.backgroundMusic.stop();
 			drawGameOverScreen();
 		}
 
