@@ -2,6 +2,7 @@ package com.spacejunk.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -29,6 +30,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.spacejunk.game.constants.GameConstants.BACKGROUND_MUSIC_VOLUME;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -74,6 +76,8 @@ public class GameScreen implements Screen {
 
 	private int backgroundImageIndex = 0;
 	private int mainMenuImageIndex = 0;
+
+	private Music backgroundMusic;
 
 	private Controller controller;
 
@@ -176,6 +180,11 @@ public class GameScreen implements Screen {
 
 		background = new Texture("background.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/Retro-Frantic-bkg.mp3"));
+		backgroundMusic.setLooping(true);
+		backgroundMusic.setVolume(BACKGROUND_MUSIC_VOLUME);
+		backgroundMusic.play();
 
 		mainMenu = new Texture("main_menu_background.jpg");
 		mainMenu.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -770,6 +779,7 @@ public class GameScreen implements Screen {
 		//Code for if crash occurs
 		if(isCrashed) {
 			this.state = State.CRASHED;
+			this.backgroundMusic.stop();
 			drawGameOverScreen();
 		}
 
