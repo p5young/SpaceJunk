@@ -298,7 +298,7 @@ public class GameScreen implements Screen {
 		}
 
 		else if(!soundSetting && !recordAudioSetting && !vibrationSetting) {
-			settingsMenu = new Texture("settings_menu_non_selected.jpg");
+			settingsMenu = new Texture("settings_menu_none_selected.jpg");
 		}
 
 
@@ -802,4 +802,7 @@ public class GameScreen implements Screen {
 		return spaceJunk;
 	}
 
+	public Texture getSettingsMenu() {
+		return settingsMenu;
+	}
 }
