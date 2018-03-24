@@ -64,7 +64,6 @@ public class Controller {
     }
 
 
-
     public boolean settingsMenuButtonIsPressed() {
         return Gdx.input.getX() >= 0 &&
                 Gdx.input.getX() <= optionsMenu.getOptionsMenuTexures()[0].getWidth() &&

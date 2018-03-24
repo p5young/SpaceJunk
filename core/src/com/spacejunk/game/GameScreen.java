@@ -116,6 +116,8 @@ public class GameScreen implements Screen {
 
 
 		mainMenu = new Texture("main_menu_background.jpg");
+		mainMenu.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
 		mainMenuMiddle = new Texture("main_menu_middle.png");
 
 		scoreFont = new BitmapFont();
@@ -265,7 +267,6 @@ public class GameScreen implements Screen {
 		// We are making use of the painters algorithm here
 		drawBackground();
 
-
 		shapeRenderer.setColor(Color.RED);
 		renderObstacles(false);
 		shapeRenderer.setColor(Color.GREEN);
@@ -358,7 +359,7 @@ public class GameScreen implements Screen {
 		canvas.end();
 
 
-		mainMenuImageIndex += GameConstants.BACKGROUND_SPEED;
+		mainMenuImageIndex += GameConstants.MAIN_MENU_BACKGROUND_SPEED;
 
 		if (mainMenuImageIndex > mainMenu.getWidth()) {
 			mainMenuImageIndex = 0;
@@ -670,7 +671,7 @@ public class GameScreen implements Screen {
 			backgroundImageIndex += GameConstants.BACKGROUND_SPEED;
 		}
 
-		if (backgroundImageIndex > background.getWidth()) {
+		if ( backgroundImageIndex > background.getWidth()) {
 			backgroundImageIndex = 0;
 		}
 	}

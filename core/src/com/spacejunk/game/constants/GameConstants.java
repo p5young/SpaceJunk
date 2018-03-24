@@ -19,6 +19,7 @@ public class GameConstants {
 
     /* Background Speed Constant */
     public static final int BACKGROUND_SPEED = 4;
+    public static final int MAIN_MENU_BACKGROUND_SPEED = 2;
 
     /* Vertical Speed Constant */
     public static final int VERTICAL_SPEED = 10;
