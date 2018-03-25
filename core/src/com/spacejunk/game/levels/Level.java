@@ -194,7 +194,7 @@ public class Level {
     }
 
     public int getVelocity() {
-        return this.velocity;
+        return (int) (this.velocity * GameScreen.SCALE_X_FACTOR);
     }
 
     public int getXMax() {

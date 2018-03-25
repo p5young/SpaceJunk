@@ -49,7 +49,9 @@ public class ConsumablesMenu {
 
         // Quick hack to set transparency of consumables menu
         canvas.setColor(1, 1, 1, 0.5f);
-        canvas.draw(inventoryListTexture, currentGame.getxMax() - GameScreen.getScaledTextureWidth(inventoryListTexture), 0);
+        canvas.draw(inventoryListTexture, currentGame.getxMax() - GameScreen.getScaledTextureWidth(inventoryListTexture), 0,
+                GameScreen.getScaledTextureWidth(inventoryListTexture),
+                GameScreen.getScaledTextureHeight(inventoryListTexture));
         canvas.setColor(1, 1, 1, 1);
 
     }
@@ -64,8 +66,8 @@ public class ConsumablesMenu {
                 // there are a lot of magic numbers here
                 canvas.draw(inventoryObjects.get(i).getConsumableTextureSmall(),
                         (this.currentGame.getxMax() - ((i + 1) * GameScreen.getScaledTextureWidth(inventoryListTexture) / 4) + (12 - (i * 2))),
-                        GameScreen.getScaledTextureHeight(inventoryListTexture) / 7, GameScreen.getScaledTextureWidth(inventoryListTexture),
-                        GameScreen.getScaledTextureHeight(inventoryListTexture));
+                        GameScreen.getScaledTextureHeight(inventoryListTexture) / 7,  GameScreen.getScaledTextureWidth(inventoryObjects.get(i).getConsumableTextureSmall()),
+                        GameScreen.getScaledTextureHeight(inventoryObjects.get(i).getConsumableTextureSmall()));
             }
         }
     }

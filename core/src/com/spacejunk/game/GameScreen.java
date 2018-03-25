@@ -111,6 +111,8 @@ public class GameScreen implements Screen {
 	public static void setScaleFactor(int xMax, int yMax) {
 		GameScreen.SCALE_X_FACTOR = (float) xMax / GameConstants.X_AXIS_CONSTANT;
 		GameScreen.SCALE_Y_FACTOR = (float) yMax / GameConstants.Y_AXIS_CONSTANT;
+		Gdx.app.log("applog", "XSCALEFACTOR: " + SCALE_X_FACTOR);
+		Gdx.app.log("applog", "YSCALEFACTOR: " + SCALE_Y_FACTOR);
 	}
 
 	public static int getScaledTextureWidth(Texture texture) {

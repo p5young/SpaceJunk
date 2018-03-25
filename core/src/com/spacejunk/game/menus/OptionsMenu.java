@@ -39,11 +39,15 @@ public class OptionsMenu {
         for(int i = 0; i < MAX_BUTTONS; i++) {
             if(i != 0) {
                 canvas.draw(optionsMenuTexures[i], 0,
-                        Gdx.graphics.getHeight() - ((i+1) * GameScreen.getScaledTextureHeight(optionsMenuTexures[i])));
+                        Gdx.graphics.getHeight() - ((i+1) * GameScreen.getScaledTextureHeight(optionsMenuTexures[i])),
+                        GameScreen.getScaledTextureWidth(optionsMenuTexures[i]),
+                        GameScreen.getScaledTextureHeight(optionsMenuTexures[i]));
             }
             else {
                 canvas.draw(optionsMenuTexures[i], 0,
-                        Gdx.graphics.getHeight() - ((i+1) * GameScreen.getScaledTextureHeight(optionsMenuTexures[i])));
+                        Gdx.graphics.getHeight() - ((i+1) * GameScreen.getScaledTextureHeight(optionsMenuTexures[i])),
+                        GameScreen.getScaledTextureWidth(optionsMenuTexures[i]),
+                        GameScreen.getScaledTextureHeight(optionsMenuTexures[i]));
             }
         }
 
