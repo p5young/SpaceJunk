@@ -140,7 +140,10 @@ public class GameScreen implements Screen {
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/Retro-Frantic-bkg.mp3"));
 		backgroundMusic.setLooping(true);
 		backgroundMusic.setVolume(BACKGROUND_MUSIC_VOLUME);
-		backgroundMusic.play();
+
+		if (!backgroundMusic.isPlaying()) {
+			backgroundMusic.play();
+		}
 
 		mainMenu = new Texture("main_menu_background.jpg");
 		mainMenu.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
