@@ -91,7 +91,6 @@ public class Level {
                 a wide group will return a large number
     **/
     public void generateObstacles() {
-        //chunkWidth = levelGenerator.generateDEBUGObstacles();
         chunkWidth = levelGenerator.generateObstacles();
         Gdx.app.log("applog", "SETTING CHUNKWIDTH: " + chunkWidth);
     }
@@ -149,14 +148,14 @@ public class Level {
             Obstacle o = obstaclesList.get(i);
             if(o.getX() < -o.getTexture().getWidth()) {
                 obstaclesList.remove(i);
-                Gdx.app.log("applog", "removed obstacle " + i);
+                //Gdx.app.log("applog", "removed obstacle " + i);
             }
         }
         for (int i = consumablesList.size() - 1 ; i >= 0 ; --i) {
             Consumable c = consumablesList.get(i);
             if(c.getX() < -c.getTexture().getWidth()) {
                 consumablesList.remove(i);
-                Gdx.app.log("applog", "removed consumable " + i);
+                //Gdx.app.log("applog", "removed consumable " + i);
             }
         }
     }
