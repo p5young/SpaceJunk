@@ -267,8 +267,8 @@ public class LevelGenerator {
 
         // layout 8 & 9 - (walls) don't spawn unless player has > 2 consumables
         if (level.getInventory().size() > 2) {
-            setWeight(8, 4);
-            setWeight(9, 4);
+            setWeight(8, 3);
+            setWeight(9, 3);
         } else {
             setWeight(8, 0);
             setWeight(9, 0);
@@ -419,13 +419,12 @@ public class LevelGenerator {
         }
     }
 
-    // takes in an int: 1 (bottom), 2 (middle), 3 (top), or
-    // BOTTOM, MIDDLE, TOP
+    // takes in an int: 1 (bottom), 2 (middle), 3 (top), BOTTOM, MIDDLE, TOP
     // and returns a random platform which is NOT the one passed in
     private int randomLevel(int notLevel) {
         int[] possibleLevels = new int[2];
 
-        // Fill possibleLevels array to include every level NOT specified by notMe
+        // Fill possibleLevels array to include every level NOT specified by notLevel
         if (notLevel == 1 || notLevel == level.getBottomPlatformY()) {
             possibleLevels[0] = level.getMiddlePlatformY();
             possibleLevels[1] = level.getTopPlatformY();
@@ -443,11 +442,10 @@ public class LevelGenerator {
         return possibleLevels[randomGenerator.nextInt(2)];
     }
 
-    // takes in an int: 1 (bottom), 2 (middle), 3 (top), or
-    // level.getBottomPlatformY(), level.getMiddlePlatformY(), level.getTopPlatformY()
+    // takes in an int: 1 (bottom), 2 (middle), 3 (top), BOTTOM, MIDDLE, TOP
     // and returns the two platforms NOT passed in
     private int[] allPlatformsNotThis(int notLevel) {
-        // Fill possibleLevels array to include every level NOT specified by notMe
+
         if (notLevel == 1 || notLevel == BOTTOM) {
             return new int[] {MIDDLE, TOP};
         } else if (notLevel == 2 || notLevel == MIDDLE) {
