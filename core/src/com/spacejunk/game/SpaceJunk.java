@@ -106,7 +106,11 @@ public class SpaceJunk extends Game implements ApplicationListener {
     }
 
     public void incrementGameScore() {
-        this.currentGameScore += this.level.getScoringRate();
+        this.currentGameScore += (this.level.getScoreRateMultiplier() * this.level.getScoringRate());
+    }
+
+    public void incrementGameScoreByBonus(double bonus) {
+        this.currentGameScore += bonus;
     }
 
     public DIFFICULTY_LEVEL getCurrentDifficultyLevel() {
