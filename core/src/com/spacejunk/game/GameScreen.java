@@ -120,7 +120,7 @@ public class GameScreen implements Screen {
 	}
 
 	public static int getScaledTextureHeight(Texture texture) {
-		return (int) (texture.getWidth() * GameScreen.SCALE_Y_FACTOR);
+		return (int) (texture.getHeight() * GameScreen.SCALE_Y_FACTOR);
 	}
 
 	public static int getScaledTextureRegionWidth(TextureRegion textureRegion) {
@@ -218,7 +218,6 @@ public class GameScreen implements Screen {
 	}
 
 
-
 	@Override
 	public void dispose () {
 		canvas.dispose();
@@ -258,8 +257,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-
-//		canvas.setProjectionMatrix(camera.combined);
 
 		switch (state) {
 			case ABOUT_SCREEN:
