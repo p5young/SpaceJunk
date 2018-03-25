@@ -79,14 +79,32 @@ public class LevelGenerator {
     // returns its width plus a gap which is used by level.renderObstacles to delay next group
     public int generateObstacles() {
         Gdx.app.log("applog", "Making new batch of obstacles");
+
+        // had to put these here because they're incorrect at time of construction
         TOP = level.getTopPlatformY();
         MIDDLE = level.getMiddlePlatformY();
         BOTTOM = level.getBottomPlatformY();
-        Gdx.app.log("applog", "TOP:" + TOP + " " + MIDDLE + " " + BOTTOM);
+
+        // assess what consumables the player has and populate Unbreakables and Breakables ArrayLists
         populateBreakableAndUnbreakables();
+
+        // adjust the weights of certain chunks based on lives, consumables, etc...
         adjustWeights();
+
+        // get the platform the player is on (or moving to)
         int charPlatform = level.getCurrentGame().getCharacter().getTargetY();
+
+        // pick which layout to use based on weights and random number
+        // note: a layout with weight 0 is impossible
         int selectedLayout = getChunk(randomGenerator.nextInt(weightSum) + 1);
+
+        // LAYOUT NOTATION:
+        // R: random obstacle
+        // U: unbreakable obstacle
+        // B: breakable obstacle
+        // C: consumable
+        // L: life
+        // selectedLayout = 9; // FORCE LAYOUT - FOR TESTING
         switch (selectedLayout) {
             case 0: {
                 /*
@@ -132,7 +150,7 @@ public class LevelGenerator {
                 Gdx.app.log("applog", "Layout " + selectedLayout);
                 int a = makeUnbreakable(0, MIDDLE);
                 int b = makeConsumable(a, MIDDLE);
-                makeBreakable(a, BOTTOM);
+                makeBreakable(a, randomLevel(2));
                 return b + MIN_GAP;
             } case 4: {
                 /*
@@ -205,6 +223,40 @@ public class LevelGenerator {
         }
     }
 
+    private void populateBreakableAndUnbreakables() {
+        Unbreakables = new ArrayList<Consumable.CONSUMABLES>();
+        Breakables = new ArrayList<Consumable.CONSUMABLES>();
+        Set<Consumable.CONSUMABLES> inventory = level.getInventory();   // Player inventory
+
+        // Fire suit
+        if (inventory.contains(Consumable.CONSUMABLES.FIRESUIT)){
+            Breakables.add(Consumable.CONSUMABLES.FIRESUIT);
+        } else {
+            Unbreakables.add(Consumable.CONSUMABLES.FIRESUIT);
+        }
+
+        // Hammer
+        if (inventory.contains(Consumable.CONSUMABLES.SPACE_HAMMER)){
+            Breakables.add(Consumable.CONSUMABLES.SPACE_HAMMER);
+        } else {
+            Unbreakables.add(Consumable.CONSUMABLES.SPACE_HAMMER);
+        }
+
+        // Invisibility
+        if (inventory.contains(Consumable.CONSUMABLES.INVISIBILITY)){
+            Breakables.add(Consumable.CONSUMABLES.INVISIBILITY);
+        } else {
+            Unbreakables.add(Consumable.CONSUMABLES.INVISIBILITY);
+        }
+
+        // Gas Mask
+        if (inventory.contains(Consumable.CONSUMABLES.GAS_MASK)){
+            Breakables.add(Consumable.CONSUMABLES.GAS_MASK);
+        } else {
+            Unbreakables.add(Consumable.CONSUMABLES.GAS_MASK);
+        }
+    }
+
     private void adjustWeights() {
         // layout 5 - (free life) don't spawn unless they're missing a life
         if (level.getCurrentGame().getCharacter().getRemainingLives() >= GameConstants.MAX_LIVES) {
@@ -257,7 +309,7 @@ public class LevelGenerator {
     }
 
     /*
-    spawns a random obstacle the player DOESN'T have a consumable for
+    spawns a random obstacle the player HAS a consumable for
     returns the x coordinate of the right side
     if they have no consumables, spawns a random obstacle
      */
@@ -307,38 +359,11 @@ public class LevelGenerator {
         return x + c.getTexture().getWidth() + 10;
     }
 
-    private void populateBreakableAndUnbreakables() {
-        Unbreakables = new ArrayList<Consumable.CONSUMABLES>();
-        Breakables = new ArrayList<Consumable.CONSUMABLES>();
-        Set<Consumable.CONSUMABLES> inventory = level.getInventory();   // Player inventory
-
-        // Fire suit
-        if (inventory.contains(Consumable.CONSUMABLES.FIRESUIT)){
-            Breakables.add(Consumable.CONSUMABLES.FIRESUIT);
-        } else {
-            Unbreakables.add(Consumable.CONSUMABLES.FIRESUIT);
-        }
-
-        // Hammer
-        if (inventory.contains(Consumable.CONSUMABLES.SPACE_HAMMER)){
-            Breakables.add(Consumable.CONSUMABLES.SPACE_HAMMER);
-        } else {
-            Unbreakables.add(Consumable.CONSUMABLES.SPACE_HAMMER);
-        }
-
-        // Invisibility
-        if (inventory.contains(Consumable.CONSUMABLES.INVISIBILITY)){
-            Breakables.add(Consumable.CONSUMABLES.INVISIBILITY);
-        } else {
-            Unbreakables.add(Consumable.CONSUMABLES.INVISIBILITY);
-        }
-
-        // Gas Mask
-        if (inventory.contains(Consumable.CONSUMABLES.GAS_MASK)){
-            Breakables.add(Consumable.CONSUMABLES.GAS_MASK);
-        } else {
-            Unbreakables.add(Consumable.CONSUMABLES.GAS_MASK);
-        }
+    private int makeLife(int x, int y) {
+        Consumable c = new LifeConsumable(level);
+        c.setCoordinates(level.getXMax() + x, y);
+        level.getConsumablesList().add(c);
+        return x + c.getTexture().getWidth() + 10;
     }
 
     private Obstacle getRandomObstacle() {
@@ -377,13 +402,6 @@ public class LevelGenerator {
                 Gdx.app.log("applog", "Error: getRandomConsumable broke");
                 return new SpaceHammerConsumable(level);
         }
-    }
-
-    private int makeLife(int x, int y) {
-        Consumable c = new LifeConsumable(level);
-        c.setCoordinates(level.getXMax() + x, y);
-        level.getConsumablesList().add(c);
-        return x + c.getTexture().getWidth() + 10;
     }
 
     // provides a random platform (bottom, middle, top)
