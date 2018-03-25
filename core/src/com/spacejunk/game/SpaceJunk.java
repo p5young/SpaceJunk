@@ -62,8 +62,6 @@ public class SpaceJunk extends Game implements ApplicationListener {
         // Updating the values needed from within the level class
         this.level = new Level(this);
 
-        Gdx.app.log("applog", "Level is initialized in create method of SpaceJunk");
-
         // We subtract 1/6th of the screen here to make up for the offset we caused earlier
         this.level.setPlatformCoordinates(
                 5 * Gdx.graphics.getHeight() / 6,

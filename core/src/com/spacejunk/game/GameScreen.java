@@ -1,5 +1,6 @@
 package com.spacejunk.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -29,8 +30,8 @@ public class GameScreen implements Screen {
 
 
 
-//	public static boolean DEBUG = true;
-	public static boolean DEBUG = false;
+	public static boolean DEBUG = true;
+//	public static boolean DEBUG = false;
 
 	// These booleans specify the settings selected by user
 	private boolean soundSetting;
@@ -108,7 +109,6 @@ public class GameScreen implements Screen {
 	private Consumable.CONSUMABLES justPressed;
 
 
-
 	public static void setScaleFactor(int xMax, int yMax) {
 		GameScreen.SCALE_X_FACTOR = (float) xMax / GameConstants.X_AXIS_CONSTANT;
 		GameScreen.SCALE_Y_FACTOR = (float) yMax / GameConstants.Y_AXIS_CONSTANT;
@@ -171,6 +171,8 @@ public class GameScreen implements Screen {
 
 
 		GameScreen.setScaleFactor(spaceJunk.getxMax(), spaceJunk.getyMax());
+
+		spaceJunk.getLevel().getLevelGenerator().setMinGapWithScaleFactor();
 
 		background = new Texture("background.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -878,23 +880,23 @@ public class GameScreen implements Screen {
 	}
 
 	private void drawGameOverScreen() {
-		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2,
-				Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2,
+		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - GameScreen.getScaledTextureWidth(gameOver)/2,
+				Gdx.graphics.getHeight()/2 - GameScreen.getScaledTextureHeight(gameOver)/2,
 				GameScreen.getScaledTextureWidth(gameOver),
 				GameScreen.getScaledTextureHeight(gameOver));
 	}
 
 	private void drawSettingsMenu() {
-		canvas.draw(settingsMenu, Gdx.graphics.getWidth() / 2 - settingsMenu.getWidth() / 2,
-				Gdx.graphics.getHeight() / 2 - settingsMenu.getHeight() / 2,
+		canvas.draw(settingsMenu, Gdx.graphics.getWidth() / 2 - GameScreen.getScaledTextureWidth(settingsMenu) / 2,
+				Gdx.graphics.getHeight() / 2 - GameScreen.getScaledTextureHeight(settingsMenu) / 2,
 				GameScreen.getScaledTextureWidth(settingsMenu),
 				GameScreen.getScaledTextureHeight(settingsMenu));
 
 	}
 
 	private void drawPauseScreenTexture() {
-			canvas.draw(pauseScreen, Gdx.graphics.getWidth() / 2 - pauseScreen.getWidth() / 2,
-					Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2,
+			canvas.draw(pauseScreen, Gdx.graphics.getWidth() / 2 - GameScreen.getScaledTextureWidth(pauseScreen)/ 2,
+					Gdx.graphics.getHeight() / 2 - GameScreen.getScaledTextureHeight(pauseScreen) / 2,
 					GameScreen.getScaledTextureWidth(pauseScreen),
 					GameScreen.getScaledTextureHeight(pauseScreen));
 	}

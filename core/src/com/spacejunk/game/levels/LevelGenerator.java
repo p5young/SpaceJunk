@@ -60,6 +60,10 @@ public class LevelGenerator {
 
     }
 
+    public void setMinGapWithScaleFactor() {
+        MIN_GAP = (int) (MIN_GAP * GameScreen.SCALE_X_FACTOR);
+    }
+
     // adjusts the weight of a certain chunk/ layout
     private void setWeight(int chunk, int newWeight) {
         weightSum += newWeight - weights[chunk];  // add newWeight to sum, subtract oldWeight
@@ -74,6 +78,15 @@ public class LevelGenerator {
         }
         Gdx.app.log("applog", "getChunk() failed");
         return -1;
+    }
+
+    int[] nums = {1,3,5,7,9};
+    int numsi = -1;
+
+    private int getNextTestNumber() {
+        numsi++;
+        if(numsi >= 5) numsi = 0;
+        return nums[numsi];
     }
 
     // creates a group of obstacles
@@ -97,7 +110,10 @@ public class LevelGenerator {
 
         // pick which layout to use based on weights and random number
         // note: a layout with weight 0 is impossible
-        int selectedLayout = getChunk(randomGenerator.nextInt(weightSum) + 1);
+//        int selectedLayout = getChunk(randomGenerator.nextInt(weightSum) + 1);
+
+        int selectedLayout = getChunk(getNextTestNumber());
+        Gdx.app.log("applog", "selected layout is : " + selectedLayout);
 
         // LAYOUT NOTATION:
         // R: random obstacle
@@ -105,7 +121,7 @@ public class LevelGenerator {
         // B: breakable obstacle
         // C: consumable
         // L: life
-        // selectedLayout = 9; // FORCE LAYOUT - FOR TESTING
+//         selectedLayout = 9; // FORCE LAYOUT - FOR TESTING
         switch (selectedLayout) {
             case 0: {
                 /*
@@ -306,7 +322,7 @@ public class LevelGenerator {
         }
         o.setCoordinates(level.getXMax() + x, y);
         level.getObstaclesList().add(o);
-        return x + o.getTexture().getWidth() + 10;
+        return x + GameScreen.getScaledTextureWidth(o.getTexture()) + 10;
     }
 
     /*
@@ -339,7 +355,7 @@ public class LevelGenerator {
         }
         o.setCoordinates(level.getXMax() + x, y);
         level.getObstaclesList().add(o);
-        return x + o.getTexture().getWidth() + 10;
+        return x + GameScreen.getScaledTextureWidth(o.getTexture()) + 10;
     }
 
     private int makeRandomObstacle(int x, int y) {
