@@ -51,6 +51,8 @@ public class Level {
 
     private double scoringRate = GameConstants.SCORING_RATE;
 
+    private int scoreRateMultiplier = 1;
+
     private SpaceJunk currentGame;
     private LevelGenerator levelGenerator;
 
@@ -249,5 +251,17 @@ public class Level {
     }
 
     public SpaceJunk getCurrentGame() { return currentGame; }
+
+    public int getScoreRateMultiplier() {
+        return scoreRateMultiplier;
+    }
+
+    public void incrementScoreRateMultiplier() {
+        this.scoreRateMultiplier += 1;
+    }
+
+    public void resetMultiplier() {
+        this.scoreRateMultiplier = 1;
+    }
 
 }

@@ -19,8 +19,6 @@ import com.spacejunk.game.obstacles.Obstacle;
 import java.lang.Math;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.spacejunk.game.constants.GameConstants.BACKGROUND_MUSIC_VOLUME;
 import static java.lang.Math.max;
@@ -111,6 +109,10 @@ public class GameScreen implements Screen {
 		recordAudioSetting = true;
 		vibrationSetting = true;
 
+		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/Retro-Frantic-bkg.mp3"));
+		backgroundMusic.setLooping(true);
+		backgroundMusic.setVolume(BACKGROUND_MUSIC_VOLUME);
+
 		startGame(game);
 	}
 
@@ -137,10 +139,10 @@ public class GameScreen implements Screen {
 		background = new Texture("background.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
-		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/Retro-Frantic-bkg.mp3"));
-		backgroundMusic.setLooping(true);
-		backgroundMusic.setVolume(BACKGROUND_MUSIC_VOLUME);
-		backgroundMusic.play();
+
+		if (!backgroundMusic.isPlaying()) {
+			backgroundMusic.play();
+		}
 
 		mainMenu = new Texture("main_menu_background.jpg");
 		mainMenu.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -185,6 +187,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose () {
 		canvas.dispose();
+		backgroundMusic.dispose();
 	}
 
 
@@ -613,14 +616,17 @@ public class GameScreen implements Screen {
 					currentObstacle.setBroken(true);
 
 					if (passesObstacle) {
+						this.spaceJunk.getLevel().incrementScoreRateMultiplier();
 						return false;
 					}
 					else {
 						if(vibrationSetting) {
-							Gdx.input.vibrate(500);
+							Gdx.input.vibrate(250);
 						}
 					}
 
+					// Character is about to take a hit so reset the multiplier
+					this.spaceJunk.getLevel().resetMultiplier();
                     return spaceJunk.getCharacter().takesHit();
                 }
 			}
@@ -846,12 +852,20 @@ public class GameScreen implements Screen {
 	private void displayScore() {
 
 		double currentGameScore = round(spaceJunk.getCurrentGameScore(), 2);
+		int currentMultiplier = spaceJunk.getLevel().getScoreRateMultiplier();
 
 		GlyphLayout layout = new GlyphLayout(scoreFont, String.valueOf(currentGameScore));
+		GlyphLayout multiplierLayout = new GlyphLayout(scoreFont, String.valueOf(currentMultiplier));
 
 		scoreFont.draw(canvas, String.valueOf(currentGameScore),
 				Gdx.graphics.getWidth() / 2 - layout.width / 2,
 				Gdx.graphics.getHeight());
+
+
+		scoreFont.draw(canvas, "x" + String.valueOf((int)spaceJunk.getLevel().getScoreRateMultiplier()),
+				Gdx.graphics.getWidth() / 2 - multiplierLayout.width / 2,
+				multiplierLayout.height);
+
 	}
 
 
