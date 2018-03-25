@@ -149,13 +149,13 @@ public class LevelGenerator {
                  */
                 Gdx.app.log("applog", "Layout " + selectedLayout);
                 int a = makeUnbreakable(0, MIDDLE);
-                int b = makeConsumable(a, MIDDLE);
+                int b = makeConsumable(a + 20, MIDDLE);
                 makeBreakable(a, randomLevel(2));
                 return b + MIN_GAP;
             } case 4: {
                 /*
                 layout 4
-                B C (random level)
+                C B (random level)
                  */
                 Gdx.app.log("applog", "Layout " + selectedLayout);
                 int randomLevel = randomLevel();
