@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,17 +11,10 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.obstacles.Obstacle;
-import com.spacejunk.game.utilities.MultipleVirtualViewportBuilder;
-import com.spacejunk.game.utilities.OrthographicCameraWithVirtualViewport;
-import com.spacejunk.game.utilities.VirtualViewPort;
 
 import java.lang.Math;
 import java.math.BigDecimal;
@@ -34,6 +26,8 @@ import static java.lang.Math.min;
 
 public class GameScreen implements Screen {
 
+
+
 //	public static boolean DEBUG = true;
 	public static boolean DEBUG = false;
 
@@ -44,14 +38,9 @@ public class GameScreen implements Screen {
 
 	public static final String GAME_START_PROMPT = "Press anywhere on the screen to begin playing";
 
-	public OrthographicCamera camera;
-	public OrthographicCameraWithVirtualViewport cameraWithVirtualViewport;
 
-	private MultipleVirtualViewportBuilder multipleVirtualViewportBuilder;
-
-
-	public Viewport viewPort;
-	public VirtualViewPort virtualViewPort;
+	public static float SCALE_X_FACTOR = 1;
+	public static float SCALE_Y_FACTOR = 1;
 
 	public enum State
 	{
@@ -116,6 +105,21 @@ public class GameScreen implements Screen {
 	// this field is just for avoiding a local field instantiated every tap
 	private Consumable.CONSUMABLES justPressed;
 
+
+
+	public static void setScaleFactor(int xMax, int yMax) {
+		GameScreen.SCALE_X_FACTOR = (float) xMax / GameConstants.X_AXIS_CONSTANT;
+		GameScreen.SCALE_Y_FACTOR = (float) yMax / GameConstants.Y_AXIS_CONSTANT;
+	}
+
+	public static int getScaledTextureWidth(Texture texture) {
+		return (int) (texture.getWidth() * GameScreen.SCALE_X_FACTOR);
+	}
+
+	public static int getScaledTextureHeight(Texture texture) {
+		return (int) (texture.getWidth() * GameScreen.SCALE_Y_FACTOR);
+	}
+
 	public GameScreen(final SpaceJunk game) {
 
 		// Start the game off on the main menu
@@ -153,37 +157,7 @@ public class GameScreen implements Screen {
 		canvas.enableBlending();
 
 
-
-
-		multipleVirtualViewportBuilder = new MultipleVirtualViewportBuilder(1920, 1080, 2392, 1196);
-		VirtualViewPort mVirtualViewPort = multipleVirtualViewportBuilder.getVirtualViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-
-		virtualViewPort = new VirtualViewPort(2392, 1440);
-		float realViewportWidth = virtualViewPort.getWidth(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		float realViewportHeight = virtualViewPort.getHeight(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-		// now set the camera viewport values
-		cameraWithVirtualViewport = new OrthographicCameraWithVirtualViewport(virtualViewPort);
-		cameraWithVirtualViewport.setToOrtho(false, realViewportWidth, realViewportHeight);
-
-		cameraWithVirtualViewport.position.set(spaceJunk.getxMax()/2, spaceJunk.getyMax()/2, 0);
-		cameraWithVirtualViewport.update();
-
-		// Now set the camera viewport values
-
-		/*
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, realViewportWidth, realViewportHeight);
-		camera.position.set(spaceJunk.getxMax() / 2, spaceJunk.getyMax()/ 2, 0);
-		camera.update();
-		camera.setToOrtho(false, spaceJunk.getxMax(), spaceJunk.getyMax());
-
-		viewPort = new ExtendViewport(2392, 1440, camera);
-		*/
-
-
-
+		GameScreen.setScaleFactor(spaceJunk.getxMax(), spaceJunk.getyMax());
 
 		background = new Texture("background.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -273,7 +247,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void render(float delta) {
 
-		canvas.setProjectionMatrix(cameraWithVirtualViewport.combined);
+//		canvas.setProjectionMatrix(camera.combined);
 
 		switch (state) {
 			case ABOUT_SCREEN:
@@ -929,7 +903,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-//		viewPort.update(width, height);
+
 	}
 
 	@Override

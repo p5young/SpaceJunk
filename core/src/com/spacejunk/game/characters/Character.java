@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -259,9 +260,15 @@ public abstract class Character {
             }
         }
 
+
+        int scaledWidth = (int) (currentFrame.getRegionWidth() * 0.5);
+        int scaledHeight = (int) (currentFrame.getRegionHeight() * 0.5);
+
+
         canvas.draw(currentFrame,
-                this.initialX - currentFrame.getRegionWidth() / 2,
-                this.currentY - currentFrame.getRegionHeight() / 2);
+                this.initialX - scaledWidth / 2,
+                this.currentY - scaledHeight / 2, scaledWidth,
+                scaledHeight);
 
 
         // Only render shapes if on debug mode
