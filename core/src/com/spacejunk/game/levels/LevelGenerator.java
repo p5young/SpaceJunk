@@ -349,11 +349,33 @@ public class LevelGenerator {
     }
 
     /*
-    spawns a random consumable
+    spawns a consumable the player doesn't have
+    if they have all consumables, spawns a random one
     returns the x coordinate of the right side
      */
     private int makeConsumable(int x, int y) {
-        Consumable c = getRandomConsumable();
+        Consumable c;
+        if (Unbreakables.size() == 0) {
+            c = getRandomConsumable();
+        } else {
+            switch (Unbreakables.get(randomGenerator.nextInt(Unbreakables.size()))) {
+                case SPACE_HAMMER:
+                    c = new SpaceHammerConsumable(level);
+                    break;
+                case INVISIBILITY:
+                    c = new InvisibilityConsumable(level);
+                    break;
+                case GAS_MASK:
+                    c = new GasMaskConsumable(level);
+                    break;
+                case FIRESUIT:
+                    c = new FireSuitConsumable(level);
+                    break;
+                default:
+                    Gdx.app.log("applog", "levelGenerator.makeUnbreakable() failed!!!");
+                    c = getRandomConsumable();
+            }
+        }
         c.setCoordinates(level.getXMax() + x, y);
         level.getConsumablesList().add(c);
         return x + c.getTexture().getWidth() + 10;
