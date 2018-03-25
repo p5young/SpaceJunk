@@ -1,6 +1,8 @@
 package com.spacejunk.game.characters;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.spacejunk.game.SpaceJunk;
 
@@ -27,6 +29,9 @@ public class Astronaut extends Character  {
         gasMaskAnimationSheet = new Texture(Gdx.files.internal("gasmask_animation_sheet.png"));
         fireSuitAnimationSheet = new Texture(Gdx.files.internal("firesuit_animation_sheet.png"));
         invisibilityAnimationSheet = new Texture(Gdx.files.internal("invisibility_animation_sheet.png"));
+
+        FileHandle handle = Gdx.files.internal("astronaut_texture_1.png");
+        this.pixmap = new Pixmap(handle);
 
         FRAME_COLS = 3;
         FRAME_ROWS = 1;

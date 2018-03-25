@@ -68,6 +68,7 @@ public class GameScreen implements Screen {
 	private Texture play;
 	private int howToPlayImageIndex = 0;
 	private int scrollIndex = 0;
+	private int autoScroll = 0; // autoScroll on when autoScroll = 0 or 1
 	private boolean scrolling = false;
 
 	private int backgroundImageIndex = 0;
@@ -497,7 +498,14 @@ public class GameScreen implements Screen {
             mainMenuImageIndex = 0;
         }
 
+        if (autoScroll < 2) {
+            howToPlayImageIndex += 1;
+            if (howToPlayImageIndex > howToPlay.getHeight() - Gdx.graphics.getHeight())
+                howToPlayImageIndex = howToPlay.getHeight() - Gdx.graphics.getHeight();
+        }
+
 		if(controller.touching()) {
+            if (autoScroll == 1) autoScroll = 2;
             // !scrolling means this is the first touch (not dragging yet)
             if (!scrolling) {
                 if (controller.howToPlayBackButtonPressed()) {
@@ -520,6 +528,7 @@ public class GameScreen implements Screen {
                     howToPlayImageIndex = howToPlay.getHeight() - Gdx.graphics.getHeight();
             }
 		} else {
+            if (autoScroll == 0) autoScroll = 1;
             if (scrolling) scrolling = false;  // no touch detected: stop scrolling
         }
 	}
@@ -565,6 +574,7 @@ public class GameScreen implements Screen {
 			}
 
 			else if(controller.howToPlayButtonIsTouched()) {
+			    autoScroll = 0;
 				this.state = State.HOW_TO_PLAY_SCREEN;
 			}
 
@@ -929,8 +939,13 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resume() {
-		this.state = State.RUN;
-		controller.getOptionsMenu().setMiddleButtonTextureToPause();
+	    if (spaceJunk.getCharacter().getRemainingLives() <= 0) {
+	        // player had no lives left
+            this.state = State.CRASHED;
+        } else {
+            this.state = State.RUN;
+            controller.getOptionsMenu().setMiddleButtonTextureToPause();
+        }
 	}
 
 	@Override

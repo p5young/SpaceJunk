@@ -1,7 +1,6 @@
 package com.spacejunk.game.characters;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -63,9 +62,6 @@ public abstract class Character {
 
 
     public void create() {
-
-        FileHandle handle = Gdx.files.internal("astronaut_texture_1.png");
-        this.pixmap = new Pixmap(handle);
 
         characterShape = new Rectangle();
 
@@ -296,6 +292,8 @@ public abstract class Character {
     public int getCurrentX() {
         return this.currentX;
     }
+
+    public int getTargetY() { return this.targetY; }
 
     public int[] getCoordinates() {
         return new int[]{ (int)this.getCharacterShape().getX(), (int)this.getCharacterShape().getY()};

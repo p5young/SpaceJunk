@@ -28,7 +28,7 @@ public class GameConstants {
     /* Maximum count of an item in inventory */
     public static final int MAX_INVENTORY_COUNT = 4;
 
-    public static final int MIN_GAP = 430;
+    public static final int MIN_GAP = 500;
 
     public static final float BACKGROUND_MUSIC_VOLUME = 0.25f;
 
