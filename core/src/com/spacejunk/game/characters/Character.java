@@ -180,8 +180,8 @@ public abstract class Character {
     public void updateCharacterShapeCoordinates() {
         this.characterShape.set(this.initialX - this.getCharacterShape().getWidth() /2,
                 this.currentY - this.getCharacterShape().getHeight() /2,
-                this.characterTextures[0].getWidth(),
-                this.characterTextures[0].getHeight()); //XY Coordinate and radius
+                GameScreen.getScaledTextureWidth(this.characterTextures[0]),
+                GameScreen.getScaledTextureHeight(this.characterTextures[0]));
     }
 
     public void updateCharacterPosition(boolean toAnimate) {
@@ -261,14 +261,11 @@ public abstract class Character {
         }
 
 
-        int scaledWidth = (int) (currentFrame.getRegionWidth() * 0.5);
-        int scaledHeight = (int) (currentFrame.getRegionHeight() * 0.5);
-
-
         canvas.draw(currentFrame,
-                this.initialX - scaledWidth / 2,
-                this.currentY - scaledHeight / 2, scaledWidth,
-                scaledHeight);
+                this.initialX - GameScreen.getScaledTextureRegionWidth(currentFrame) / 2,
+                this.currentY - GameScreen.getScaledTextureRegionHeight(currentFrame) / 2,
+                GameScreen.getScaledTextureRegionWidth(currentFrame),
+                GameScreen.getScaledTextureRegionHeight(currentFrame));
 
 
         // Only render shapes if on debug mode

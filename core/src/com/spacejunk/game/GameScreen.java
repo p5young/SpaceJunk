@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.spacejunk.game.constants.GameConstants;
@@ -119,6 +120,15 @@ public class GameScreen implements Screen {
 	public static int getScaledTextureHeight(Texture texture) {
 		return (int) (texture.getWidth() * GameScreen.SCALE_Y_FACTOR);
 	}
+
+	public static int getScaledTextureRegionWidth(TextureRegion textureRegion) {
+		return (int) (textureRegion.getRegionWidth() * GameScreen.SCALE_X_FACTOR);
+	}
+
+	public static int getScaledTextureRegionHeight(TextureRegion textureRegion) {
+		return (int) (textureRegion.getRegionHeight() * GameScreen.SCALE_Y_FACTOR);
+	}
+
 
 	public GameScreen(final SpaceJunk game) {
 
@@ -844,16 +854,16 @@ public class GameScreen implements Screen {
 		// Using the width as the "u" parameter implies that image width is greater than screen width
 		// If it's not the background is tiled.
 
-		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
-				backgroundImageIndex, 0, Gdx.graphics.getWidth(), Math.min(background.getHeight(),
-						Gdx.graphics.getHeight()), false, false);
+		canvas.draw(background, 0, 0, spaceJunk.getxMax(), spaceJunk.getyMax(),
+				backgroundImageIndex, 0, spaceJunk.getxMax(), Math.min(background.getHeight(),
+						spaceJunk.getyMax()), false, false);
 
 		// Only move background is game is currently running
 		if (this.state == State.RUN) {
 			backgroundImageIndex += GameConstants.BACKGROUND_SPEED;
 		}
 
-		if ( backgroundImageIndex > background.getWidth()) {
+		if (backgroundImageIndex > background.getWidth()) {
 			backgroundImageIndex = 0;
 		}
 	}

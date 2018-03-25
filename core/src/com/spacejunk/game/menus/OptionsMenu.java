@@ -3,6 +3,7 @@ package com.spacejunk.game.menus;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.spacejunk.game.GameScreen;
 
 /**
  * Created by vidxyz on 2/9/18.
@@ -38,15 +39,18 @@ public class OptionsMenu {
         for(int i = 0; i < MAX_BUTTONS; i++) {
             if(i != 0) {
                 canvas.draw(optionsMenuTexures[i], 0,
-                        Gdx.graphics.getHeight() - ((i+1) * optionsMenuTexures[i-1].getHeight()));
+                        Gdx.graphics.getHeight() - ((i+1) * GameScreen.getScaledTextureHeight(optionsMenuTexures[i])));
             }
             else {
-                canvas.draw(optionsMenuTexures[i], 0, Gdx.graphics.getHeight() - ((i+1) * optionsMenuTexures[i].getHeight()));
+                canvas.draw(optionsMenuTexures[i], 0,
+                        Gdx.graphics.getHeight() - ((i+1) * GameScreen.getScaledTextureHeight(optionsMenuTexures[i])));
             }
         }
 
         // Render the screen record button
-        canvas.draw(screenRecordButton, (int) (screenRecordButton.getWidth() * 0.1), 0);
+        canvas.draw(screenRecordButton, (int) (GameScreen.getScaledTextureWidth(screenRecordButton) * 0.1), 0,
+                GameScreen.getScaledTextureWidth(screenRecordButton),
+                GameScreen.getScaledTextureHeight(screenRecordButton));
     }
 
     public Texture[] getOptionsMenuTexures() {
