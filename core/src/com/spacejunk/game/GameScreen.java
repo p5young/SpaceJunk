@@ -899,8 +899,13 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resume() {
-		this.state = State.RUN;
-		controller.getOptionsMenu().setMiddleButtonTextureToPause();
+	    if (spaceJunk.getCharacter().getRemainingLives() <= 0) {
+	        // player had no lives left
+            this.state = State.CRASHED;
+        } else {
+            this.state = State.RUN;
+            controller.getOptionsMenu().setMiddleButtonTextureToPause();
+        }
 	}
 
 	@Override
