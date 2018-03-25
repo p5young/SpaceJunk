@@ -868,19 +868,25 @@ public class GameScreen implements Screen {
 	}
 
 	private void drawGameOverScreen() {
-		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
+		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2,
+				Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2,
+				GameScreen.getScaledTextureWidth(gameOver),
+				GameScreen.getScaledTextureHeight(gameOver));
 	}
 
 	private void drawSettingsMenu() {
 		canvas.draw(settingsMenu, Gdx.graphics.getWidth() / 2 - settingsMenu.getWidth() / 2,
-				Gdx.graphics.getHeight() / 2 - settingsMenu.getHeight() / 2);
+				Gdx.graphics.getHeight() / 2 - settingsMenu.getHeight() / 2,
+				GameScreen.getScaledTextureWidth(settingsMenu),
+				GameScreen.getScaledTextureHeight(settingsMenu));
 
 	}
 
 	private void drawPauseScreenTexture() {
-
 			canvas.draw(pauseScreen, Gdx.graphics.getWidth() / 2 - pauseScreen.getWidth() / 2,
-					Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2);
+					Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2,
+					GameScreen.getScaledTextureWidth(pauseScreen),
+					GameScreen.getScaledTextureHeight(pauseScreen));
 	}
 
 	private void displayScore() {

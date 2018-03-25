@@ -1,6 +1,7 @@
 package com.spacejunk.game.levels;
 
 import com.badlogic.gdx.Gdx;
+import com.spacejunk.game.GameScreen;
 import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.consumables.GasMaskConsumable;
 import com.spacejunk.game.consumables.InvisibilityConsumable;
@@ -142,7 +143,7 @@ public class LevelGenerator {
         Obstacle o = getRandomObstacle();
         o.setCoordinates(level.getXMax() + x, y);
         level.getObstaclesList().add(o);
-        return x + o.getTexture().getWidth() + 10;
+        return x + GameScreen.getScaledTextureWidth(o.getTexture()) + 10;
     }
 
     private Obstacle getRandomObstacle() {
@@ -172,7 +173,7 @@ public class LevelGenerator {
         Consumable c = getRandomConsumable();
         c.setCoordinates(level.getXMax() + x, y);
         level.getConsumablesList().add(c);
-        return x + c.getTexture().getWidth() + 10;  // NOTE: CHANGE 10 TO NUMBER AFFECTED BY DIFFICULTY
+        return x + GameScreen.getScaledTextureWidth(c.getTexture()) + 10;  // NOTE: CHANGE 10 TO NUMBER AFFECTED BY DIFFICULTY
     }
 
     private Consumable getRandomConsumable() {
@@ -198,7 +199,7 @@ public class LevelGenerator {
         Consumable c = new LifeConsumable(level);
         c.setCoordinates(level.getXMax() + x, y);
         level.getConsumablesList().add(c);
-        return x + c.getTexture().getWidth() + 10;
+        return x + GameScreen.getScaledTextureWidth(c.getTexture()) + 10;
     }
 
     private int randomLevel() {

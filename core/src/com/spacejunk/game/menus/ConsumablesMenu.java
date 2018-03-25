@@ -73,10 +73,11 @@ public class ConsumablesMenu {
     }
 
     public int getInventoryWidth() {
-        return inventoryListTexture.getWidth();
+        return GameScreen.getScaledTextureWidth(inventoryListTexture);
     }
 
     public int getInventoryHeight() {
-        return inventoryListTexture.getHeight();
+        return GameScreen.getScaledTextureHeight(inventoryListTexture);
+
     }
 }
