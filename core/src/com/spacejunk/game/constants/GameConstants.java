@@ -14,7 +14,7 @@ public class GameConstants {
     public static final int MAX_PLATFORMS = 3;
     public static final int VELOCITY = 10;
     public static final double SCORING_RATE = 0.1;
-    // public static final double SCORING_RATE = 0.25;
+    public static final double SINGLE_CORRECT_USE_BONUS = 100;
     public static final int MAX_LIVES = 3;
 
     /* Background Speed Constant */
@@ -30,5 +30,5 @@ public class GameConstants {
 
     public static final int MIN_GAP = 430;
 
-    public static final float BACKGROUND_MUSIC_VOLUME = 0.5f;
+    public static final float BACKGROUND_MUSIC_VOLUME = 0.25f;
 }
