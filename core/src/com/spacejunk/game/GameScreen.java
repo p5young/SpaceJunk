@@ -193,11 +193,11 @@ public class GameScreen implements Screen {
 
 		scoreFont = new BitmapFont();
 		scoreFont.setColor(Color.WHITE);
-		scoreFont.getData().setScale(7);
+		scoreFont.getData().setScale(7 * (GameScreen.SCALE_X_FACTOR));
 
 		promptFont = new BitmapFont();
 		promptFont.setColor(Color.WHITE);
-		promptFont.getData().setScale(4);
+		promptFont.getData().setScale(4 * (GameScreen.SCALE_X_FACTOR));
 
 		gameOver = new Texture("gameover.jpg");
 		pauseScreen = new Texture("pause_screen.png");
@@ -544,9 +544,10 @@ public class GameScreen implements Screen {
 		canvas.begin();
 
 		// Draw main menu here
-		canvas.draw(mainMenu, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), mainMenuImageIndex,
-				0, Gdx.graphics.getWidth(), Math.min(mainMenu.getHeight(),
-						Gdx.graphics.getHeight()), false, false);
+		canvas.draw(mainMenu, 0, 0, Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight(), mainMenuImageIndex,
+				0, GameScreen.getScaledTextureWidth(mainMenu), GameScreen.getScaledTextureHeight(mainMenu)
+						, false, false);
 
 		canvas.draw(mainMenuMiddle, Gdx.graphics.getWidth()/2 - GameScreen.getScaledTextureWidth(mainMenuMiddle) / 2,
 				Gdx.graphics.getHeight()/2 - GameScreen.getScaledTextureHeight(mainMenuMiddle) / 2,
@@ -556,7 +557,7 @@ public class GameScreen implements Screen {
 		canvas.end();
 
 
-		mainMenuImageIndex += GameConstants.MAIN_MENU_BACKGROUND_SPEED;
+		mainMenuImageIndex += (int) (GameConstants.MAIN_MENU_BACKGROUND_SPEED * GameScreen.SCALE_X_FACTOR);
 
 		if (mainMenuImageIndex > mainMenu.getWidth()) {
 			mainMenuImageIndex = 0;
@@ -862,9 +863,10 @@ public class GameScreen implements Screen {
 		GlyphLayout layout = new GlyphLayout(promptFont, GAME_START_PROMPT);
 
 		promptFont.draw(canvas, GAME_START_PROMPT,
-				Gdx.graphics.getWidth() / 2 - layout.width / 2 - 100,
-				100);
+				Gdx.graphics.getWidth() / 2 - layout.width / 2 - (100 * GameScreen.SCALE_X_FACTOR),
+				(100 * GameScreen.SCALE_Y_FACTOR));
 	}
+	
 
 	private void drawBackground() {
 		// canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -878,7 +880,7 @@ public class GameScreen implements Screen {
 
 		// Only move background is game is currently running
 		if (this.state == State.RUN) {
-			backgroundImageIndex += GameConstants.BACKGROUND_SPEED;
+			backgroundImageIndex += (int) (GameConstants.BACKGROUND_SPEED * GameScreen.SCALE_X_FACTOR);
 		}
 
 		if (backgroundImageIndex > background.getWidth()) {
