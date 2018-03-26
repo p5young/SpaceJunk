@@ -297,10 +297,8 @@ public class Controller {
             @Override
             public boolean touchDragged (int x, int y, int pointer) {
                 if (gameScreen.getState() == GameScreen.State.RUN) {
-
                     if (Math.abs(y - yStart) > 50)
                         dragged = true;
-                    
                     Gdx.app.log("applog", "TOUCH DRAGGED");
                     return true; // return true to indicate the event was handled
                 }
