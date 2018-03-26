@@ -481,8 +481,8 @@ public class GameScreen implements Screen {
 
         if (autoScroll < 2) {
             howToPlayImageIndex += 1;
-            if (howToPlayImageIndex > howToPlay.getHeight() - Gdx.graphics.getHeight())
-                howToPlayImageIndex = howToPlay.getHeight() - Gdx.graphics.getHeight();
+            if (howToPlayImageIndex > GameScreen.getScaledTextureHeight(howToPlay) - Gdx.graphics.getHeight())
+                howToPlayImageIndex = GameScreen.getScaledTextureHeight(howToPlay) - Gdx.graphics.getHeight();
         }
 
         if (controller.touching()) {
@@ -505,8 +505,8 @@ public class GameScreen implements Screen {
                 // set boundaries
                 if (howToPlayImageIndex < 0)
                     howToPlayImageIndex = 0;
-                if (howToPlayImageIndex > howToPlay.getHeight() - Gdx.graphics.getHeight())
-                    howToPlayImageIndex = howToPlay.getHeight() - Gdx.graphics.getHeight();
+                if (howToPlayImageIndex > GameScreen.getScaledTextureHeight(howToPlay) - Gdx.graphics.getHeight())
+                    howToPlayImageIndex = GameScreen.getScaledTextureHeight(howToPlay) - Gdx.graphics.getHeight();
             }
         } else {
             if (autoScroll == 0) autoScroll = 1;
