@@ -328,6 +328,7 @@ public class LevelGenerator {
     }
 
     private void adjustWeights() {
+
         // layout 5 & 7 - (spawns lives)
         if (lives >= GameConstants.MAX_LIVES) { // max lives, don't spawn
             setWeight(5, 0);
@@ -349,6 +350,21 @@ public class LevelGenerator {
             setWeight(8, 0);
             setWeight(9, 0);
             setWeight(10,0);
+        }
+
+        // MOAR CONSUMABLES
+        if (level.getInventory().size() <= 1) {
+            setWeight(3,3);
+            setWeight(4,3);
+            setWeight(6,3);
+            setWeight(11,3);
+            setWeight(12,3);
+        } else {
+            setWeight(3,2);
+            setWeight(4,2);
+            setWeight(6,2);
+            setWeight(11,2);
+            setWeight(12,2);
         }
     }
 
