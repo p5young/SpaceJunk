@@ -481,16 +481,21 @@ public class GameScreen implements Screen {
                         Gdx.graphics.getHeight()), false, false);
 
         // draw back button
-        canvas.draw(back, Gdx.graphics.getWidth()/9 - back.getWidth() / 2,
-                Gdx.graphics.getHeight()/2 - back.getHeight() / 2);
+        canvas.draw(back, Gdx.graphics.getWidth()/9 - GameScreen.getScaledTextureWidth(back) / 2,
+                Gdx.graphics.getHeight()/2 - GameScreen.getScaledTextureHeight(back) / 2,
+				GameScreen.getScaledTextureWidth(back), GameScreen.getScaledTextureHeight(back));
 
         // draw play button
-        canvas.draw(play, (8 * Gdx.graphics.getWidth())/9 - play.getWidth() / 2,
-                Gdx.graphics.getHeight()/2 - play.getHeight() / 2);
+        canvas.draw(play, (8 * Gdx.graphics.getWidth())/9 - GameScreen.getScaledTextureWidth(play) / 2,
+                Gdx.graphics.getHeight()/2 - GameScreen.getScaledTextureHeight(play) / 2,
+				GameScreen.getScaledTextureWidth(play),
+				GameScreen.getScaledTextureHeight(play));
 
         // draw how to play instructions
-        canvas.draw(howToPlay, Gdx.graphics.getWidth()/2 - howToPlay.getWidth() / 2,
-                Gdx.graphics.getHeight() - howToPlay.getHeight() + howToPlayImageIndex);
+        canvas.draw(howToPlay, Gdx.graphics.getWidth()/2 - GameScreen.getScaledTextureWidth(howToPlay) / 2,
+                Gdx.graphics.getHeight() - GameScreen.getScaledTextureHeight(howToPlay) + howToPlayImageIndex,
+				GameScreen.getScaledTextureWidth(howToPlay),
+				GameScreen.getScaledTextureHeight(howToPlay));
 
 		canvas.end();
 
@@ -543,8 +548,10 @@ public class GameScreen implements Screen {
 				0, Gdx.graphics.getWidth(), Math.min(mainMenu.getHeight(),
 						Gdx.graphics.getHeight()), false, false);
 
-		canvas.draw(mainMenuMiddle, Gdx.graphics.getWidth()/2 - mainMenuMiddle.getWidth() / 2,
-				Gdx.graphics.getHeight()/2 - mainMenuMiddle.getHeight() / 2);
+		canvas.draw(mainMenuMiddle, Gdx.graphics.getWidth()/2 - GameScreen.getScaledTextureWidth(mainMenuMiddle) / 2,
+				Gdx.graphics.getHeight()/2 - GameScreen.getScaledTextureHeight(mainMenuMiddle) / 2,
+				GameScreen.getScaledTextureWidth(mainMenuMiddle),
+				GameScreen.getScaledTextureHeight(mainMenuMiddle));
 
 		canvas.end();
 
