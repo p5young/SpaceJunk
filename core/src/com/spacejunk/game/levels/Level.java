@@ -45,7 +45,6 @@ public class Level {
 
     // Velocity
     int velocity = GameConstants.VELOCITY;
-    int minimumDistanceBetweenObstacles;
 
     int maxLives = GameConstants.MAX_LIVES;
 
@@ -68,6 +67,7 @@ public class Level {
         this.consumablesList = new ArrayList<Consumable>();
 
         this.levelGenerator = new LevelGenerator(this);
+        //chunkWidth = 0;
 
         /* initialize the map with the obstacles
         *  we are kind of hard coding what the consumables are at first
@@ -83,8 +83,6 @@ public class Level {
         this.inventoryObjects.add(new InvisibilityConsumable(this));
 
         this.currentGame = currentGame;
-        this.minimumDistanceBetweenObstacles = (int)currentGame.getCharacter().getCharacterShape().getWidth() + 100;
-        Gdx.app.log("applog", "minimum distance between obstacles is " + minimumDistanceBetweenObstacles);
     }
 
     /**
@@ -228,10 +226,6 @@ public class Level {
 
     public ArrayList<Consumable> getConsumablesList() {
         return consumablesList;
-    }
-
-    public int getMinimumDistanceBetweenObstacles() {
-        return minimumDistanceBetweenObstacles;
     }
 
     public int getTopPlatformY() {
