@@ -61,11 +61,12 @@ public class GameScreen implements Screen {
     private Texture mainMenu;
     private Texture mainMenuMiddle;
 
-    // "how to play" screen textures & variables
+    // "how to play" and "about" screen variables
     private Texture howToPlay;
+    private Texture about;
     private Texture back;
     private Texture play;
-    private int howToPlayImageIndex = 0;
+    private int aboutOrHowToPlayImageIndex = 0;
     private int scrollIndex = 0;
     private int autoScroll = 0; // autoScroll on when autoScroll = 0 or 1
     private boolean scrolling = false;
@@ -187,6 +188,7 @@ public class GameScreen implements Screen {
         mainMenuMiddle = new Texture("main_menu_middle.png");
 
         howToPlay = new Texture("howToPlay.png");
+        about = new Texture("about.png");
         back = new Texture("back.png");
         play = new Texture("play.png");
 
@@ -262,10 +264,10 @@ public class GameScreen implements Screen {
 
         switch (state) {
             case ABOUT_SCREEN:
-                renderAboutScreen();
+                renderAboutOrHowToPlayScreen();
                 break;
             case HOW_TO_PLAY_SCREEN:
-                renderHowToPlayScreen();
+                renderAboutOrHowToPlayScreen();
                 break;
             case MAIN_MENU_SCREEN:
                 // Display main menu here, on interaction, move on to different game state
@@ -434,19 +436,14 @@ public class GameScreen implements Screen {
     }
 
 
-    //TODO: Fill in. Stub method
-    private void renderAboutScreen() {
-        canvas.begin();
-        canvas.draw(mainMenu, 0, 0);
-        canvas.end();
-
-        if (controller.isTouched()) {
-            this.state = State.MAIN_MENU_SCREEN;
+    private void renderAboutOrHowToPlayScreen() {
+        Texture screenContents;
+        if (state == State.HOW_TO_PLAY_SCREEN) {
+            screenContents = howToPlay;
+        } else {
+            screenContents = about;
         }
-    }
 
-
-    private void renderHowToPlayScreen() {
         canvas.begin();
 
         // draw background
@@ -466,10 +463,10 @@ public class GameScreen implements Screen {
                 GameScreen.getScaledTextureHeight(play));
 
         // draw how to play instructions
-        canvas.draw(howToPlay, Gdx.graphics.getWidth() / 2 - GameScreen.getScaledTextureWidth(howToPlay) / 2,
-                Gdx.graphics.getHeight() - GameScreen.getScaledTextureHeight(howToPlay) + howToPlayImageIndex,
-                GameScreen.getScaledTextureWidth(howToPlay),
-                GameScreen.getScaledTextureHeight(howToPlay));
+        canvas.draw(screenContents, Gdx.graphics.getWidth() / 2 - GameScreen.getScaledTextureWidth(screenContents) / 2,
+                Gdx.graphics.getHeight() - GameScreen.getScaledTextureHeight(screenContents) + aboutOrHowToPlayImageIndex,
+                GameScreen.getScaledTextureWidth(screenContents),
+                GameScreen.getScaledTextureHeight(screenContents));
 
         canvas.end();
 
@@ -480,9 +477,9 @@ public class GameScreen implements Screen {
         }
 
         if (autoScroll < 2) {
-            howToPlayImageIndex += 1;
-            if (howToPlayImageIndex > howToPlay.getHeight() - Gdx.graphics.getHeight())
-                howToPlayImageIndex = howToPlay.getHeight() - Gdx.graphics.getHeight();
+            aboutOrHowToPlayImageIndex += 1;
+            if (aboutOrHowToPlayImageIndex > GameScreen.getScaledTextureHeight(screenContents) - Gdx.graphics.getHeight())
+                aboutOrHowToPlayImageIndex = GameScreen.getScaledTextureHeight(screenContents) - Gdx.graphics.getHeight();
         }
 
         if (controller.touching()) {
@@ -490,23 +487,23 @@ public class GameScreen implements Screen {
             // !scrolling means this is the first touch (not dragging yet)
             if (!scrolling) {
                 if (controller.howToPlayBackButtonPressed()) {
-                    howToPlayImageIndex = 0;    // return scrolling image to top of screen
+                    aboutOrHowToPlayImageIndex = 0;    // return scrolling image to top of screen
                     this.state = State.MAIN_MENU_SCREEN;
                 } else if (controller.howToPlayPlayButtonPressed()) {
-                    howToPlayImageIndex = 0;    // return scrolling image to top of screen
+                    aboutOrHowToPlayImageIndex = 0;    // return scrolling image to top of screen
                     this.state = State.RUN;
                 } else {
                     scrollIndex = controller.getTouchYCoordinate();
                     scrolling = true;   // no buttons pressed, start dragging (scrolling)
                 }
             } else {
-                howToPlayImageIndex += controller.getTouchYCoordinate() - scrollIndex;
+                aboutOrHowToPlayImageIndex += controller.getTouchYCoordinate() - scrollIndex;
                 scrollIndex = controller.getTouchYCoordinate();
                 // set boundaries
-                if (howToPlayImageIndex < 0)
-                    howToPlayImageIndex = 0;
-                if (howToPlayImageIndex > howToPlay.getHeight() - Gdx.graphics.getHeight())
-                    howToPlayImageIndex = howToPlay.getHeight() - Gdx.graphics.getHeight();
+                if (aboutOrHowToPlayImageIndex < 0)
+                    aboutOrHowToPlayImageIndex = 0;
+                if (aboutOrHowToPlayImageIndex > GameScreen.getScaledTextureHeight(screenContents) - Gdx.graphics.getHeight())
+                    aboutOrHowToPlayImageIndex = GameScreen.getScaledTextureHeight(screenContents) - Gdx.graphics.getHeight();
             }
         } else {
             if (autoScroll == 0) autoScroll = 1;
@@ -551,6 +548,7 @@ public class GameScreen implements Screen {
                     thisIsTheFirstTimeMainMenuIsAccessed = false;
                 }
             } else if (controller.aboutButtonIsTouched()) {
+                autoScroll = 0;
                 this.state = State.ABOUT_SCREEN;
             } else if (controller.howToPlayButtonIsTouched()) {
                 autoScroll = 0;
