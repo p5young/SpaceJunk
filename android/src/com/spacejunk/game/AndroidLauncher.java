@@ -284,6 +284,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 			return;
 		}
 
+
 		mVirtualDisplay.release();
 		mMediaRecorder.release();
 
