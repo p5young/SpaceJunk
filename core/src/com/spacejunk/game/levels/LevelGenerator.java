@@ -16,8 +16,7 @@ import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.consumables.FireSuitConsumable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.Set;
 
 import static java.lang.Math.max;
@@ -29,7 +28,6 @@ import static java.lang.Math.max;
 public class LevelGenerator {
 
     private Level level;
-    private Random randomGenerator;
 
     private int MIN_GAP = GameConstants.MIN_GAP;
 
@@ -53,10 +51,9 @@ public class LevelGenerator {
 
     public LevelGenerator(Level level) {
         this.level = level;
-        this.randomGenerator = new Random();
 
         // give all layouts equal weight at start
-        int NUMBER_OF_LAYOUTS = 10;     // determined by number of cases in generateObstacles()
+        int NUMBER_OF_LAYOUTS = 13;     // determined by number of cases in generateObstacles()
         weights = new int[NUMBER_OF_LAYOUTS];
         for (int i = 0 ; i < NUMBER_OF_LAYOUTS ; ++i) {
             weights[i] = 2;
@@ -94,6 +91,10 @@ public class LevelGenerator {
         return nums[numsi];
     }
 
+    private int rand(int max) {
+        return ThreadLocalRandom.current().nextInt(max);
+    }
+
     // creates a group of obstacles
     // returns its width plus a gap which is used by level.renderObstacles to delay next group
     public int generateObstacles() {
@@ -113,7 +114,7 @@ public class LevelGenerator {
         // pick which layout to use based on weights and random number
         // note: a layout with weight 0 is impossible
 
-        selectedLayout = getChunk(randomGenerator.nextInt(weightSum) + 1);
+        selectedLayout = getChunk(rand(weightSum) + 1);
 
         // LAYOUT NOTATION:
         // R: random obstacle
@@ -196,7 +197,7 @@ public class LevelGenerator {
                  */
                 Gdx.app.log("applog", "Layout " + selectedLayout);
                 int a = makeLife(0, randomLevel());
-                return a + MIN_GAP;
+                return a + MIN_GAP / 2;
             } case 6: {
                 /*
                 layout 6
@@ -243,6 +244,41 @@ public class LevelGenerator {
                 int b = makeBreakable(0, otherPlatforms[0]);
                 int c = makeBreakable(0, otherPlatforms[1]);
                 return max(a,max(b,c)) + MIN_GAP;
+            } case 10: {
+                /*
+                layout 10 - weight 0 unless they have > 2 consumables
+                B   (other level)
+                U C (player level)
+                B   (other level)
+                 */
+                Gdx.app.log("applog", "Layout " + selectedLayout);
+                int[] otherPlatforms = allPlatformsNotThis(charPlatform);
+
+                int a = makeUnbreakable(0, charPlatform);
+                int b = makeConsumable(a + 50, charPlatform);
+                makeBreakable(20, otherPlatforms[0]);
+                makeBreakable(30, otherPlatforms[1]);
+                return b + MIN_GAP;
+            } case 11: {
+                /*
+                layout 11
+                C (random level)
+                 */
+                Gdx.app.log("applog", "Layout " + selectedLayout);
+                int a = makeConsumable(0, randomLevel());
+                return a + MIN_GAP / 2;
+            } case 12: {
+                /*
+                layout 12
+                C (random level)
+                R (random level)
+                 */
+                Gdx.app.log("applog", "Layout " + selectedLayout);
+                int random1 = randomLevel();
+                int random2 = randomLevel(random1);
+                int a = makeConsumable(rand(50), random1);
+                int b = makeRandomObstacle(rand(50), random2);
+                return max(a,b) + MIN_GAP;
             }
             default:
                 Gdx.app.log("applog", "generateObstacles() FAILED!" + selectedLayout);
@@ -304,13 +340,15 @@ public class LevelGenerator {
             setWeight(7, 2);
         }
 
-        // layout 8 & 9 - (walls) don't spawn unless player has > 2 consumables
+        // layout 8, 9, 10 - (walls) don't spawn unless player has > 2 consumables
         if (level.getInventory().size() > 2) {
             setWeight(8, 3);
             setWeight(9, 3);
+            setWeight(10,3);
         } else {
             setWeight(8, 0);
             setWeight(9, 0);
+            setWeight(10,0);
         }
     }
 
@@ -324,7 +362,7 @@ public class LevelGenerator {
         if (Unbreakables.size() == 0) {
             o = getRandomObstacle();
         } else {
-            switch (Unbreakables.get(randomGenerator.nextInt(Unbreakables.size()))) {
+            switch (Unbreakables.get(rand(Unbreakables.size()))) {
                 case SPACE_HAMMER:
                     o = new AsteroidObstacle(level);
                     break;
@@ -357,7 +395,7 @@ public class LevelGenerator {
         if (Breakables.size() == 0) {
             o = getRandomObstacle();
         } else {
-            switch (Breakables.get(randomGenerator.nextInt(Breakables.size()))) {
+            switch (Breakables.get(rand(Breakables.size()))) {
                 case SPACE_HAMMER:
                     o = new AsteroidObstacle(level);
                     break;
@@ -397,7 +435,7 @@ public class LevelGenerator {
         if (Unbreakables.size() == 0) {
             c = getRandomConsumable();
         } else {
-            switch (Unbreakables.get(randomGenerator.nextInt(Unbreakables.size()))) {
+            switch (Unbreakables.get(rand(Unbreakables.size()))) {
                 case SPACE_HAMMER:
                     c = new SpaceHammerConsumable(level);
                     break;
@@ -422,7 +460,7 @@ public class LevelGenerator {
 
     private Consumable getRandomConsumable() {
 
-        switch (randomGenerator.nextInt(GameConstants.TOTAL_NUMBER_OF_CONSUMABLE_TYPES)) {
+        switch (rand(GameConstants.TOTAL_NUMBER_OF_CONSUMABLE_TYPES)) {
             case 0:
                 return new FireSuitConsumable(level);
             case 1:
@@ -448,7 +486,7 @@ public class LevelGenerator {
 
     private Obstacle getRandomObstacle() {
 
-        switch (randomGenerator.nextInt(GameConstants.TOTAL_NUMBER_OF_OBSTACLE_TYPES)) {
+        switch (rand(GameConstants.TOTAL_NUMBER_OF_OBSTACLE_TYPES)) {
             case 0:
                 return new AsteroidObstacle(level);
             case 1:
@@ -468,7 +506,7 @@ public class LevelGenerator {
 
     // provides a random platform (bottom, middle, top)
     private int randomLevel() {
-        switch(randomGenerator.nextInt(3)) {
+        switch(rand(3)) {
             case 0:
                 return BOTTOM;
             case 1:
@@ -501,7 +539,7 @@ public class LevelGenerator {
             return 0;
         }
 
-        return possibleLevels[randomGenerator.nextInt(2)];
+        return possibleLevels[rand(2)];
     }
 
     // takes in an int: 1 (bottom), 2 (middle), 3 (top), BOTTOM, MIDDLE, TOP
