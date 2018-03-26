@@ -13,13 +13,14 @@ import com.spacejunk.game.levels.Level;
 
 public class AsteroidObstacle extends Obstacle {
 
+    private static Pixmap myPixmap = new Pixmap(Gdx.files.internal("asteroid.png"));
+
     public AsteroidObstacle(Level level) {
         this.obstacleTexture = new Texture("asteroid.png");
 
         this.brokenTexture = new Texture("asteroid_broken.png");
 
-        FileHandle handle = Gdx.files.internal("asteroid.png");
-        this.pixmap = new Pixmap(handle);
+        this.pixmap = myPixmap;
 
         this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/asteroid_sound.mp3"));
 

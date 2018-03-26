@@ -30,7 +30,6 @@ public abstract class Obstacle {
 
     protected Sound sound;
 
-    // MYSHIT DELETE IF THIS FAILS!1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     protected Pixmap pixmap;
 
     /* This field is to prevent collision set off by

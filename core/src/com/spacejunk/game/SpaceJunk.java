@@ -69,7 +69,6 @@ public class SpaceJunk extends Game implements ApplicationListener {
                 1 * yMax/ 6);
 
         this.level.setMaxCoordinates(xMax, yMax);
-//        this.level.generateObstacles();
         this.currentGameScore = 0;
     }
 
