@@ -67,6 +67,7 @@ public class Level {
         this.consumablesList = new ArrayList<Consumable>();
 
         this.levelGenerator = new LevelGenerator(this);
+        //chunkWidth = 0;
 
         /* initialize the map with the obstacles
         *  we are kind of hard coding what the consumables are at first
