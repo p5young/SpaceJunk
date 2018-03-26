@@ -13,13 +13,13 @@ import com.spacejunk.game.levels.Level;
 
 public class ToxicGasObstacle extends Obstacle {
 
+    private static Pixmap myPixmap = new Pixmap(Gdx.files.internal("toxic_gas_green.png"));
 
     public ToxicGasObstacle(Level level) {
         this.obstacleTexture = new Texture("toxic_gas_green.png");
         this.brokenTexture = new Texture("toxic_gas_green.png");
 
-        FileHandle handle = Gdx.files.internal("toxic_gas_green.png");
-        this.pixmap = new Pixmap(handle);
+        this.pixmap = myPixmap;
 
         this.level = level;
         this.obstacleType = OBSTACLES.TOXIC_GAS;

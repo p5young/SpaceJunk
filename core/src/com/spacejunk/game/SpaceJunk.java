@@ -70,7 +70,6 @@ public class SpaceJunk extends Game implements ApplicationListener {
                 3 * Gdx.graphics.getHeight() / 6,
                 1 * Gdx.graphics.getHeight() / 6);
         this.level.setMaxCoordinates(xMax, yMax);
-        //this.level.generateObstacles();
         this.currentGameScore = 0;
     }
 
