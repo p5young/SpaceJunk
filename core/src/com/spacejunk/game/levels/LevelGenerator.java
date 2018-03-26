@@ -1,6 +1,7 @@
 package com.spacejunk.game.levels;
 
 import com.badlogic.gdx.Gdx;
+import com.spacejunk.game.GameScreen;
 import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.consumables.GasMaskConsumable;
 import com.spacejunk.game.consumables.InvisibilityConsumable;
@@ -64,6 +65,10 @@ public class LevelGenerator {
 
     }
 
+    public void setMinGapWithScaleFactor() {
+        MIN_GAP = (int) (MIN_GAP * GameScreen.SCALE_X_FACTOR);
+    }
+
     // adjusts the weight of a certain chunk/ layout
     private void setWeight(int chunk, int newWeight) {
         weightSum += newWeight - weights[chunk];  // add newWeight to sum, subtract oldWeight
@@ -78,6 +83,15 @@ public class LevelGenerator {
         }
         Gdx.app.log("applog", "getChunk() failed");
         return -1;
+    }
+
+    int[] nums = {1,3,5,7,9};
+    int numsi = -1;
+
+    private int getNextTestNumber() {
+        numsi++;
+        if(numsi >= 5) numsi = 0;
+        return nums[numsi];
     }
 
     // creates a group of obstacles
@@ -98,6 +112,7 @@ public class LevelGenerator {
 
         // pick which layout to use based on weights and random number
         // note: a layout with weight 0 is impossible
+
         selectedLayout = getChunk(randomGenerator.nextInt(weightSum) + 1);
 
         // LAYOUT NOTATION:
@@ -329,7 +344,7 @@ public class LevelGenerator {
         }
         o.setCoordinates(level.getXMax() + x, y);
         level.getObstaclesList().add(o);
-        return x + o.getTexture().getWidth() + 10;
+        return x + GameScreen.getScaledTextureWidth(o.getTexture()) + 10;
     }
 
     /*
@@ -362,14 +377,14 @@ public class LevelGenerator {
         }
         o.setCoordinates(level.getXMax() + x, y);
         level.getObstaclesList().add(o);
-        return x + o.getTexture().getWidth() + 10;
+        return x + GameScreen.getScaledTextureWidth(o.getTexture()) + 10;
     }
 
     private int makeRandomObstacle(int x, int y) {
         Obstacle o = getRandomObstacle();
         o.setCoordinates(level.getXMax() + x, y);
         level.getObstaclesList().add(o);
-        return x + o.getTexture().getWidth() + 10;
+        return x + GameScreen.getScaledTextureWidth(o.getTexture()) + 10;
     }
 
     /*
@@ -402,7 +417,7 @@ public class LevelGenerator {
         }
         c.setCoordinates(level.getXMax() + x, y);
         level.getConsumablesList().add(c);
-        return x + c.getTexture().getWidth() + 10;
+        return x + GameScreen.getScaledTextureWidth(c.getTexture()) + 10;
     }
 
     private Consumable getRandomConsumable() {
@@ -422,12 +437,14 @@ public class LevelGenerator {
         }
     }
 
+
     private int makeLife(int x, int y) {
         Consumable c = new LifeConsumable(level);
         c.setCoordinates(level.getXMax() + x, y);
         level.getConsumablesList().add(c);
-        return x + c.getTexture().getWidth() + 10;
+        return x + GameScreen.getScaledTextureWidth(c.getTexture()) + 10;
     }
+
 
     private Obstacle getRandomObstacle() {
 
@@ -445,6 +462,9 @@ public class LevelGenerator {
                 return new AsteroidObstacle(level);
         }
     }
+
+
+
 
     // provides a random platform (bottom, middle, top)
     private int randomLevel() {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.spacejunk.game.GameScreen;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.levels.Level;
 
@@ -46,7 +47,7 @@ public abstract class Obstacle {
 
     public void setCoordinates(int x, int y) {
         this.x = x;
-        this.y = y - (obstacleTexture.getHeight() / 2);
+        this.y = y - (GameScreen.getScaledTextureHeight(obstacleTexture) / 2);
     }
 
     public int[] getCoordinates() {

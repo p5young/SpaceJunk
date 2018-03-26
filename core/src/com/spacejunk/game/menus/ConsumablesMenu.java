@@ -2,6 +2,7 @@ package com.spacejunk.game.menus;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.spacejunk.game.GameScreen;
 import com.spacejunk.game.SpaceJunk;
 import com.spacejunk.game.consumables.Consumable;
 
@@ -41,7 +42,9 @@ public class ConsumablesMenu {
 
         // Quick hack to set transparency of consumables menu
         canvas.setColor(1, 1, 1, 0.5f);
-        canvas.draw(inventoryListTexture, currentGame.getxMax() - inventoryListTexture.getWidth(), 0);
+        canvas.draw(inventoryListTexture, currentGame.getxMax() - GameScreen.getScaledTextureWidth(inventoryListTexture), 0,
+                GameScreen.getScaledTextureWidth(inventoryListTexture),
+                GameScreen.getScaledTextureHeight(inventoryListTexture));
         canvas.setColor(1, 1, 1, 1);
 
     }
@@ -55,17 +58,19 @@ public class ConsumablesMenu {
 
                 // there are a lot of magic numbers here
                 canvas.draw(inventoryObjects.get(i).getConsumableTextureSmall(),
-                        (this.currentGame.getxMax() - ((i + 1) * inventoryListTexture.getWidth() / 4) + (12 - (i * 2))),
-                        inventoryListTexture.getHeight() / 7);
+                        (this.currentGame.getxMax() - ((i + 1) * GameScreen.getScaledTextureWidth(inventoryListTexture) / 4) + (12 - (i * 2))),
+                        GameScreen.getScaledTextureHeight(inventoryListTexture) / 7,  GameScreen.getScaledTextureWidth(inventoryObjects.get(i).getConsumableTextureSmall()),
+                        GameScreen.getScaledTextureHeight(inventoryObjects.get(i).getConsumableTextureSmall()));
             }
         }
     }
 
     public int getInventoryWidth() {
-        return inventoryListTexture.getWidth();
+        return GameScreen.getScaledTextureWidth(inventoryListTexture);
     }
 
     public int getInventoryHeight() {
-        return inventoryListTexture.getHeight();
+        return GameScreen.getScaledTextureHeight(inventoryListTexture);
+
     }
 }

@@ -3,6 +3,7 @@ package com.spacejunk.game.menus;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.spacejunk.game.GameScreen;
 import com.spacejunk.game.SpaceJunk;
 
 /**
@@ -31,8 +32,10 @@ public class RemainingLivesMenu {
     public void render(SpriteBatch canvas) {
         int remainingLives = currentGame.getCharacter().getRemainingLives();
         for(int i = 0; i < remainingLives; i++) {
-            canvas.draw(remainingLivesTextures[i], Gdx.graphics.getWidth() - ((i + 1) * remainingLivesTextures[i].getWidth()) - PADDING,
-                    Gdx.graphics.getHeight() - remainingLivesTextures[i].getHeight() - PADDING);
+            canvas.draw(remainingLivesTextures[i], Gdx.graphics.getWidth() - ((i + 1) * GameScreen.getScaledTextureWidth(remainingLivesTextures[i])) - PADDING,
+                    Gdx.graphics.getHeight() -  GameScreen.getScaledTextureHeight(remainingLivesTextures[i]) - PADDING,
+                    GameScreen.getScaledTextureWidth(remainingLivesTextures[i]),
+                    GameScreen.getScaledTextureHeight(remainingLivesTextures[i]));
         }
     }
 

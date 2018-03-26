@@ -1,5 +1,6 @@
 package com.spacejunk.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.spacejunk.game.constants.GameConstants;
@@ -26,6 +28,8 @@ import static java.lang.Math.min;
 
 public class GameScreen implements Screen {
 
+
+
 //	public static boolean DEBUG = true;
 	public static boolean DEBUG = false;
 
@@ -35,6 +39,10 @@ public class GameScreen implements Screen {
 	private boolean recordAudioSetting;
 
 	public static final String GAME_START_PROMPT = "Press anywhere on the screen to begin playing";
+
+
+	public static float SCALE_X_FACTOR = 1;
+	public static float SCALE_Y_FACTOR = 1;
 
 	public enum State
 	{
@@ -100,6 +108,31 @@ public class GameScreen implements Screen {
 	// this field is just for avoiding a local field instantiated every tap
 	private Consumable.CONSUMABLES justPressed;
 
+
+	public static void setScaleFactor(int xMax, int yMax) {
+		GameScreen.SCALE_X_FACTOR = (float) xMax / GameConstants.X_AXIS_CONSTANT;
+		GameScreen.SCALE_Y_FACTOR = (float) yMax / GameConstants.Y_AXIS_CONSTANT;
+		Gdx.app.log("applog", "XSCALEFACTOR: " + SCALE_X_FACTOR);
+		Gdx.app.log("applog", "YSCALEFACTOR: " + SCALE_Y_FACTOR);
+	}
+
+	public static int getScaledTextureWidth(Texture texture) {
+		return (int) (texture.getWidth() * GameScreen.SCALE_X_FACTOR);
+	}
+
+	public static int getScaledTextureHeight(Texture texture) {
+		return (int) (texture.getHeight() * GameScreen.SCALE_Y_FACTOR);
+	}
+
+	public static int getScaledTextureRegionWidth(TextureRegion textureRegion) {
+		return (int) (textureRegion.getRegionWidth() * GameScreen.SCALE_X_FACTOR);
+	}
+
+	public static int getScaledTextureRegionHeight(TextureRegion textureRegion) {
+		return (int) (textureRegion.getRegionHeight() * GameScreen.SCALE_Y_FACTOR);
+	}
+
+
 	public GameScreen(final SpaceJunk game) {
 
 		// Start the game off on the main menu
@@ -137,6 +170,10 @@ public class GameScreen implements Screen {
 		canvas.enableBlending();
 
 
+		GameScreen.setScaleFactor(spaceJunk.getxMax(), spaceJunk.getyMax());
+
+		spaceJunk.getLevel().getLevelGenerator().setMinGapWithScaleFactor();
+
 		background = new Texture("background.jpg");
 		background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
@@ -156,11 +193,11 @@ public class GameScreen implements Screen {
 
 		scoreFont = new BitmapFont();
 		scoreFont.setColor(Color.WHITE);
-		scoreFont.getData().setScale(7);
+		scoreFont.getData().setScale(7 * (GameScreen.SCALE_X_FACTOR));
 
 		promptFont = new BitmapFont();
 		promptFont.setColor(Color.WHITE);
-		promptFont.getData().setScale(4);
+		promptFont.getData().setScale(4 * (GameScreen.SCALE_X_FACTOR));
 
 		gameOver = new Texture("gameover.jpg");
 		pauseScreen = new Texture("pause_screen.png");
@@ -182,7 +219,6 @@ public class GameScreen implements Screen {
 		bd = bd.setScale(places, RoundingMode.HALF_UP);
 		return bd.doubleValue();
 	}
-
 
 
 	@Override
@@ -445,16 +481,21 @@ public class GameScreen implements Screen {
                         Gdx.graphics.getHeight()), false, false);
 
         // draw back button
-        canvas.draw(back, Gdx.graphics.getWidth()/9 - back.getWidth() / 2,
-                Gdx.graphics.getHeight()/2 - back.getHeight() / 2);
+        canvas.draw(back, Gdx.graphics.getWidth()/9 - GameScreen.getScaledTextureWidth(back) / 2,
+                Gdx.graphics.getHeight()/2 - GameScreen.getScaledTextureHeight(back) / 2,
+				GameScreen.getScaledTextureWidth(back), GameScreen.getScaledTextureHeight(back));
 
         // draw play button
-        canvas.draw(play, (8 * Gdx.graphics.getWidth())/9 - play.getWidth() / 2,
-                Gdx.graphics.getHeight()/2 - play.getHeight() / 2);
+        canvas.draw(play, (8 * Gdx.graphics.getWidth())/9 - GameScreen.getScaledTextureWidth(play) / 2,
+                Gdx.graphics.getHeight()/2 - GameScreen.getScaledTextureHeight(play) / 2,
+				GameScreen.getScaledTextureWidth(play),
+				GameScreen.getScaledTextureHeight(play));
 
         // draw how to play instructions
-        canvas.draw(howToPlay, Gdx.graphics.getWidth()/2 - howToPlay.getWidth() / 2,
-                Gdx.graphics.getHeight() - howToPlay.getHeight() + howToPlayImageIndex);
+        canvas.draw(howToPlay, Gdx.graphics.getWidth()/2 - GameScreen.getScaledTextureWidth(howToPlay) / 2,
+                Gdx.graphics.getHeight() - GameScreen.getScaledTextureHeight(howToPlay) + howToPlayImageIndex,
+				GameScreen.getScaledTextureWidth(howToPlay),
+				GameScreen.getScaledTextureHeight(howToPlay));
 
 		canvas.end();
 
@@ -503,17 +544,20 @@ public class GameScreen implements Screen {
 		canvas.begin();
 
 		// Draw main menu here
-		canvas.draw(mainMenu, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), mainMenuImageIndex,
-				0, Gdx.graphics.getWidth(), Math.min(mainMenu.getHeight(),
-						Gdx.graphics.getHeight()), false, false);
+		canvas.draw(mainMenu, 0, 0, Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight(), mainMenuImageIndex,
+				0, GameScreen.getScaledTextureWidth(mainMenu), GameScreen.getScaledTextureHeight(mainMenu)
+						, false, false);
 
-		canvas.draw(mainMenuMiddle, Gdx.graphics.getWidth()/2 - mainMenuMiddle.getWidth() / 2,
-				Gdx.graphics.getHeight()/2 - mainMenuMiddle.getHeight() / 2);
+		canvas.draw(mainMenuMiddle, Gdx.graphics.getWidth()/2 - GameScreen.getScaledTextureWidth(mainMenuMiddle) / 2,
+				Gdx.graphics.getHeight()/2 - GameScreen.getScaledTextureHeight(mainMenuMiddle) / 2,
+				GameScreen.getScaledTextureWidth(mainMenuMiddle),
+				GameScreen.getScaledTextureHeight(mainMenuMiddle));
 
 		canvas.end();
 
 
-		mainMenuImageIndex += GameConstants.MAIN_MENU_BACKGROUND_SPEED;
+		mainMenuImageIndex += (int) (GameConstants.MAIN_MENU_BACKGROUND_SPEED * GameScreen.SCALE_X_FACTOR);
 
 		if (mainMenuImageIndex > mainMenu.getWidth()) {
 			mainMenuImageIndex = 0;
@@ -819,9 +863,10 @@ public class GameScreen implements Screen {
 		GlyphLayout layout = new GlyphLayout(promptFont, GAME_START_PROMPT);
 
 		promptFont.draw(canvas, GAME_START_PROMPT,
-				Gdx.graphics.getWidth() / 2 - layout.width / 2 - 100,
-				100);
+				Gdx.graphics.getWidth() / 2 - layout.width / 2 - (100 * GameScreen.SCALE_X_FACTOR),
+				(100 * GameScreen.SCALE_Y_FACTOR));
 	}
+	
 
 	private void drawBackground() {
 		// canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -829,34 +874,40 @@ public class GameScreen implements Screen {
 		// Using the width as the "u" parameter implies that image width is greater than screen width
 		// If it's not the background is tiled.
 
-		canvas.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
-				backgroundImageIndex, 0, Gdx.graphics.getWidth(), Math.min(background.getHeight(),
-						Gdx.graphics.getHeight()), false, false);
+		canvas.draw(background, 0, 0, spaceJunk.getxMax(), spaceJunk.getyMax(),
+				backgroundImageIndex, 0, spaceJunk.getxMax(), Math.min(background.getHeight(),
+						spaceJunk.getyMax()), false, false);
 
 		// Only move background is game is currently running
 		if (this.state == State.RUN) {
-			backgroundImageIndex += GameConstants.BACKGROUND_SPEED;
+			backgroundImageIndex += (int) (GameConstants.BACKGROUND_SPEED * GameScreen.SCALE_X_FACTOR);
 		}
 
-		if ( backgroundImageIndex > background.getWidth()) {
+		if (backgroundImageIndex > background.getWidth()) {
 			backgroundImageIndex = 0;
 		}
 	}
 
 	private void drawGameOverScreen() {
-		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - gameOver.getWidth()/2, Gdx.graphics.getHeight()/2 - gameOver.getHeight()/2);
+		canvas.draw(gameOver, Gdx.graphics.getWidth()/2 - GameScreen.getScaledTextureWidth(gameOver)/2,
+				Gdx.graphics.getHeight()/2 - GameScreen.getScaledTextureHeight(gameOver)/2,
+				GameScreen.getScaledTextureWidth(gameOver),
+				GameScreen.getScaledTextureHeight(gameOver));
 	}
 
 	private void drawSettingsMenu() {
-		canvas.draw(settingsMenu, Gdx.graphics.getWidth() / 2 - settingsMenu.getWidth() / 2,
-				Gdx.graphics.getHeight() / 2 - settingsMenu.getHeight() / 2);
+		canvas.draw(settingsMenu, Gdx.graphics.getWidth() / 2 - GameScreen.getScaledTextureWidth(settingsMenu) / 2,
+				Gdx.graphics.getHeight() / 2 - GameScreen.getScaledTextureHeight(settingsMenu) / 2,
+				GameScreen.getScaledTextureWidth(settingsMenu),
+				GameScreen.getScaledTextureHeight(settingsMenu));
 
 	}
 
 	private void drawPauseScreenTexture() {
-
-			canvas.draw(pauseScreen, Gdx.graphics.getWidth() / 2 - pauseScreen.getWidth() / 2,
-					Gdx.graphics.getHeight() / 2 - pauseScreen.getHeight() / 2);
+			canvas.draw(pauseScreen, Gdx.graphics.getWidth() / 2 - GameScreen.getScaledTextureWidth(pauseScreen)/ 2,
+					Gdx.graphics.getHeight() / 2 - GameScreen.getScaledTextureHeight(pauseScreen) / 2,
+					GameScreen.getScaledTextureWidth(pauseScreen),
+					GameScreen.getScaledTextureHeight(pauseScreen));
 	}
 
 	private void displayScore() {

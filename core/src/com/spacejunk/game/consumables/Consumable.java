@@ -2,6 +2,7 @@ package com.spacejunk.game.consumables;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.spacejunk.game.GameScreen;
 import com.spacejunk.game.levels.Level;
 
 /**
@@ -37,7 +38,7 @@ public abstract class Consumable {
 
     public void setCoordinates(int x, int y) {
         this.x = x;
-        this.y = y - (consumableTexture.getHeight() / 2);
+        this.y = y - (GameScreen.getScaledTextureHeight(consumableTexture) / 2);
     }
 
     public int getX() {
