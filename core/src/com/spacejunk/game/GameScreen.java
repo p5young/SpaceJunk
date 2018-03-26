@@ -833,10 +833,10 @@ public class GameScreen implements Screen {
 
     private void drawOnScreenGameStartPrompt() {
         GlyphLayout layout = new GlyphLayout(promptFont, GAME_START_PROMPT);
-
+        // TODO: Make more spacing for this
         promptFont.draw(canvas, GAME_START_PROMPT,
-                Gdx.graphics.getWidth() / 2 - layout.width / 2 - (100 * GameScreen.SCALE_X_FACTOR),
-                (100 * GameScreen.SCALE_Y_FACTOR));
+                Gdx.graphics.getWidth() / 2 - layout.width / 2,
+                Gdx.graphics.getHeight() / 2 - layout.height / 2);
     }
 
 
