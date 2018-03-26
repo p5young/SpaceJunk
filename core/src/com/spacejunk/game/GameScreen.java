@@ -448,8 +448,8 @@ public class GameScreen implements Screen {
 
         // draw background
         canvas.draw(mainMenu, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), mainMenuImageIndex,
-                0, Gdx.graphics.getWidth(), Math.min(mainMenu.getHeight(),
-                        Gdx.graphics.getHeight()), false, false);
+                0, Gdx.graphics.getWidth(), mainMenu.getHeight(),
+                false, false);
 
         // draw back button
         canvas.draw(back, Gdx.graphics.getWidth() / 9 - GameScreen.getScaledTextureWidth(back) / 2,
@@ -517,8 +517,8 @@ public class GameScreen implements Screen {
         // Draw main menu here
         canvas.draw(mainMenu, 0, 0, Gdx.graphics.getWidth(),
                 Gdx.graphics.getHeight(), mainMenuImageIndex,
-                0, GameScreen.getScaledTextureWidth(mainMenu), GameScreen.getScaledTextureHeight(mainMenu)
-                , false, false);
+                0, spaceJunk.getxMax(), mainMenu.getHeight(),
+                false, false);
 
         canvas.draw(mainMenuMiddle, Gdx.graphics.getWidth() / 2 - GameScreen.getScaledTextureWidth(mainMenuMiddle) / 2,
                 Gdx.graphics.getHeight() / 2 - GameScreen.getScaledTextureHeight(mainMenuMiddle) / 2,
@@ -527,8 +527,10 @@ public class GameScreen implements Screen {
 
         canvas.end();
 
-
-        mainMenuImageIndex += (int) (GameConstants.MAIN_MENU_BACKGROUND_SPEED * GameScreen.SCALE_X_FACTOR);
+        // don't need to do scaling for this
+        // Additionally if the scale factor is less than 1, mainMenuImageIndex doesn't get updated
+        // That is also because 2 (speed) * (~)0.5 < 1
+        mainMenuImageIndex += GameConstants.MAIN_MENU_BACKGROUND_SPEED;
 
         if (mainMenuImageIndex > mainMenu.getWidth()) {
             mainMenuImageIndex = 0;
@@ -851,9 +853,6 @@ public class GameScreen implements Screen {
 
         canvas.draw(background, 0, 0, spaceJunk.getxMax(), spaceJunk.getyMax(),
                 backgroundImageIndex, 0, spaceJunk.getxMax(), background.getHeight(), false, false);
-
-        // canvas.draw(background, 0, 0, 0, 0, spaceJunk.getxMax(), spaceJunk.getxMax(), 1, 1/SCALE_Y_FACTOR, 0, backgroundImageIndex, 0, spaceJunk.getxMax(), background.getHeight(), false, false);
-
 
         // Only move background is game is currently running
         if (this.state == State.RUN) {
