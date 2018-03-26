@@ -181,6 +181,7 @@ public class GameScreen implements Screen {
 		if (!backgroundMusic.isPlaying()) {
 			backgroundMusic.play();
 		}
+		updateBackgroundMusic();
 
 		mainMenu = new Texture("main_menu_background.jpg");
 		mainMenu.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
