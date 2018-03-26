@@ -60,8 +60,8 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	private MediaProjectionManager mProjectionManager;
 
 
-	private static int DISPLAY_WIDTH = 640;
-	private static int DISPLAY_HEIGHT = 480;
+	private static int DISPLAY_WIDTH = 1920;
+	private static int DISPLAY_HEIGHT = 1080;
 
 
 	CallbackManager callbackManager;
@@ -284,7 +284,9 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 			return;
 		}
 
+
 		mVirtualDisplay.release();
+		mMediaRecorder.reset();
 		mMediaRecorder.release();
 
 		// Preparing for any future recordings
