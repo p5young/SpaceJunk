@@ -13,7 +13,7 @@ import com.spacejunk.game.levels.Level;
 
 public class FireObstacle extends Obstacle {
 
-    private static Pixmap myPixmap = new Pixmap(Gdx.files.internal("fire.png"));
+    private static final Pixmap myPixmap = new Pixmap(Gdx.files.internal("fire.png"));
 
     public FireObstacle(Level level) {
         this.obstacleTexture = new Texture("fire.png");

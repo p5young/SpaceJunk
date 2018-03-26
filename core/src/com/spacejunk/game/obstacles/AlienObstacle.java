@@ -13,7 +13,7 @@ import com.spacejunk.game.levels.Level;
 
 public class AlienObstacle extends Obstacle {
 
-    private static Pixmap myPixmap = new Pixmap(Gdx.files.internal("alien.png"));
+    private static final Pixmap myPixmap = new Pixmap(Gdx.files.internal("alien.png"));
 
     public AlienObstacle(Level level) {
         super();

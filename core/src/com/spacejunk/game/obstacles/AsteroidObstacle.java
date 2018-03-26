@@ -13,7 +13,7 @@ import com.spacejunk.game.levels.Level;
 
 public class AsteroidObstacle extends Obstacle {
 
-    private static Pixmap myPixmap = new Pixmap(Gdx.files.internal("asteroid.png"));
+    private static final Pixmap myPixmap = new Pixmap(Gdx.files.internal("asteroid.png"));
 
     public AsteroidObstacle(Level level) {
         this.obstacleTexture = new Texture("asteroid.png");
