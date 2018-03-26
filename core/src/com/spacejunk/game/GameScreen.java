@@ -805,10 +805,10 @@ public class GameScreen implements Screen {
                     this.spaceJunk.getLevel().setEquippedConsumable(Consumable.CONSUMABLES.UNEQUIPPED);
                 }
 
-                // If all checks fail, this means the user meant to move the character
-                else {
-                    spaceJunk.getCharacter().moveCharacter(controller.getTouchYCoordinate());
-                }
+                // If all checks fail, this means the user meant to move the character!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                //else {
+                //    spaceJunk.getCharacter().moveCharacter(controller.getTouchYCoordinate());
+                //}
             }
 
             // Only render and move obstacles if the game is active

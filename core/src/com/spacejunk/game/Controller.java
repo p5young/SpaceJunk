@@ -3,6 +3,8 @@ package com.spacejunk.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.menus.ConsumablesMenu;
@@ -31,6 +33,7 @@ public class Controller {
         this.optionsMenu = new OptionsMenu();
         this.consumablesMenu = new ConsumablesMenu(currentGame);
     }
+
 
     public boolean isTouched() {
         return Gdx.input.justTouched();
@@ -245,36 +248,95 @@ public class Controller {
         consumablesMenu.render(canvas);
     }
 
+
     public void setupSwipeDetection() {
-        Gdx.input.setInputProcessor(new SimpleDirectionGestureDetector(new SimpleDirectionGestureDetector.DirectionListener() {
+        Gdx.input.setInputProcessor(new InputAdapter() {
+
+            int yStart = Gdx.graphics.getHeight() / 2;
+            boolean ySet = false;       // true when yStart has valid value
+            boolean dragged = false;    // true if a drag is detected
+
 
             @Override
-            public void onUp() {
-                if (gameScreen.getState() == GameScreen.State.RUN) {
-                    currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight());
-                    Gdx.app.log("swipelog", "onUp caled");
+            public boolean touchDown (int x, int y, int pointer, int button) {
+                if (gameScreen.getState() == GameScreen.State.RUN
+                        && noButtonsPressed()) {
+                    Gdx.app.log("applog", "TOUCHDOWN");
+                    yStart = y;
+                    ySet = true;
+                    dragged = false;
+                    return true; // return true to indicate the event was handled
                 }
+                return false;
             }
 
             @Override
-            public void onRight() {
-
-            }
-
-            @Override
-            public void onLeft() {
-
-            }
-
-            @Override
-            public void onDown() {
-                if (gameScreen.getState() == GameScreen.State.RUN) {
-                    currentGame.getCharacter().moveCharacter(0);
-                    Gdx.app.log("swipelog", "onDown caled");
+            public boolean touchUp (int x, int y, int pointer, int button) {
+                if (gameScreen.getState() == GameScreen.State.RUN
+                        && ySet) {
+                    Gdx.app.log("applog", "TOUCHUP");
+                    if (!dragged) {
+                        currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight() - y);
+                    } else if (y < yStart) {
+                        currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight());
+                    } else {
+                        currentGame.getCharacter().moveCharacter(0);
+                    }
+                    yStart = Gdx.graphics.getHeight() / 2;
+                    ySet = false;
+                    dragged = false;
+                    return true; // return true to indicate the event was handled
                 }
+                yStart = Gdx.graphics.getHeight() / 2;
+                ySet = false;
+                dragged = false;
+                return false;
             }
 
-        }));
+            @Override
+            public boolean touchDragged (int x, int y, int pointer) {
+                if (gameScreen.getState() == GameScreen.State.RUN) {
+                    dragged = true;
+                    Gdx.app.log("applog", "TOUCH DRAGGED");
+                    return true; // return true to indicate the event was handled
+                }
+                return false;
+            }
+
+        });
+    }
+
+    private boolean noButtonsPressed() {
+        if (playPauseButtonisPressed()) {
+            return false;
+        }
+
+        // Checking for main menu button press
+        else if (mainMenuButtonIsPressed()) {
+            return false;
+        }
+
+        // Checking for settings menu button press
+        else if (settingsMenuButtonIsPressed()) {
+            return false;
+        }
+
+        // Checking for screen record tap
+        else if (screenRecordButtonIsPressed()) {
+            return false;
+        }
+
+        // Checking interaction with consumable menu
+        else if (consumablesMenuPressed()) {
+            return false;
+        }
+
+        // This is for unequipping the current consumable
+        else if (astronautTapped()) {
+            return false;
+        }
+
+        return true;
     }
 
     public OptionsMenu getOptionsMenu() {
