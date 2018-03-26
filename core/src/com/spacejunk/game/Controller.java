@@ -260,6 +260,7 @@ public class Controller {
             @Override
             public boolean touchDown (int x, int y, int pointer, int button) {
                 if (gameScreen.getState() == GameScreen.State.RUN
+                        && gameScreen.gameActive()
                         && noButtonsPressed()) {
                     Gdx.app.log("applog", "TOUCHDOWN");
                     yStart = y;
