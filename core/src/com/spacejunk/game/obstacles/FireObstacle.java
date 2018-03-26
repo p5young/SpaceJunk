@@ -14,10 +14,12 @@ import com.spacejunk.game.levels.Level;
 public class FireObstacle extends Obstacle {
 
     private static final Pixmap myPixmap = new Pixmap(Gdx.files.internal("fire.png"));
+    private static final Texture myTexture = new Texture("fire.png");
+    private static final Texture myBrokenTexture = new Texture("fire.png");
 
     public FireObstacle(Level level) {
-        this.obstacleTexture = new Texture("fire.png");
-        this.brokenTexture = new Texture("fire.png");
+        this.obstacleTexture = myTexture;
+        this.brokenTexture = myBrokenTexture;
 
         this.pixmap = myPixmap;
 

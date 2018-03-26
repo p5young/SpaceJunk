@@ -14,11 +14,12 @@ import com.spacejunk.game.levels.Level;
 public class AlienObstacle extends Obstacle {
 
     private static final Pixmap myPixmap = new Pixmap(Gdx.files.internal("alien.png"));
+    private static final Texture myTexture = new Texture("alien.png");
+    private static final Texture myBrokenTexture = new Texture("alien.png");
 
     public AlienObstacle(Level level) {
-        super();
-        this.obstacleTexture = new Texture("alien.png");
-        this.brokenTexture = new Texture("alien.png");
+        this.obstacleTexture = myTexture;
+        this.brokenTexture = myBrokenTexture;
 
         this.pixmap = myPixmap;
 

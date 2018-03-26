@@ -184,14 +184,14 @@ public abstract class Character {
 
         if(toAnimate) {
             if (this.currentY < this.targetY) {
-                if (this.currentY + GameConstants.VERTICAL_SPEED < this.targetY) {
-                    this.currentY += GameConstants.VERTICAL_SPEED;
+                if (this.currentY + (GameConstants.VERTICAL_SPEED * GameScreen.SCALE_X_FACTOR) < this.targetY) {
+                    this.currentY += (GameConstants.VERTICAL_SPEED * GameScreen.SCALE_X_FACTOR);
                 } else {
                     this.currentY = this.targetY;
                 }
             } else if (this.currentY > this.targetY) {
-                if (this.currentY - GameConstants.VERTICAL_SPEED > this.targetY) {
-                    this.currentY -= GameConstants.VERTICAL_SPEED;
+                if (this.currentY - (GameConstants.VERTICAL_SPEED * GameScreen.SCALE_X_FACTOR) > this.targetY) {
+                    this.currentY -= (GameConstants.VERTICAL_SPEED * GameScreen.SCALE_X_FACTOR);
                 } else {
                     this.currentY = this.targetY;
                 }

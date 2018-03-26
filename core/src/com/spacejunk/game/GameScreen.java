@@ -742,6 +742,13 @@ public class GameScreen implements Screen {
 	    // Since no lives are lost when this returns false, announce it to logcat to see if this was called
         Gdx.app.log("applog", "COLLISION DETECTOR CALLED");
 
+        // Modify xy coordinates so collisionDetector believes full-sized
+        // Pixmaps are spaced further/closer than they actually are
+        obst[0] /= GameScreen.SCALE_X_FACTOR;
+		obst[1] /= GameScreen.SCALE_Y_FACTOR;
+		astr[0] /= GameScreen.SCALE_X_FACTOR;
+		astr[1] /= GameScreen.SCALE_Y_FACTOR;
+
         // define intersection of obstacle and astronaut bounding boxes
 	    int left = max(obst[0], astr[0]);
 	    int right = min(obst[0] + obstacle.getWidth(), astr[0] + astronaut.getWidth());
