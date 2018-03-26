@@ -850,8 +850,10 @@ public class GameScreen implements Screen {
         // If it's not the background is tiled.
 
         canvas.draw(background, 0, 0, spaceJunk.getxMax(), spaceJunk.getyMax(),
-                backgroundImageIndex, 0, spaceJunk.getxMax(), Math.min(background.getHeight(),
-                        spaceJunk.getyMax()), false, false);
+                backgroundImageIndex, 0, spaceJunk.getxMax(), background.getHeight(), false, false);
+
+        // canvas.draw(background, 0, 0, 0, 0, spaceJunk.getxMax(), spaceJunk.getxMax(), 1, 1/SCALE_Y_FACTOR, 0, backgroundImageIndex, 0, spaceJunk.getxMax(), background.getHeight(), false, false);
+
 
         // Only move background is game is currently running
         if (this.state == State.RUN) {
