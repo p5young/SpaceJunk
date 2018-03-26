@@ -1,5 +1,6 @@
 package com.spacejunk.game.consumables;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.spacejunk.game.GameScreen;
@@ -24,6 +25,8 @@ public abstract class Consumable {
 
     protected Texture consumableTextureSmall;
     protected Level level;
+
+    protected Sound sound;
 
     protected Rectangle consumableShape;
 
@@ -63,6 +66,10 @@ public abstract class Consumable {
 
     public Texture getConsumableTextureSmall() {
         return consumableTextureSmall;
+    }
+
+    public void playSound() {
+        this.sound.play(1.0f);
     }
 
 }

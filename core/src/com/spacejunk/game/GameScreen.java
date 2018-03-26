@@ -685,9 +685,13 @@ public class GameScreen implements Screen {
                     break;
                 }
 
-                // put in set
+                // Put in current inventory set, play consumable picked up sound
                 if (this.spaceJunk.getLevel().getInventory().add(currentConsumable.getType())) {
                     indexToRemove = i;
+                    if (soundSetting) {
+                        currentConsumable.playSound();
+                    }
+
                 }
 
                 break;
