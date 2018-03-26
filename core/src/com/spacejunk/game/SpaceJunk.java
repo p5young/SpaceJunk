@@ -64,11 +64,12 @@ public class SpaceJunk extends Game implements ApplicationListener {
 
         // We subtract 1/6th of the screen here to make up for the offset we caused earlier
         this.level.setPlatformCoordinates(
-                5 * Gdx.graphics.getHeight() / 6,
-                3 * Gdx.graphics.getHeight() / 6,
-                1 * Gdx.graphics.getHeight() / 6);
+                5 * yMax / 6,
+                3 * yMax / 6,
+                1 * yMax/ 6);
+
         this.level.setMaxCoordinates(xMax, yMax);
-        this.level.generateObstacles();
+//        this.level.generateObstacles();
         this.currentGameScore = 0;
     }
 
