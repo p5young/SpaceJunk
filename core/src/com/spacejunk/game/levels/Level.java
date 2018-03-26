@@ -1,5 +1,6 @@
 package com.spacejunk.game.levels;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -91,7 +92,6 @@ public class Level {
     **/
     public void generateObstacles() {
         chunkWidth = levelGenerator.generateObstacles();
-        Gdx.app.log("applog", "SETTING CHUNKWIDTH: " + chunkWidth);
     }
 
 
@@ -101,7 +101,7 @@ public class Level {
     public void renderObstacles(SpriteBatch canvas, ShapeRenderer shapeRenderer, boolean toMove) {
 
         // make new chunk of obstacles
-        if(toMove && (chunkWidth -= GameConstants.VELOCITY) <= 0) {
+        if(toMove && (chunkWidth -= (int) (GameScreen.SCALE_X_FACTOR *  GameConstants.VELOCITY)) <= 0) {
             generateObstacles();
         }
 
@@ -110,18 +110,22 @@ public class Level {
             if(toMove) {
                 o.moveLeft();
             }
-            canvas.draw(o.getTexture(), o.getX(), o.getY());
+            canvas.draw(o.getTexture(), o.getX(), o.getY(),
+                    GameScreen.getScaledTextureWidth(o.getTexture()),
+                            GameScreen.getScaledTextureHeight(o.getTexture()));
 
             if(GameScreen.DEBUG) {
                 shapeRenderer.rect(o.getObstacleShape().getX(), o.getObstacleShape().getY(),
                         o.getObstacleShape().getWidth(), o.getObstacleShape().getHeight());
             }
         }
+
         for (Consumable c : consumablesList) {
             if(toMove) {
                 c.moveLeft();
             }
-            canvas.draw(c.getTexture(), c.getX(), c.getY());
+            canvas.draw(c.getTexture(), c.getX(), c.getY(), GameScreen.getScaledTextureWidth(c.getTexture()),
+                    GameScreen.getScaledTextureHeight(c.getTexture()));
 
             if(GameScreen.DEBUG) {
                 Color col = shapeRenderer.getColor(); // store color
@@ -145,14 +149,14 @@ public class Level {
         // delete anything that's moved off the left side of the screen
         for (int i = obstaclesList.size() - 1 ; i >= 0 ; --i) {
             Obstacle o = obstaclesList.get(i);
-            if(o.getX() < -o.getTexture().getWidth()) {
+            if(o.getX() < -(GameScreen.getScaledTextureWidth(o.getTexture()))) {
                 obstaclesList.remove(i);
                 //Gdx.app.log("applog", "removed obstacle " + i);
             }
         }
         for (int i = consumablesList.size() - 1 ; i >= 0 ; --i) {
             Consumable c = consumablesList.get(i);
-            if(c.getX() < -c.getTexture().getWidth()) {
+            if(c.getX() < -(GameScreen.getScaledTextureWidth(c.getTexture()))) {
                 consumablesList.remove(i);
                 //Gdx.app.log("applog", "removed consumable " + i);
             }
@@ -164,11 +168,13 @@ public class Level {
     public void updateObstacleShapeCoordinates() {
         for (Obstacle o : obstaclesList) {
             o.getObstacleShape().set(o.getX(), o.getY(),
-                    o.getTexture().getWidth(), o.getTexture().getHeight());
+                    GameScreen.getScaledTextureWidth(o.getTexture()),
+                    GameScreen.getScaledTextureHeight(o.getTexture()));
         }
         for (Consumable c : consumablesList) {
             c.getConsumableShape().set(c.getX(), c.getY(),
-                    c.getTexture().getWidth(), c.getTexture().getHeight());
+                    GameScreen.getScaledTextureWidth(c.getTexture()),
+                    GameScreen.getScaledTextureHeight(c.getTexture()));
         }
     }
 
@@ -184,7 +190,7 @@ public class Level {
     }
 
     public int getVelocity() {
-        return this.velocity;
+        return (int) (this.velocity * GameScreen.SCALE_X_FACTOR);
     }
 
     public int getXMax() {

@@ -31,4 +31,9 @@ public class GameConstants {
     public static final int MIN_GAP = 500;
 
     public static final float BACKGROUND_MUSIC_VOLUME = 0.25f;
+
+
+    public static final int X_AXIS_CONSTANT = 2392;
+    public static final int Y_AXIS_CONSTANT = 1440;
+
 }
