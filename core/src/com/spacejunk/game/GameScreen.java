@@ -832,6 +832,8 @@ public class GameScreen implements Screen {
 
     }
 
+    public boolean gameActive() {return isGameActive;}
+
 
     private void drawOnScreenGameStartPrompt() {
         GlyphLayout layout = new GlyphLayout(promptFont, GAME_START_PROMPT);
