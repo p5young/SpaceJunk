@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -72,8 +71,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 
 	private void requestAllPermissions() {
-
-		Log.i("androidlog", "About to ask permissions");
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -132,11 +129,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		if (requestCode == FACEBOOK_CODE) {
 
 			if(resultCode != RESULT_OK) {
-				Log.i("facebooklog", "BAD RESULT RETURN FACEBOOK");
 				return;
-			}
-			else {
-				Log.i("facebooklog", "FACEBOKOK SUCCESS");
 			}
 
 			callbackManager.onActivityResult(requestCode, resultCode, data);
@@ -147,7 +140,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		if(requestCode == PERMISSION_CODE) {
 
 			if (resultCode != RESULT_OK) {
-				Toast.makeText(this, "Screen recording has been denied!", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, getString(R.string.screen_record_denied), Toast.LENGTH_SHORT).show();
 				return;
 			}
 
@@ -156,7 +149,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 			mVirtualDisplay = createVirtualDisplay();
 
 			mMediaRecorder.start();
-			Toast.makeText(this, "Screen recording in progress", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.screen_record_accepted), Toast.LENGTH_SHORT).show();
 
 		}
 
@@ -170,28 +163,16 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 			case WRITE_REQUEST_CODE:
 				writeAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
-				if(writeAccepted) {
-					Log.i("androidlog", "Success! Permission granted!");
-				}
 				break;
 
 			case READ_REQUEST_CODE:
 				readAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
-				if(readAccepted) {
-					Log.i("androidlog", "Success! Permission granted for screen recording!");
-				}
 				break;
 			case READ_PHONE_STATE:
 				phoneStateAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
-				if(phoneStateAccepted) {
-					Log.i("androidlog", "Success! Permission granted for screen recording!");
-				}
 				break;
 			case AUDIO_REQUEST_CODE:
 				recordAudioAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
-				if(recordAudioAccepted) {
-					Log.i("androidlog", "Success! Permission granted for recording audio!");
-				}
 				break;
 			default:
 
@@ -220,12 +201,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		File fdelete = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + SCREEN_SHARE_FILE_PATH);
 
 		if (fdelete.exists()) {
-			if (fdelete.delete()) {
-				Log.i("androidlog", "Temp file deleted successfully!");
-			}
-			else {
-				Log.i("androidlog", "Temp file deletion failure");
-			}
+			fdelete.delete();
 		}
 
 	}

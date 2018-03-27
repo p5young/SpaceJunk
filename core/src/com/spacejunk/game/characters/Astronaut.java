@@ -12,6 +12,10 @@ import com.spacejunk.game.SpaceJunk;
 
 public class Astronaut extends Character  {
 
+    private static final Texture myTexture1 =  new Texture("astronaut_texture_1.png");
+    private static final Texture myTexture2 =  new Texture("astronaut_texture_2.png");
+    private static final Texture myTexture3 =  new Texture("astronaut_texture_3.png");
+
     public Astronaut(SpaceJunk game) {
         this.currentPlatform = PLATFORM.MIDDLE;
         this.currentGame = game;
@@ -19,9 +23,9 @@ public class Astronaut extends Character  {
 
     public void create() {
 
-        characterTextures[0] = new Texture("astronaut_texture_1.png");
-        characterTextures[1] = new Texture("astronaut_texture_2.png");
-        characterTextures[2] = new Texture("astronaut_texture_3.png");
+        characterTextures[0] = myTexture1;
+        characterTextures[1] = myTexture2;
+        characterTextures[2] = myTexture3;
 
         // Load the sprite sheet as a Texture
         defaultAnimationSheet = new Texture(Gdx.files.internal("astronaut_animation_sheet.png"));

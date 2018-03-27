@@ -1,15 +1,12 @@
 package com.spacejunk.game;
 
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.menus.ConsumablesMenu;
 import com.spacejunk.game.menus.OptionsMenu;
-import com.spacejunk.game.utilities.SimpleDirectionGestureDetector;
 
 /**
  * Created by vidxyz on 2/9/18.
@@ -262,7 +259,7 @@ public class Controller {
                 if (gameScreen.getState() == GameScreen.State.RUN
                         && gameScreen.gameActive()
                         && noButtonsPressed()) {
-                    Gdx.app.log("applog", "TOUCHDOWN");
+//                    Gdx.app.log("applog", "TOUCHDOWN");
                     yStart = y;
                     ySet = true;
                     dragged = false;
@@ -275,7 +272,7 @@ public class Controller {
             public boolean touchUp (int x, int y, int pointer, int button) {
                 if (gameScreen.getState() == GameScreen.State.RUN
                         && ySet) {
-                    Gdx.app.log("applog", "TOUCHUP");
+//                    Gdx.app.log("applog", "TOUCHUP");
                     if (!dragged) {
                         currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight() - y);
                     } else if (y < yStart) {
@@ -299,7 +296,7 @@ public class Controller {
                 if (gameScreen.getState() == GameScreen.State.RUN) {
                     if (Math.abs(y - yStart) > 50)
                         dragged = true;
-                    Gdx.app.log("applog", "TOUCH DRAGGED");
+//                    Gdx.app.log("applog", "TOUCH DRAGGED");
                     return true; // return true to indicate the event was handled
                 }
                 return false;

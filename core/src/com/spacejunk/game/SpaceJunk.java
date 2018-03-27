@@ -54,8 +54,8 @@ public class SpaceJunk extends Game implements ApplicationListener {
         xMax = Gdx.graphics.getWidth();
         yMax = Gdx.graphics.getHeight();
 
-        Gdx.app.log("applog", "xMax is " + xMax);
-        Gdx.app.log("applog", "yMax is " + yMax);
+//        Gdx.app.log("applog", "xMax is " + xMax);
+//        Gdx.app.log("applog", "yMax is " + yMax);
 
         character.create();
 

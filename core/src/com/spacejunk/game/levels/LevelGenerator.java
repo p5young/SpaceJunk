@@ -78,18 +78,10 @@ public class LevelGenerator {
             rand -= weights[i];
             if (rand <= 0) return i;
         }
-        Gdx.app.log("applog", "getChunk() failed");
+//        Gdx.app.log("applog", "getChunk() failed");
         return -1;
     }
 
-    int[] nums = {1,3,5,7,9};
-    int numsi = -1;
-
-    private int getNextTestNumber() {
-        numsi++;
-        if(numsi >= 5) numsi = 0;
-        return nums[numsi];
-    }
 
     private int rand(int max) {
         return ThreadLocalRandom.current().nextInt(max);
@@ -98,7 +90,7 @@ public class LevelGenerator {
     // creates a group of obstacles
     // returns its width plus a gap which is used by level.renderObstacles to delay next group
     public int generateObstacles() {
-        Gdx.app.log("applog", "Making new batch of obstacles");
+//        Gdx.app.log("applog", "Making new batch of obstacles");
 
         // had to put these here because they're incorrect at time of construction
         TOP = level.getTopPlatformY();
@@ -131,7 +123,7 @@ public class LevelGenerator {
                  R
                 R
                  */
-                Gdx.app.log("applog", "Layout " + selectedLayout);
+//                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int initialx = 30;
                 if (charPlatform == BOTTOM)
                     initialx = 100;
@@ -146,7 +138,7 @@ public class LevelGenerator {
                 R
                     R
                  */
-                Gdx.app.log("applog", "Layout " + selectedLayout);
+//                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int initialx = 0;
                 if (charPlatform == TOP)
                     initialx = 120;
@@ -164,7 +156,7 @@ public class LevelGenerator {
                 int initialx = 0;
                 if (randomLevel == charPlatform)
                     initialx = 100;
-                Gdx.app.log("applog", "Layout " + selectedLayout);
+//                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int a = makeRandomObstacle(initialx, MIDDLE);
                 int b = makeRandomObstacle(a, MIDDLE);
                 makeRandomObstacle((initialx + a) / 2, randomLevel);
@@ -175,7 +167,7 @@ public class LevelGenerator {
                   B (top or bottom)
                 U C (middle)
                  */
-                Gdx.app.log("applog", "Layout " + selectedLayout);
+//                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int a = makeUnbreakable(0, MIDDLE);
                 int b = makeConsumable(a + 20, MIDDLE);
                 makeBreakable(a, randomLevel(2));
@@ -185,7 +177,7 @@ public class LevelGenerator {
                 layout 4
                 C B (random level)
                  */
-                Gdx.app.log("applog", "Layout " + selectedLayout);
+//                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int randomLevel = randomLevel();
                 int a = makeConsumable(0, randomLevel);
                 int b = makeBreakable(a, randomLevel);
@@ -195,7 +187,7 @@ public class LevelGenerator {
                 layout 5
                 L (random level)
                  */
-                Gdx.app.log("applog", "Layout " + selectedLayout);
+//                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int a = makeLife(0, randomLevel());
                 return a + MIN_GAP / 2;
             } case 6: {
@@ -203,7 +195,7 @@ public class LevelGenerator {
                 layout 6
                 B C (random level)
                  */
-                Gdx.app.log("applog", "Layout " + selectedLayout);
+//                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int randomLevel = randomLevel();
                 int a = makeBreakable(0, randomLevel);
                 int b = makeConsumable(a, randomLevel);
@@ -213,7 +205,7 @@ public class LevelGenerator {
                 layout 7
                 U L (random level)
                  */
-                Gdx.app.log("applog", "Layout " + selectedLayout);
+//                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int randomLevel = randomLevel();
                 int a = makeUnbreakable(0, randomLevel);
                 int b = makeLife(a, randomLevel);
@@ -225,7 +217,7 @@ public class LevelGenerator {
                 B
                 B
                  */
-                Gdx.app.log("applog", "Layout " + selectedLayout);
+//                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int a = makeBreakable(0, TOP);
                 int b = makeBreakable(0, MIDDLE);
                 int c = makeBreakable(0, BOTTOM);
@@ -237,7 +229,7 @@ public class LevelGenerator {
                 B (other level)
                 B (other level)
                  */
-                Gdx.app.log("applog", "Layout " + selectedLayout);
+//                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int[] otherPlatforms = allPlatformsNotThis(charPlatform);
 
                 int a = makeUnbreakable(0, charPlatform);
@@ -251,7 +243,7 @@ public class LevelGenerator {
                 U C (player level)
                 B   (other level)
                  */
-                Gdx.app.log("applog", "Layout " + selectedLayout);
+//                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int[] otherPlatforms = allPlatformsNotThis(charPlatform);
 
                 int a = makeUnbreakable(0, charPlatform);
@@ -264,7 +256,7 @@ public class LevelGenerator {
                 layout 11
                 C (random level)
                  */
-                Gdx.app.log("applog", "Layout " + selectedLayout);
+//                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int a = makeConsumable(0, randomLevel());
                 return a + MIN_GAP / 2;
             } case 12: {
@@ -273,7 +265,7 @@ public class LevelGenerator {
                 C (random level)
                 R (random level)
                  */
-                Gdx.app.log("applog", "Layout " + selectedLayout);
+//                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int random1 = randomLevel();
                 int random2 = randomLevel(random1);
                 int a = makeConsumable(rand(50), random1);
@@ -281,7 +273,7 @@ public class LevelGenerator {
                 return max(a,b) + MIN_GAP;
             }
             default:
-                Gdx.app.log("applog", "generateObstacles() FAILED!" + selectedLayout);
+//                Gdx.app.log("applog", "generateObstacles() FAILED!" + selectedLayout);
                 return 0;
         }
     }
@@ -392,7 +384,7 @@ public class LevelGenerator {
                     o = new FireObstacle(level);
                     break;
                 default:
-                    Gdx.app.log("applog", "levelGenerator.makeUnbreakable() failed!!!");
+//                    Gdx.app.log("applog", "levelGenerator.makeUnbreakable() failed!!!");
                     o = getRandomObstacle();
             }
         }
@@ -425,7 +417,7 @@ public class LevelGenerator {
                     o = new FireObstacle(level);
                     break;
                 default:
-                    Gdx.app.log("applog", "levelGenerator.makeBreakable() failed!!!");
+//                    Gdx.app.log("applog", "levelGenerator.makeBreakable() failed!!!");
                     o = getRandomObstacle();
             }
         }
@@ -465,7 +457,7 @@ public class LevelGenerator {
                     c = new FireSuitConsumable(level);
                     break;
                 default:
-                    Gdx.app.log("applog", "levelGenerator.makeUnbreakable() failed!!!");
+//                    Gdx.app.log("applog", "levelGenerator.makeUnbreakable() failed!!!");
                     c = getRandomConsumable();
             }
         }
@@ -486,7 +478,7 @@ public class LevelGenerator {
             case 3:
                 return new SpaceHammerConsumable(level);
             default:
-                Gdx.app.log("applog", "Error: getRandomConsumable broke");
+//                Gdx.app.log("applog", "Error: getRandomConsumable broke");
                 return new SpaceHammerConsumable(level);
         }
     }
@@ -512,7 +504,7 @@ public class LevelGenerator {
             case 3:
                 return new AlienObstacle(level);
             default:
-                Gdx.app.log("applog", "Error: getRandomObstacle broke");
+//                Gdx.app.log("applog", "Error: getRandomObstacle broke");
                 return new AsteroidObstacle(level);
         }
     }
@@ -530,7 +522,7 @@ public class LevelGenerator {
             case 2:
                 return TOP;
             default:
-                Gdx.app.log("applog", "Error: randomLevel() broke");
+//                Gdx.app.log("applog", "Error: randomLevel() broke");
                 return 0;
         }
     }
@@ -551,7 +543,7 @@ public class LevelGenerator {
             possibleLevels[0] = level.getBottomPlatformY();
             possibleLevels[1] = level.getMiddlePlatformY();
         } else {
-            Gdx.app.log("applog", "Error: randomLevel(int) broke. input: " + notLevel);
+//            Gdx.app.log("applog", "Error: randomLevel(int) broke. input: " + notLevel);
             return 0;
         }
 
@@ -569,7 +561,7 @@ public class LevelGenerator {
         } else if (notLevel == 3 || notLevel == TOP) {
             return new int[] {BOTTOM, MIDDLE};
         } else {
-            Gdx.app.log("applog", "Error: allPlatformsNotThis(int) broke. input: " + notLevel);
+//            Gdx.app.log("applog", "Error: allPlatformsNotThis(int) broke. input: " + notLevel);
             return new int[2];
         }
     }

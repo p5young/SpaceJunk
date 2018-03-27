@@ -1,6 +1,7 @@
 package com.spacejunk.game.obstacles;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,6 +17,7 @@ public class AlienObstacle extends Obstacle {
     private static final Pixmap myPixmap = new Pixmap(Gdx.files.internal("alien.png"));
     private static final Texture myTexture = new Texture("alien.png");
     private static final Texture myBrokenTexture = new Texture("alien.png");
+    private static final Sound mySound = Gdx.audio.newSound(Gdx.files.internal("sounds/alien_sound.wav"));
 
     public AlienObstacle(Level level) {
         this.obstacleTexture = myTexture;
@@ -23,7 +25,7 @@ public class AlienObstacle extends Obstacle {
 
         this.pixmap = myPixmap;
 
-        this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/alien_sound.wav"));
+        this.sound = mySound;
 
         this.level = level;
         this.obstacleType = OBSTACLES.ALIEN;

@@ -111,8 +111,8 @@ public class GameScreen implements Screen {
     public static void setScaleFactor(int xMax, int yMax) {
         GameScreen.SCALE_X_FACTOR = (float) xMax / GameConstants.X_AXIS_CONSTANT;
         GameScreen.SCALE_Y_FACTOR = (float) yMax / GameConstants.Y_AXIS_CONSTANT;
-        Gdx.app.log("applog", "XSCALEFACTOR: " + SCALE_X_FACTOR);
-        Gdx.app.log("applog", "YSCALEFACTOR: " + SCALE_Y_FACTOR);
+//        Gdx.app.log("applog", "XSCALEFACTOR: " + SCALE_X_FACTOR);
+//        Gdx.app.log("applog", "YSCALEFACTOR: " + SCALE_Y_FACTOR);
     }
 
     public static int getScaledTextureWidth(Texture texture) {
@@ -162,7 +162,7 @@ public class GameScreen implements Screen {
 
     public void create() {
 
-        Gdx.app.log("applog", "Create method of gamescreen.java called");
+//        Gdx.app.log("applog", "Create method of gamescreen.java called");
 
         canvas = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
@@ -543,7 +543,6 @@ public class GameScreen implements Screen {
             if (controller.mainMenuPlayButtonIsTouched()) {
                 this.state = State.RUN;
 
-                Gdx.app.log("mainmenulog", "Play now button is pressed");
                 if (!thisIsTheFirstTimeMainMenuIsAccessed) {
                     restartGame();
                 } else {
@@ -572,14 +571,6 @@ public class GameScreen implements Screen {
     private void stopRecordingScreen() {
         isRecordingInProgress = false;
         spaceJunk.getSystemServices().stopRecording();
-    }
-
-    public Texture getGameOver() {
-        return gameOver;
-    }
-
-    public Texture getPauseScreen() {
-        return pauseScreen;
     }
 
 
@@ -712,7 +703,7 @@ public class GameScreen implements Screen {
     // https://stackoverflow.com/questions/5914911/pixel-perfect-collision-detection-android
     private boolean collisionDetector(Pixmap obstacle, Pixmap astronaut, int[] obst, int[] astr) {
         // Since no lives are lost when this returns false, announce it to logcat to see if this was called
-        Gdx.app.log("applog", "COLLISION DETECTOR CALLED");
+//        Gdx.app.log("applog", "COLLISION DETECTOR CALLED");
 
         // Modify xy coordinates so collisionDetector believes full-sized
         // Pixmaps are spaced further/closer than they actually are
@@ -756,7 +747,6 @@ public class GameScreen implements Screen {
     }
 
     private void showSettingsMenu() {
-        Gdx.app.log("settingslog", "Settings menu should be shown here");
         this.state = State.PAUSE;
         isSettingsMenuShownOnScreen = true;
     }
@@ -820,7 +810,6 @@ public class GameScreen implements Screen {
             // If not, we display a prompt on screen telling them to tap anywhere to start
             drawOnScreenGameStartPrompt();
             if (controller.isTouched()) {
-                Gdx.app.log("applog", "THE GAME STARTS NOW");
                 isGameActive = true;
             }
         }

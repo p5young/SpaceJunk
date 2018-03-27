@@ -4,5 +4,7 @@
     <string name="app_name">SpaceJunk</string>
     <string name="title_activity_facebook_share">FacebookShareActivity</string>
     <string name="facebook_app_id">1905812613042953</string>
+    <string name="screen_record_accepted">Screen recording in progress!</string>
+    <string name="screen_record_denied">Screen recording has been denied!</string>
 
 </resources>

@@ -61,8 +61,6 @@ public class Level {
 
     public Level(SpaceJunk currentGame) {
 
-        Gdx.app.log("applog", "Level constructor called here");
-
         this.currentGame = currentGame;
         this.obstaclesList = new ArrayList<Obstacle>();
         this.consumablesList = new ArrayList<Consumable>();
