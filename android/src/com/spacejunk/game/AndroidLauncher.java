@@ -157,12 +157,13 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		switch(permsRequestCode){
 
 			case WRITE_REQUEST_CODE:
-				writeAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
+				writeAccepted = (grantResults.length > 0 && grantResults[0]==PackageManager.PERMISSION_GRANTED);
 				break;
 			case AUDIO_REQUEST_CODE:
-				recordAudioAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
+				recordAudioAccepted = (grantResults.length > 0 && grantResults[0]==PackageManager.PERMISSION_GRANTED);
 				break;
 			default:
+				break;
 
 		}
 
