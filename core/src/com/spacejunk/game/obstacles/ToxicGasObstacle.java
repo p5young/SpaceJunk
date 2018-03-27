@@ -15,20 +15,17 @@ import com.spacejunk.game.levels.Level;
 public class ToxicGasObstacle extends Obstacle {
 
     private static final Pixmap myPixmap = new Pixmap(Gdx.files.internal("toxic_gas_green.png"));
-    private static final Texture myTexture = new Texture("toxic_gas_green.png");
-    private static final Texture myBrokenTexture = new Texture("toxic_gas_green.png");
-    private static final Sound mySound = Gdx.audio.newSound(Gdx.files.internal("sounds/gas_sound.mp3"));
 
     public ToxicGasObstacle(Level level) {
-        this.obstacleTexture = myTexture;
-        this.brokenTexture = myBrokenTexture;
+        this.obstacleTexture = new Texture("toxic_gas_green.png");
+        this.brokenTexture = new Texture("toxic_gas_green.png");
 
         this.pixmap = myPixmap;
 
         this.level = level;
         this.obstacleType = OBSTACLES.TOXIC_GAS;
 
-        this.sound = mySound;
+        this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/gas_sound.mp3"));
 
         this.breaksOnConsumable = Consumable.CONSUMABLES.GAS_MASK;
     }

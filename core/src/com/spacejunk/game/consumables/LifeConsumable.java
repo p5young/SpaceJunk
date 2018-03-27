@@ -11,14 +11,10 @@ import com.spacejunk.game.levels.Level;
 
 public class LifeConsumable extends Consumable {
 
-    private static final Texture myTexture = new Texture("heart.png");
-    private static final Texture mySmallTexture = new Texture("heart.png");
-    private static final Sound mySound = Gdx.audio.newSound(Gdx.files.internal("sounds/consumable_picked_up.mp3"));
-
     public LifeConsumable(Level level) {
-        this.consumableTexture = myTexture;
-        this.consumableTextureSmall = mySmallTexture;
-        this.sound = mySound;
+        this.consumableTexture = new Texture("heart.png");
+        this.consumableTextureSmall = new Texture("heart.png");
+        this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/consumable_picked_up.mp3"));
         this.level = level;
         this.consumableType = CONSUMABLES.LIFE;
     }
