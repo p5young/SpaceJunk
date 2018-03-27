@@ -1,4 +1,12 @@
 android {
+    signingConfigs {
+        release_config {
+            keyAlias 'spacejunk_release_key'
+            keyPassword 'spacejunk'
+            storeFile file('/Users/vidhyasagarharihara/keys/spacejunk_keystore.jks')
+            storePassword 'spacejunk'
+        }
+    }
     buildToolsVersion "26.0.2"
     compileSdkVersion 26
     sourceSets {
@@ -28,6 +36,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release_config
         }
     }
 }
@@ -132,6 +141,6 @@ idea {
         }
     }
 }
-    dependencies {
-  implementation 'com.android.support.constraint:constraint-layout:+'
+dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:+'
 }
