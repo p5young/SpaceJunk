@@ -573,7 +573,6 @@ public class GameScreen implements Screen {
         spaceJunk.getSystemServices().stopRecording();
     }
 
-
     private void drawRecordingScreenBorder() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
@@ -919,7 +918,9 @@ public class GameScreen implements Screen {
             // player had no lives left
             this.state = State.CRASHED;
         } else {
-            this.state = State.RUN;
+            if(!thisIsTheFirstTimeMainMenuIsAccessed) {
+                this.state = State.RUN;
+            }
             controller.getOptionsMenu().setMiddleButtonTextureToPause();
         }
     }

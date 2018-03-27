@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -42,13 +43,10 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	public static final int WRITE_REQUEST_CODE = 7;
 	public static final int READ_REQUEST_CODE = 9;
-	public static final int READ_PHONE_STATE = 11;
 	public static final int AUDIO_REQUEST_CODE = 13;
-
 
 	private static boolean writeAccepted = false;
 	private static boolean readAccepted = false;
-	private static boolean phoneStateAccepted = false;
 	private static boolean recordAudioAccepted = false;
 
 
@@ -90,23 +88,26 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		}
 	}
 
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		requestAllPermissions();
-
-		initializeScreenRecordingTools(false);
-		initializeFacebookSDK();
+	private void initializeGame() {
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useAccelerometer = false;
 		config.useCompass = false;
 
 		initialize(new SpaceJunk(SpaceJunk.DIFFICULTY_LEVEL.EASY, this), config);
+	}
+
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		requestAllPermissions();
+		initializeFacebookSDK();
+		initializeGame();
 
 	}
+
 
 	@Override
 	public void onDestroy() {
@@ -164,12 +165,8 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 			case WRITE_REQUEST_CODE:
 				writeAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
 				break;
-
 			case READ_REQUEST_CODE:
 				readAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
-				break;
-			case READ_PHONE_STATE:
-				phoneStateAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
 				break;
 			case AUDIO_REQUEST_CODE:
 				recordAudioAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
