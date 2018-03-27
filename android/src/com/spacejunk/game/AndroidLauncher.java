@@ -42,11 +42,9 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	public static final String TAG = "AndroidLauncher";
 
 	public static final int WRITE_REQUEST_CODE = 7;
-	public static final int READ_REQUEST_CODE = 9;
 	public static final int AUDIO_REQUEST_CODE = 13;
 
 	private static boolean writeAccepted = false;
-	private static boolean readAccepted = false;
 	private static boolean recordAudioAccepted = false;
 
 
@@ -74,10 +72,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 			if (this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 				this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST_CODE);
-			}
-
-			if (this.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-				this.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_REQUEST_CODE);
 			}
 
 			if (this.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -164,9 +158,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 			case WRITE_REQUEST_CODE:
 				writeAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
-				break;
-			case READ_REQUEST_CODE:
-				readAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
 				break;
 			case AUDIO_REQUEST_CODE:
 				recordAudioAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
