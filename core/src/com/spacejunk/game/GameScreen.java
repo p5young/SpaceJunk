@@ -146,9 +146,10 @@ public class GameScreen implements Screen {
         this.state = State.MAIN_MENU_SCREEN;
 
         // Make all settings to be true
-        soundSetting = true;
-        recordAudioSetting = true;
-        vibrationSetting = true;
+        boolean[] settings = game.getSystemServices().getSettings();
+        soundSetting = settings[0];
+        recordAudioSetting = settings[1];
+        vibrationSetting = settings[2];
 
         backgroundMusic = game.getManager().get("sounds/Retro-Frantic-bkg.mp3");
         backgroundMusic.setLooping(true);
@@ -344,6 +345,8 @@ public class GameScreen implements Screen {
             settingsMenu = new Texture("settings_menu_none_selected.jpg");
         }
 
+        // Save user preferences
+        spaceJunk.getSystemServices().setSettings(soundSetting, recordAudioSetting, vibrationSetting);
 
     }
 

@@ -6,6 +6,9 @@ package com.spacejunk.game.interfaces;
 
 public interface SystemServices {
 
+    public void setSettings(boolean sound, boolean record, boolean vibrate);
+    public boolean[] getSettings();
+
     public void startRecording(int xMax, int yMax, boolean recordAudioSetting);
     public void stopRecording();
 }
