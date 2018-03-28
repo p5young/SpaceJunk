@@ -1,10 +1,6 @@
 package com.spacejunk.game.obstacles;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.spacejunk.game.SpaceJunk;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.levels.Level;
 
@@ -15,15 +11,17 @@ import com.spacejunk.game.levels.Level;
 public class ToxicGasObstacle extends Obstacle {
 
     public ToxicGasObstacle(Level level) {
-        this.obstacleTexture = level.getCurrentGame().getManager().get("toxic_gas_green.png");
-        this.brokenTexture = level.getCurrentGame().getManager().get("toxic_gas_green.png");
+        SpaceJunk.MyAssetManager manager = level.getCurrentGame().getManager();
 
-        this.pixmap = level.getCurrentGame().getManager().getPixmap("toxic_gas_green.png");
+        this.obstacleTexture = manager.get("toxic_gas_green.png");
+        this.brokenTexture = manager.get("toxic_gas_green.png");
+        this.pixmap = manager.getPixmap("toxic_gas_green.png");
+        this.sound = manager.get("sounds/gas_sound.mp3");
 
         this.level = level;
         this.obstacleType = OBSTACLES.TOXIC_GAS;
 
-        this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/gas_sound.mp3"));
+
 
         this.breaksOnConsumable = Consumable.CONSUMABLES.GAS_MASK;
     }
