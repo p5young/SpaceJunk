@@ -15,6 +15,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 
@@ -29,6 +31,10 @@ import com.spacejunk.game.interfaces.SystemServices;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AndroidLauncher extends AndroidApplication implements SystemServices {
 
@@ -43,6 +49,8 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	public static final int WRITE_REQUEST_CODE = 7;
 	public static final int AUDIO_REQUEST_CODE = 13;
+	public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 71;
+
 
 	private static boolean writePermissionAccepted = false;
 	private static boolean writePermissionRequested = false;
@@ -126,7 +134,13 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		if(requestCode == PERMISSION_CODE) {
 
 			if (resultCode != RESULT_OK) {
-				Toast.makeText(this, getString(R.string.screen_record_denied), Toast.LENGTH_SHORT).show();
+				this.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(AndroidLauncher.this, getString(R.string.screen_record_denied), Toast.LENGTH_SHORT).show();
+
+					}
+				});
 				// Uh-oh all permissions went through but screen record denied
 				// Let the game know so it can stop flashing red record
 				game.stopScreenFlashing();
@@ -160,24 +174,52 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 				recordAudioPermissionRequested = true;
 				numberOfPermissionsRequested++;
 				break;
+			case REQUEST_ID_MULTIPLE_PERMISSIONS:
+				int numberOfPermissionsRequested = grantResults.length;
+
+				Map<String, Integer> perms = new HashMap<>();
+				// Initialize the map with both permissions
+				perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+				perms.put(Manifest.permission.RECORD_AUDIO, PackageManager.PERMISSION_GRANTED);
+
+				if(numberOfPermissionsRequested > 0) {
+					for(int i = 0; i < numberOfPermissionsRequested; i++) {
+						perms.put(permissions[i], grantResults[i]);
+					}
+				}
+
+				// Write permission granted. Can proceed with screen recording with/without audio
+				if(perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+					writePermissionAccepted = true;
+				}
+
+				if (perms.get(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+					recordAudioPermissionAccepted = true;
+				}
+
+
+				if(writePermissionAccepted) {
+					initializeScreenRecordingTools(userRequestedRecordAudioSetting);
+					shareScreen();
+				}
+				else {
+					// Let user know
+					this.runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(AndroidLauncher.this, getString(R.string.screen_record_denied), Toast.LENGTH_SHORT).show();
+
+						}
+					});
+					// Let the game know recording isn't happening so it can stop blinking red
+					game.stopScreenFlashing();
+				}
+
+				break;
+
 			default:
 				break;
 
-		}
-
-
-		if(writePermissionAccepted &&  (recordAudioPermissionAccepted || recordAudioPermissionRequested)) {
-			initializeScreenRecordingTools(userRequestedRecordAudioSetting);
-			shareScreen();
-		}
-		else {
-			// If write permission is not accepted, then we can't record anything anyway
-			if(!writePermissionAccepted) {
-				// Let user know
-				Toast.makeText(this, getString(R.string.screen_record_denied), Toast.LENGTH_SHORT).show();
-				// Let the game know recording isn't happening so it can stop blinking red
-				game.stopScreenFlashing();
-			}
 		}
 
 	}
@@ -210,49 +252,49 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	private void handlePermissionsAndProceed() {
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			// If files cant be accessed, audio permission makes no sense
-			// So we ask for write access first to store the temp video file we record
-			if (this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+		List<String> permissionsToAsk = new ArrayList<>();
 
+		// If files cant be accessed, audio permission makes no sense
+		// So we ask for write access first to store the temp video file we record
+		if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-				// If record audio permission doesn't exist, add this to the top of the stack
-				if (this.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-					this.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_REQUEST_CODE);
-				} else {
-					recordAudioPermissionAccepted = true;
-				}
+			permissionsToAsk.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-				// Request file handling permissions now
-				// This asks for request asynchronously
-				this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST_CODE);
+			// If record audio permission doesn't exist, add this to the top of the stack
+			if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+				permissionsToAsk.add(Manifest.permission.RECORD_AUDIO);
+			} else {
+				recordAudioPermissionAccepted = true;
+			}
 
-				// If we reach here, we have the audio permission, but not file write. It's useless
-				// Handle result in callback of permissions request
+			// Request file handling permissions now
+			// This asks for request asynchronously
+			ActivityCompat.requestPermissions(this, permissionsToAsk.toArray(new String[permissionsToAsk.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+
+			return;
+		}
+
+		// If we already have write access, we ask now only for record audio permission
+		else {
+
+			writePermissionAccepted = true;
+
+			// If record audio permission doesn't exist, add ask for it
+			if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+
+				permissionsToAsk.add(Manifest.permission.RECORD_AUDIO);
+				ActivityCompat.requestPermissions(this, permissionsToAsk.toArray(new String[permissionsToAsk.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+				// We now handle the recording in the callback again, as we are waiting on a permission request/deny
 				return;
 			}
-
-
-			// If we already have write access, we ask now only for record audio permission
 			else {
-
-				writePermissionAccepted = true;
-
-				// If record audio permission doesn't exist, add ask for it
-				if (this.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-					this.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_REQUEST_CODE);
-
-					// We now handle the recording in the callback again, as we are waiting on a permission request/deny
-					return;
-				} else {
-					recordAudioPermissionAccepted = true;
-				}
+				recordAudioPermissionAccepted = true;
 			}
-
-			// If we have reached here, this means that both permissions are approved
-			initializeScreenRecordingTools(userRequestedRecordAudioSetting);
-			shareScreen();
 		}
+
+		// If we have reached here, this means that both permissions are approved
+		initializeScreenRecordingTools(userRequestedRecordAudioSetting);
+		shareScreen();
 
 	}
 
