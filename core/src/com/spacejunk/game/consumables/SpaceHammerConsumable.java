@@ -12,8 +12,8 @@ import com.spacejunk.game.levels.Level;
 public class SpaceHammerConsumable extends Consumable {
 
     public SpaceHammerConsumable(Level level) {
-        this.consumableTexture = new Texture("space_hammer.png");
-        this.consumableTextureSmall = new Texture("space_hammer_small.png");
+        this.consumableTexture = level.getCurrentGame().manager.get("space_hammer.png", Texture.class);
+        this.consumableTextureSmall = level.getCurrentGame().manager.get("space_hammer_small.png");
         this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/consumable_picked_up.mp3"));
         this.level = level;
         this.consumableType = CONSUMABLES.SPACE_HAMMER;
