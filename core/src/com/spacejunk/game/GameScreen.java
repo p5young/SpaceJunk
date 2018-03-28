@@ -919,7 +919,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resume() {
-        Gdx.app.log("applog", "RESUMING!!!!!!!!!!!!!!!!!");
+//        Gdx.app.log("applog", "RESUMING!!!!!!!!!!!!!!!!!");
         if (spaceJunk.getCharacter().getRemainingLives() <= 0) {
             // player had no lives left
             this.state = State.CRASHED;

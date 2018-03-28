@@ -62,8 +62,9 @@ public class SpaceJunk extends Game implements ApplicationListener, GameServices
         // reload all assets in assetManager
         manager.reload();
         // pause the game so the player has time to look at approaching obstacles before continuing
-        if (this.getScreen() != null)
+        if (this.getScreen() != null) {
             this.getScreen().pause();
+        }
         //Gdx.app.log("applog", "RESUMING!!!!!!!!!!!!!!!!!");
     }
 
