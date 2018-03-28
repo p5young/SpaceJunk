@@ -12,8 +12,8 @@ import com.spacejunk.game.levels.Level;
 public class LifeConsumable extends Consumable {
 
     public LifeConsumable(Level level) {
-        this.consumableTexture = level.getCurrentGame().manager.get("heart.png");
-        this.consumableTextureSmall = level.getCurrentGame().manager.get("heart.png");
+        this.consumableTexture = level.getCurrentGame().getManager().get("heart.png");
+        this.consumableTextureSmall = level.getCurrentGame().getManager().get("heart.png");
         this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/consumable_picked_up.mp3"));
         this.level = level;
         this.consumableType = CONSUMABLES.LIFE;

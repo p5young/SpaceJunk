@@ -12,8 +12,8 @@ import com.spacejunk.game.levels.Level;
 public class GasMaskConsumable extends Consumable {
 
     public GasMaskConsumable(Level level) {
-        this.consumableTexture = level.getCurrentGame().manager.get("gas_mask.png");
-        this.consumableTextureSmall = level.getCurrentGame().manager.get("gas_mask_small.png");
+        this.consumableTexture = level.getCurrentGame().getManager().get("gas_mask.png");
+        this.consumableTextureSmall = level.getCurrentGame().getManager().get("gas_mask_small.png");
         this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/consumable_picked_up.mp3"));
         this.level = level;
         this.consumableType = CONSUMABLES.GAS_MASK;

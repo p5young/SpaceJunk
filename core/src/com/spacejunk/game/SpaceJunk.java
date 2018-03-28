@@ -35,7 +35,7 @@ public class SpaceJunk extends Game implements ApplicationListener, GameServices
     private Level level;
     private Character character;
 
-    public myAssetManager manager;
+    public MyAssetManager manager;
     private GameScreen currentGameScreen;
 
     public SpaceJunk(DIFFICULTY_LEVEL level, SystemServices systemServices) {
@@ -62,8 +62,11 @@ public class SpaceJunk extends Game implements ApplicationListener, GameServices
         // reload all assets in assetManager
         manager.reload();
         // pause the game so the player has time to look at approaching obstacles before continuing
-        if (this.getScreen() != null) {
-            this.getScreen().pause();
+        if (this.currentGameScreen != null) {
+            // Only pause if no recording is in progress, else we want to start recording right away
+            if(!this.currentGameScreen.isRecordingInProgress()) {
+                this.currentGameScreen.pause();
+            }
         }
         //Gdx.app.log("applog", "RESUMING!!!!!!!!!!!!!!!!!");
     }
@@ -80,7 +83,7 @@ public class SpaceJunk extends Game implements ApplicationListener, GameServices
 
     public void setUpGame() {
 
-        manager = new myAssetManager();
+        manager = new MyAssetManager();
 
         xMax = Gdx.graphics.getWidth();
         yMax = Gdx.graphics.getHeight();
@@ -130,6 +133,9 @@ public class SpaceJunk extends Game implements ApplicationListener, GameServices
         return this.character;
     }
 
+    public MyAssetManager getManager() {
+        return manager;
+    }
 
     public double getCurrentGameScore() {
         return currentGameScore;
@@ -152,13 +158,13 @@ public class SpaceJunk extends Game implements ApplicationListener, GameServices
     }
 
     // Class which holds all Textures and Pixmaps
-    public class myAssetManager extends AssetManager {
+    public class MyAssetManager extends AssetManager {
         private Pixmap asteroid;
         private Pixmap fire;
         private Pixmap alien;
         private Pixmap gas;
 
-        public myAssetManager(){
+        public MyAssetManager(){
             reload();
         }
 

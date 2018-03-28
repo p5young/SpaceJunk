@@ -15,10 +15,10 @@ import com.spacejunk.game.levels.Level;
 public class AsteroidObstacle extends Obstacle {
 
     public AsteroidObstacle(Level level) {
-        this.obstacleTexture = level.getCurrentGame().manager.get("asteroid.png");
-        this.brokenTexture = level.getCurrentGame().manager.get("asteroid_broken.png");
+        this.obstacleTexture = level.getCurrentGame().getManager().get("asteroid.png");
+        this.brokenTexture = level.getCurrentGame().getManager().get("asteroid_broken.png");
 
-        this.pixmap = level.getCurrentGame().manager.getPixmap("asteroid.png");
+        this.pixmap = level.getCurrentGame().getManager().getPixmap("asteroid.png");
 
         this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/asteroid_sound.mp3"));
 

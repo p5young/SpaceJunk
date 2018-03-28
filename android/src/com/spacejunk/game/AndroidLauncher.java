@@ -215,18 +215,17 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 			// So we ask for write access first to store the temp video file we record
 			if (this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-				// Request file handling permissions now
-				// This asks for request asynchronously
-				this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST_CODE);
 
-				// If record audio permission doesn't exist, add this to the queue as well
+				// If record audio permission doesn't exist, add this to the top of the stack
 				if (this.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
 					this.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_REQUEST_CODE);
-					// We now return as the results will be handled in the callback
-					return;
 				} else {
 					recordAudioPermissionAccepted = true;
 				}
+
+				// Request file handling permissions now
+				// This asks for request asynchronously
+				this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST_CODE);
 
 				// If we reach here, we have the audio permission, but not file write. It's useless
 				// Handle result in callback of permissions request

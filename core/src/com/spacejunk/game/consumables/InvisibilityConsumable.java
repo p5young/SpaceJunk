@@ -12,8 +12,8 @@ import com.spacejunk.game.levels.Level;
 public class InvisibilityConsumable extends Consumable {
 
     public InvisibilityConsumable(Level level) {
-        this.consumableTexture = level.getCurrentGame().manager.get("invisibility.png");
-        this.consumableTextureSmall = level.getCurrentGame().manager.get("invisibility_small.png");
+        this.consumableTexture = level.getCurrentGame().getManager().get("invisibility.png");
+        this.consumableTextureSmall = level.getCurrentGame().getManager().get("invisibility_small.png");
         this.sound =  Gdx.audio.newSound(Gdx.files.internal("sounds/consumable_picked_up.mp3"));
         this.level = level;
         this.consumableType = CONSUMABLES.INVISIBILITY;

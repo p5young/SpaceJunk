@@ -15,10 +15,10 @@ import com.spacejunk.game.levels.Level;
 public class ToxicGasObstacle extends Obstacle {
 
     public ToxicGasObstacle(Level level) {
-        this.obstacleTexture = level.getCurrentGame().manager.get("toxic_gas_green.png");
-        this.brokenTexture = level.getCurrentGame().manager.get("toxic_gas_green.png");
+        this.obstacleTexture = level.getCurrentGame().getManager().get("toxic_gas_green.png");
+        this.brokenTexture = level.getCurrentGame().getManager().get("toxic_gas_green.png");
 
-        this.pixmap = level.getCurrentGame().manager.getPixmap("toxic_gas_green.png");
+        this.pixmap = level.getCurrentGame().getManager().getPixmap("toxic_gas_green.png");
 
         this.level = level;
         this.obstacleType = OBSTACLES.TOXIC_GAS;

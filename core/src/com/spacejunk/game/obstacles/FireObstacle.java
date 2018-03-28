@@ -15,10 +15,10 @@ import com.spacejunk.game.levels.Level;
 public class FireObstacle extends Obstacle {
 
     public FireObstacle(Level level) {
-        this.obstacleTexture = level.getCurrentGame().manager.get("fire.png");
-        this.brokenTexture = level.getCurrentGame().manager.get("fire.png");
+        this.obstacleTexture = level.getCurrentGame().getManager().get("fire.png");
+        this.brokenTexture = level.getCurrentGame().getManager().get("fire.png");
 
-        this.pixmap = level.getCurrentGame().manager.getPixmap("fire.png");
+        this.pixmap = level.getCurrentGame().getManager().getPixmap("fire.png");
 
         this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/fire_sound.mp3"));
 

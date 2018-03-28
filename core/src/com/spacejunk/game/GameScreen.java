@@ -959,4 +959,8 @@ public class GameScreen implements Screen {
     public boolean isRecordAudioSetting() {
         return recordAudioSetting;
     }
+
+    public boolean isRecordingInProgress() {
+        return isRecordingInProgress;
+    }
 }
