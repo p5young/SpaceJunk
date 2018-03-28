@@ -145,7 +145,7 @@ public class GameScreen implements Screen {
         // Start the game off on the main menu
         this.state = State.MAIN_MENU_SCREEN;
 
-        // Make all settings to be true
+        // Get user settings
         boolean[] settings = game.getSystemServices().getSettings();
         soundSetting = settings[0];
         recordAudioSetting = settings[1];
