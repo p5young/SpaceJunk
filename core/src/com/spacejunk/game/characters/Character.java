@@ -78,6 +78,7 @@ public abstract class Character {
 
         currentY = initialY;
         targetY = middlePlatformY;
+        currentPlatform = PLATFORM.MIDDLE;
 
 
         // Use the split utility method to create a 2D array of TextureRegions. This is

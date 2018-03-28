@@ -3,6 +3,9 @@ package com.spacejunk.game;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.spacejunk.game.characters.Astronaut;
 import com.spacejunk.game.characters.Character;
 import com.spacejunk.game.interfaces.SystemServices;
@@ -31,6 +34,7 @@ public class SpaceJunk extends Game implements ApplicationListener {
     private Level level;
     private Character character;
 
+    public myAssetManager manager;
 
     public SpaceJunk(DIFFICULTY_LEVEL level, SystemServices systemServices) {
 
@@ -39,6 +43,21 @@ public class SpaceJunk extends Game implements ApplicationListener {
         // This can be changed as needed
         this.character = new Astronaut(this);
         this.currentGameScore = 0;
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+        // reload all assets in assetManager
+        manager.reload();
+        // pause the game so the player has time to look at approaching obstacles before continuing
+        if (this.getScreen() != null)
+            this.getScreen().pause();
+        //Gdx.app.log("applog", "RESUMING!!!!!!!!!!!!!!!!!");
     }
 
 
@@ -51,6 +70,9 @@ public class SpaceJunk extends Game implements ApplicationListener {
 
 
     public void setUpGame() {
+
+        manager = new myAssetManager();
+
         xMax = Gdx.graphics.getWidth();
         yMax = Gdx.graphics.getHeight();
 
@@ -77,6 +99,7 @@ public class SpaceJunk extends Game implements ApplicationListener {
         super.render(); // important!
     }
 
+    @Override
     public void dispose() {
 
     }
@@ -117,6 +140,54 @@ public class SpaceJunk extends Game implements ApplicationListener {
 
     public SystemServices getSystemServices() {
         return systemServices;
+    }
+
+    // Class which holds all Textures and Pixmaps
+    public class myAssetManager extends AssetManager {
+        private Pixmap asteroid;
+        private Pixmap fire;
+        private Pixmap alien;
+        private Pixmap gas;
+
+        public myAssetManager(){
+            reload();
+        }
+
+        // reloads all Pixmaps and Textures
+        // called by constructor and resume function
+        private void reload() {
+            asteroid = new Pixmap(Gdx.files.internal("asteroid.png"));
+            fire = new Pixmap(Gdx.files.internal("fire.png"));
+            alien = new Pixmap(Gdx.files.internal("alien.png"));
+            gas = new Pixmap(Gdx.files.internal("toxic_gas_green.png"));
+            load("asteroid.png", Texture.class);
+            load("asteroid_broken.png", Texture.class);
+            load("fire.png", Texture.class);
+            load("alien.png", Texture.class);
+            load("toxic_gas_green.png", Texture.class);
+            load("space_hammer.png", Texture.class);
+            load("space_hammer_small.png", Texture.class);
+            load("invisibility.png", Texture.class);
+            load("invisibility_small.png", Texture.class);
+            load("gas_mask.png", Texture.class);
+            load("gas_mask_small.png", Texture.class);
+            load("firesuit.png", Texture.class);
+            load("firesuit_small.png", Texture.class);
+            load("heart.png", Texture.class);
+            finishLoading();
+        }
+
+        public Pixmap getPixmap(String filename) {
+            if (filename.equals("asteroid.png")){
+                return asteroid;
+            } else if (filename.equals("fire.png")) {
+                return fire;
+            } else if (filename.equals("alien.png")) {
+                return alien;
+            } else {
+                return gas;
+            }
+        }
     }
 
 

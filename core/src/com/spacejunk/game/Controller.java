@@ -259,7 +259,7 @@ public class Controller {
                 if (gameScreen.getState() == GameScreen.State.RUN
                         && gameScreen.gameActive()
                         && noButtonsPressed()) {
-//                    Gdx.app.log("applog", "TOUCHDOWN");
+                    //Gdx.app.log("applog", "TOUCHDOWN");
                     yStart = y;
                     ySet = true;
                     dragged = false;
@@ -272,7 +272,7 @@ public class Controller {
             public boolean touchUp (int x, int y, int pointer, int button) {
                 if (gameScreen.getState() == GameScreen.State.RUN
                         && ySet) {
-//                    Gdx.app.log("applog", "TOUCHUP");
+                    //Gdx.app.log("applog", "TOUCHUP");
                     if (!dragged) {
                         currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight() - y);
                     } else if (y < yStart) {
@@ -296,7 +296,7 @@ public class Controller {
                 if (gameScreen.getState() == GameScreen.State.RUN) {
                     if (Math.abs(y - yStart) > 50)
                         dragged = true;
-//                    Gdx.app.log("applog", "TOUCH DRAGGED");
+                    //Gdx.app.log("applog", "TOUCH DRAGGED");
                     return true; // return true to indicate the event was handled
                 }
                 return false;

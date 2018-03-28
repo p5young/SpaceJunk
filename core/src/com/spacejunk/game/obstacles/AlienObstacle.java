@@ -14,13 +14,11 @@ import com.spacejunk.game.levels.Level;
 
 public class AlienObstacle extends Obstacle {
 
-    private static Pixmap myPixmap = new Pixmap(Gdx.files.internal("alien.png"));
-
     public AlienObstacle(Level level) {
-        this.obstacleTexture = new Texture("alien.png");
-        this.brokenTexture = new Texture("alien.png");
+        this.obstacleTexture = level.getCurrentGame().manager.get("alien.png");
+        this.brokenTexture = level.getCurrentGame().manager.get("alien.png");
 
-        this.pixmap = myPixmap;
+        this.pixmap = level.getCurrentGame().manager.getPixmap("alien.png");
 
         this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/alien_sound.wav"));
 
