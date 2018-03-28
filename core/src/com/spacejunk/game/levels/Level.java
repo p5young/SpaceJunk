@@ -92,6 +92,18 @@ public class Level {
         chunkWidth = levelGenerator.generateObstacles();
     }
 
+/*
+    private static class MapGenerator implements Runnable {
+        public void run() {
+            String importantInfo[] = {
+                    "Mares eat oats",
+                    "Does eat oats",
+                    "Little lambs eat ivy",
+                    "A kid will eat ivy too"
+            };
+        }
+    }
+    */
 
     /**
      * Renders the obstacles on screen, while constantly updating positions throughout
@@ -99,7 +111,7 @@ public class Level {
     public void renderObstacles(SpriteBatch canvas, ShapeRenderer shapeRenderer, boolean toMove) {
 
         // make new chunk of obstacles
-        if(toMove && (chunkWidth -= (int) (GameScreen.SCALE_X_FACTOR *  GameConstants.VELOCITY)) <= 0) {
+        if(toMove && (chunkWidth -= (int) (GameScreen.SCALE_X_FACTOR *  velocity)) <= 0) {
             generateObstacles();
         }
 

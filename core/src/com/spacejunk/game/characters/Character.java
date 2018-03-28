@@ -57,6 +57,8 @@ public abstract class Character {
 
     protected Pixmap pixmap;
 
+    private int speedModifier = 0;
+
     // Remaining Lives; how many hits can be taken
     private int remainingLives = GameConstants.MAX_LIVES;
 
@@ -182,15 +184,16 @@ public abstract class Character {
     public void updateCharacterPosition(boolean toAnimate) {
 
         if(toAnimate) {
+            float moveDistance = (GameConstants.VERTICAL_SPEED + speedModifier) * GameScreen.SCALE_X_FACTOR;
             if (this.currentY < this.targetY) {
-                if (this.currentY + (GameConstants.VERTICAL_SPEED * GameScreen.SCALE_X_FACTOR) < this.targetY) {
-                    this.currentY += (GameConstants.VERTICAL_SPEED * GameScreen.SCALE_X_FACTOR);
+                if (this.currentY + (moveDistance) < this.targetY) {
+                    this.currentY += (moveDistance);
                 } else {
                     this.currentY = this.targetY;
                 }
             } else if (this.currentY > this.targetY) {
-                if (this.currentY - (GameConstants.VERTICAL_SPEED * GameScreen.SCALE_X_FACTOR) > this.targetY) {
-                    this.currentY -= (GameConstants.VERTICAL_SPEED * GameScreen.SCALE_X_FACTOR);
+                if (this.currentY - (moveDistance) > this.targetY) {
+                    this.currentY -= (moveDistance);
                 } else {
                     this.currentY = this.targetY;
                 }
@@ -297,6 +300,8 @@ public abstract class Character {
     public int[] getCoordinates() {
         return new int[]{ (int)this.getCharacterShape().getX(), (int)this.getCharacterShape().getY()};
     }
+
+    public void setSpeedModifier(int newMod) { this.speedModifier = newMod; }
 
     public int getInitialX() {
         return this.initialX;

@@ -115,7 +115,7 @@ public class LevelGenerator {
         // C: consumable
         // L: life
         //selectedLayout = 9; // FORCE LAYOUT - FOR TESTING
-        switch (selectedLayout) {
+        switch (9/*selectedLayout*/) {
             case 0: {
                 /*
                 layout 0
@@ -143,9 +143,9 @@ public class LevelGenerator {
                 if (charPlatform == TOP)
                     initialx = 120;
                 int a = makeRandomObstacle(30, TOP);
-                makeRandomObstacle(initialx, MIDDLE);
-                int b = makeRandomObstacle(a + MIN_GAP, BOTTOM);
-                return b + MIN_GAP;
+                int b = makeRandomObstacle(initialx, MIDDLE);
+                int c = makeRandomObstacle(b + MIN_GAP, BOTTOM);
+                return c + MIN_GAP;
             } case 2: {
                 /*
                 layout 2
@@ -218,9 +218,9 @@ public class LevelGenerator {
                 B
                  */
 //                Gdx.app.log("applog", "Layout " + selectedLayout);
-                int a = makeBreakable(rand((int)(100f * GameScreen.SCALE_X_FACTOR)), TOP);
-                int b = makeBreakable(rand((int)(100f * GameScreen.SCALE_X_FACTOR)), MIDDLE);
-                int c = makeBreakable(rand((int)(100f * GameScreen.SCALE_X_FACTOR)), BOTTOM);
+                int a = makeBreakable(rand((int)(1000f * GameScreen.SCALE_X_FACTOR)), TOP);
+                int b = makeBreakable(rand((int)(1000f * GameScreen.SCALE_X_FACTOR)), MIDDLE);
+                int c = makeBreakable(rand((int)(1000f * GameScreen.SCALE_X_FACTOR)), BOTTOM);
                 return max(a,max(b,c)) + MIN_GAP;
             } case 9: {
                 /*
@@ -232,9 +232,9 @@ public class LevelGenerator {
 //                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int[] otherPlatforms = allPlatformsNotThis(charPlatform);
 
-                int a = makeUnbreakable(rand((int)(100f * GameScreen.SCALE_X_FACTOR)), charPlatform);
-                int b = makeBreakable(rand((int)(100f * GameScreen.SCALE_X_FACTOR)), otherPlatforms[0]);
-                int c = makeBreakable(rand((int)(100f * GameScreen.SCALE_X_FACTOR)), otherPlatforms[1]);
+                int a = makeUnbreakable(rand((int)(1000f * GameScreen.SCALE_X_FACTOR)), charPlatform);
+                int b = makeBreakable(rand((int)(1000f * GameScreen.SCALE_X_FACTOR)), otherPlatforms[0]);
+                int c = makeBreakable(rand((int)(1000f * GameScreen.SCALE_X_FACTOR)), otherPlatforms[1]);
                 return max(a,max(b,c)) + MIN_GAP;
             } case 10: {
                 /*
@@ -322,7 +322,9 @@ public class LevelGenerator {
     private void adjustWeights() {
 
         // layout 5 & 7 - (spawns lives)
-        if (lives >= GameConstants.MAX_LIVES) { // max lives, don't spawn
+        if (lives >= GameConstants.MAX_LIVES // max lives, don't spawn
+                || selectedLayout == 5       // last layout was a life, don't spawn
+                || selectedLayout == 7) {    // last layout was a life, don't spawn
             setWeight(5, 0);
             setWeight(7, 0);
         } else if (lives == 2) {                // 2 lives, small chance

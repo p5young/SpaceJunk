@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
@@ -18,6 +19,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -115,6 +117,28 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		deleteTempFile();
 
 	}
+
+    @Override
+    public boolean[] getSettings() {
+        SharedPreferences sharedPrefs = getSharedPreferences("spaceJunkPrefs", MODE_PRIVATE);
+
+        return new boolean[] { sharedPrefs.getBoolean("sound", true),
+                                sharedPrefs.getBoolean("record", true),
+                                sharedPrefs.getBoolean("vibrate", true)};
+    }
+
+	@Override
+    public void setSettings(boolean sound, boolean record, boolean vibrate) {
+        SharedPreferences sharedPrefs = getSharedPreferences("spaceJunkPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor  ed = sharedPrefs.edit();
+
+        //Set values
+        ed.putBoolean("sound", sound);
+        ed.putBoolean("record", record);
+        ed.putBoolean("vibrate", vibrate);
+
+        ed.apply();
+    }
 
 
 	@Override
