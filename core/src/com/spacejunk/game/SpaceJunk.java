@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.spacejunk.game.characters.Astronaut;
 import com.spacejunk.game.characters.Character;
+import com.spacejunk.game.interfaces.GameServices;
 import com.spacejunk.game.interfaces.SystemServices;
 import com.spacejunk.game.levels.Level;
 
@@ -18,7 +19,7 @@ import com.spacejunk.game.levels.Level;
  */
 
 
-public class SpaceJunk extends Game implements ApplicationListener {
+public class SpaceJunk extends Game implements ApplicationListener, GameServices {
 
 
     public enum DIFFICULTY_LEVEL {EASY, MEDIUM, HARD};
@@ -35,6 +36,7 @@ public class SpaceJunk extends Game implements ApplicationListener {
     private Character character;
 
     public myAssetManager manager;
+    private GameScreen currentGameScreen;
 
     public SpaceJunk(DIFFICULTY_LEVEL level, SystemServices systemServices) {
 
@@ -43,6 +45,11 @@ public class SpaceJunk extends Game implements ApplicationListener {
         // This can be changed as needed
         this.character = new Astronaut(this);
         this.currentGameScore = 0;
+    }
+
+    @Override
+    public void stopScreenFlashing() {
+        currentGameScreen.stopScreenFlashing();
     }
 
     @Override
@@ -65,7 +72,8 @@ public class SpaceJunk extends Game implements ApplicationListener {
     public void create () {
 
         setUpGame();
-        this.setScreen(new GameScreen(this));
+        currentGameScreen = new GameScreen(this);
+        this.setScreen(currentGameScreen);
     }
 
 

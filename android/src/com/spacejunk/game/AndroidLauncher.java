@@ -1,6 +1,7 @@
 package com.spacejunk.game;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,7 +16,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -44,12 +44,18 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	public static final int WRITE_REQUEST_CODE = 7;
 	public static final int AUDIO_REQUEST_CODE = 13;
 
-	private static boolean writeAccepted = false;
-	private static boolean recordAudioAccepted = false;
+	private static boolean writePermissionAccepted = false;
+	private static boolean writePermissionRequested = false;
+	private static boolean recordAudioPermissionAccepted = false;
+	private static boolean recordAudioPermissionRequested = false;
+
+	boolean userRequestedRecordAudioSetting = false;
+
 
 
 	private static final int PERMISSION_CODE = 1;
 	private static final int FACEBOOK_CODE = 3;
+	private static int numberOfPermissionsRequested = 0;
 
 	private int mScreenDensity;
 	private MediaProjectionManager mProjectionManager;
@@ -65,22 +71,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	private VirtualDisplay mVirtualDisplay;
 	private MediaRecorder mMediaRecorder;
 
-
-	private void requestAllPermissions() {
-
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-			if (this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-				this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST_CODE);
-			}
-
-			if (this.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-				this.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_REQUEST_CODE);
-			}
-
-
-		}
-	}
+	private SpaceJunk game;
 
 	private void initializeGame() {
 
@@ -88,7 +79,8 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		config.useAccelerometer = false;
 		config.useCompass = false;
 
-		initialize(new SpaceJunk(SpaceJunk.DIFFICULTY_LEVEL.EASY, this), config);
+		game = new SpaceJunk(SpaceJunk.DIFFICULTY_LEVEL.EASY, this);
+		initialize(game, config);
 	}
 
 
@@ -96,7 +88,6 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		requestAllPermissions();
 		initializeFacebookSDK();
 		initializeGame();
 
@@ -136,13 +127,16 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 			if (resultCode != RESULT_OK) {
 				Toast.makeText(this, getString(R.string.screen_record_denied), Toast.LENGTH_SHORT).show();
+				// Uh-oh all permissions went through but screen record denied
+				// Let the game know so it can stop flashing red record
+				game.stopScreenFlashing();
 				return;
 			}
 
 
+			// Start recording now, everything is success. All (3) permissions have been granted
 			mMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
 			mVirtualDisplay = createVirtualDisplay();
-
 			mMediaRecorder.start();
 			Toast.makeText(this, getString(R.string.screen_record_accepted), Toast.LENGTH_SHORT).show();
 
@@ -157,14 +151,33 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		switch(permsRequestCode){
 
 			case WRITE_REQUEST_CODE:
-				writeAccepted = (grantResults.length > 0 && grantResults[0]==PackageManager.PERMISSION_GRANTED);
+				writePermissionAccepted = (grantResults.length > 0 && grantResults[0]==PackageManager.PERMISSION_GRANTED);
+				writePermissionRequested = true;
+				numberOfPermissionsRequested++;
 				break;
 			case AUDIO_REQUEST_CODE:
-				recordAudioAccepted = (grantResults.length > 0 && grantResults[0]==PackageManager.PERMISSION_GRANTED);
+				recordAudioPermissionAccepted = (grantResults.length > 0 && grantResults[0]==PackageManager.PERMISSION_GRANTED);
+				recordAudioPermissionRequested = true;
+				numberOfPermissionsRequested++;
 				break;
 			default:
 				break;
 
+		}
+
+
+		if(writePermissionAccepted &&  (recordAudioPermissionAccepted || recordAudioPermissionRequested)) {
+			initializeScreenRecordingTools(userRequestedRecordAudioSetting);
+			shareScreen();
+		}
+		else {
+			// If write permission is not accepted, then we can't record anything anyway
+			if(!writePermissionAccepted) {
+				// Let user know
+				Toast.makeText(this, getString(R.string.screen_record_denied), Toast.LENGTH_SHORT).show();
+				// Let the game know recording isn't happening so it can stop blinking red
+				game.stopScreenFlashing();
+			}
 		}
 
 	}
@@ -174,14 +187,74 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 	public void startRecording(int xMax, int yMax, boolean recordAudioSetting) {
 //		DISPLAY_HEIGHT = yMax;
 //		DISPLAY_WIDTH = xMax;
-		initializeScreenRecordingTools(recordAudioSetting);
-		shareScreen();
+		userRequestedRecordAudioSetting = recordAudioSetting;
+
+		// Permissions only a problem android M and above
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			handlePermissionsAndProceed();
+		}
+		// Else no problem, permissions already given. Start sharing screen now
+		else {
+			initializeScreenRecordingTools(userRequestedRecordAudioSetting);
+			shareScreen();
+		}
+
+
 	}
 
 	@Override
 	public void stopRecording() {
 		stopScreenSharing();
 		beginVideoSharing();
+	}
+
+	private void handlePermissionsAndProceed() {
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			// If files cant be accessed, audio permission makes no sense
+			// So we ask for write access first to store the temp video file we record
+			if (this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+				// Request file handling permissions now
+				// This asks for request asynchronously
+				this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST_CODE);
+
+				// If record audio permission doesn't exist, add this to the queue as well
+				if (this.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+					this.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_REQUEST_CODE);
+					// We now return as the results will be handled in the callback
+					return;
+				} else {
+					recordAudioPermissionAccepted = true;
+				}
+
+				// If we reach here, we have the audio permission, but not file write. It's useless
+				// Handle result in callback of permissions request
+				return;
+			}
+
+
+			// If we already have write access, we ask now only for record audio permission
+			else {
+
+				writePermissionAccepted = true;
+
+				// If record audio permission doesn't exist, add ask for it
+				if (this.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+					this.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_REQUEST_CODE);
+
+					// We now handle the recording in the callback again, as we are waiting on a permission request/deny
+					return;
+				} else {
+					recordAudioPermissionAccepted = true;
+				}
+			}
+
+			// If we have reached here, this means that both permissions are approved
+			initializeScreenRecordingTools(userRequestedRecordAudioSetting);
+			shareScreen();
+		}
+
 	}
 
 
@@ -264,6 +337,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 			startActivityForResult(mProjectionManager.createScreenCaptureIntent(), PERMISSION_CODE);
 			return;
 		}
+
 		mVirtualDisplay = createVirtualDisplay();
 		mMediaRecorder.start();
 	}
@@ -283,7 +357,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 
 	private void initRecorder(boolean recordAudioSetting) {
 
-		if (recordAudioAccepted && recordAudioSetting) {
+		if (recordAudioPermissionAccepted && recordAudioSetting) {
 			mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		}
 
@@ -291,7 +365,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
 		mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 		mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
 
-		if (recordAudioAccepted && recordAudioSetting) {
+		if (recordAudioPermissionAccepted && recordAudioSetting) {
 			mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 		}
 

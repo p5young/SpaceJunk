@@ -14,6 +14,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.spacejunk.game.constants.GameConstants;
+import com.spacejunk.game.interfaces.GameServices;
+import com.spacejunk.game.interfaces.SystemServices;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.obstacles.Obstacle;
@@ -132,6 +134,15 @@ public class GameScreen implements Screen {
     }
 
 
+    private static double round(double value, int places) {
+
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
     public GameScreen(final SpaceJunk game) {
 
         // Start the game off on the main menu
@@ -211,14 +222,8 @@ public class GameScreen implements Screen {
 
     }
 
-
-    private static double round(double value, int places) {
-
-        if (places < 0) throw new IllegalArgumentException();
-
-        BigDecimal bd = new BigDecimal(value);
-        bd = bd.setScale(places, RoundingMode.HALF_UP);
-        return bd.doubleValue();
+    public void stopScreenFlashing() {
+        isRecordingInProgress = false;
     }
 
 
