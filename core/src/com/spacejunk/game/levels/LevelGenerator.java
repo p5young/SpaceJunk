@@ -1,6 +1,5 @@
 package com.spacejunk.game.levels;
 
-import com.badlogic.gdx.Gdx;
 import com.spacejunk.game.GameScreen;
 import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.consumables.GasMaskConsumable;
@@ -36,7 +35,8 @@ public class LevelGenerator {
     private ArrayList<Consumable.CONSUMABLES> Breakables;   // consumables the player has
     private int charPlatform;                               // what platform the player is on
     private int lives;                                      // how many lives the player has
-    private int selectedLayout;                             // what layout (chunk) is chosen
+    private int selectedLayout = -1;                        // what layout (chunk) is chosen
+    private int previousLayout;                             // what chunk came before
 
     // list of probabilities of each chunk appearing
     // equal numbers means equal probability
@@ -105,7 +105,7 @@ public class LevelGenerator {
 
         // pick which layout to use based on weights and random number
         // note: a layout with weight 0 is impossible
-
+        previousLayout = selectedLayout;
         selectedLayout = getChunk(rand(weightSum) + 1);
 
         // LAYOUT NOTATION:
@@ -218,9 +218,9 @@ public class LevelGenerator {
                 B
                  */
 //                Gdx.app.log("applog", "Layout " + selectedLayout);
-                int a = makeBreakable(0, TOP);
-                int b = makeBreakable(0, MIDDLE);
-                int c = makeBreakable(0, BOTTOM);
+                int a = makeBreakable(rand((int)(100f * GameScreen.SCALE_X_FACTOR)), TOP);
+                int b = makeBreakable(rand((int)(100f * GameScreen.SCALE_X_FACTOR)), MIDDLE);
+                int c = makeBreakable(rand((int)(100f * GameScreen.SCALE_X_FACTOR)), BOTTOM);
                 return max(a,max(b,c)) + MIN_GAP;
             } case 9: {
                 /*
@@ -232,9 +232,9 @@ public class LevelGenerator {
 //                Gdx.app.log("applog", "Layout " + selectedLayout);
                 int[] otherPlatforms = allPlatformsNotThis(charPlatform);
 
-                int a = makeUnbreakable(0, charPlatform);
-                int b = makeBreakable(0, otherPlatforms[0]);
-                int c = makeBreakable(0, otherPlatforms[1]);
+                int a = makeUnbreakable(rand((int)(100f * GameScreen.SCALE_X_FACTOR)), charPlatform);
+                int b = makeBreakable(rand((int)(100f * GameScreen.SCALE_X_FACTOR)), otherPlatforms[0]);
+                int c = makeBreakable(rand((int)(100f * GameScreen.SCALE_X_FACTOR)), otherPlatforms[1]);
                 return max(a,max(b,c)) + MIN_GAP;
             } case 10: {
                 /*
@@ -333,8 +333,16 @@ public class LevelGenerator {
             setWeight(7, 2);
         }
 
+        boolean twoWallsInARow = ((previousLayout == 8
+                || previousLayout == 9
+                || previousLayout == 10)
+                && (selectedLayout == 8
+                || selectedLayout == 9
+                || selectedLayout == 10));
+
         // layout 8, 9, 10 - (walls) don't spawn unless player has > 2 consumables
-        if (level.getInventory().size() > 2) {
+        //                           and hasn't been 2 in a row
+        if (level.getInventory().size() > 2 && !twoWallsInARow) {
             setWeight(8, 3);
             setWeight(9, 3);
             setWeight(10,3);

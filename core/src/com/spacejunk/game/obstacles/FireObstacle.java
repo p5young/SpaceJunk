@@ -1,10 +1,6 @@
 package com.spacejunk.game.obstacles;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.spacejunk.game.SpaceJunk;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.levels.Level;
 
@@ -15,12 +11,12 @@ import com.spacejunk.game.levels.Level;
 public class FireObstacle extends Obstacle {
 
     public FireObstacle(Level level) {
-        this.obstacleTexture = level.getCurrentGame().getManager().get("fire.png");
-        this.brokenTexture = level.getCurrentGame().getManager().get("fire.png");
+        SpaceJunk.MyAssetManager manager = level.getCurrentGame().getManager();
 
-        this.pixmap = level.getCurrentGame().getManager().getPixmap("fire.png");
-
-        this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/fire_sound.mp3"));
+        this.obstacleTexture = manager.get("fire.png");
+        this.brokenTexture = manager.get("fire.png");
+        this.pixmap = manager.getPixmap("fire.png");
+        this.sound = manager.get("sounds/fire_sound.mp3");
 
         this.level = level;
         this.obstacleType = OBSTACLES.FIRE;

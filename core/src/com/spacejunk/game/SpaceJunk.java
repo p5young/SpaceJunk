@@ -4,6 +4,8 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.spacejunk.game.characters.Astronaut;
@@ -171,10 +173,12 @@ public class SpaceJunk extends Game implements ApplicationListener, GameServices
         // reloads all Pixmaps and Textures
         // called by constructor and resume function
         private void reload() {
+            // Pixmaps
             asteroid = new Pixmap(Gdx.files.internal("asteroid.png"));
             fire = new Pixmap(Gdx.files.internal("fire.png"));
             alien = new Pixmap(Gdx.files.internal("alien.png"));
             gas = new Pixmap(Gdx.files.internal("toxic_gas_green.png"));
+            // Textures
             load("asteroid.png", Texture.class);
             load("asteroid_broken.png", Texture.class);
             load("fire.png", Texture.class);
@@ -189,6 +193,17 @@ public class SpaceJunk extends Game implements ApplicationListener, GameServices
             load("firesuit.png", Texture.class);
             load("firesuit_small.png", Texture.class);
             load("heart.png", Texture.class);
+            // Sounds
+            load("sounds/alien_sound.wav", Sound.class);
+            load("sounds/asteroid_sound.mp3", Sound.class);
+            load("sounds/fire_sound.mp3", Sound.class);
+            load("sounds/gas_sound.mp3", Sound.class);
+            load("sounds/consumable_picked_up.mp3", Sound.class);
+            load("sounds/consumable_picked_up.mp3", Sound.class);
+            load("sounds/consumable_picked_up.mp3", Sound.class);
+            load("sounds/consumable_picked_up.mp3", Sound.class);
+            load("sounds/consumable_picked_up.mp3", Sound.class);
+            load("sounds/Retro-Frantic-bkg.mp3", Music.class);
             finishLoading();
         }
 

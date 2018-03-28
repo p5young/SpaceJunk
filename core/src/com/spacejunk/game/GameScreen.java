@@ -1,6 +1,5 @@
 package com.spacejunk.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -14,13 +13,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.spacejunk.game.constants.GameConstants;
-import com.spacejunk.game.interfaces.GameServices;
-import com.spacejunk.game.interfaces.SystemServices;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 import com.spacejunk.game.consumables.Consumable;
 import com.spacejunk.game.obstacles.Obstacle;
 
-import java.lang.Math;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -72,6 +68,7 @@ public class GameScreen implements Screen {
     private int scrollIndex = 0;
     private int autoScroll = 0; // autoScroll on when autoScroll = 0 or 1
     private boolean scrolling = false;
+    private int scrollMomentum = 0;
 
     private int backgroundImageIndex = 0;
     private int mainMenuImageIndex = 0;
@@ -153,7 +150,7 @@ public class GameScreen implements Screen {
         recordAudioSetting = true;
         vibrationSetting = true;
 
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/Retro-Frantic-bkg.mp3"));
+        backgroundMusic = game.getManager().get("sounds/Retro-Frantic-bkg.mp3");
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(BACKGROUND_MUSIC_VOLUME);
 
@@ -443,6 +440,7 @@ public class GameScreen implements Screen {
 
     private void renderAboutOrHowToPlayScreen() {
         Texture screenContents;
+        // pick texture based on state
         if (state == State.HOW_TO_PLAY_SCREEN) {
             screenContents = howToPlay;
         } else {
@@ -481,10 +479,9 @@ public class GameScreen implements Screen {
             mainMenuImageIndex = 0;
         }
 
+        // automatically move screen until player touches
         if (autoScroll < 2) {
             aboutOrHowToPlayImageIndex += 1;
-            if (aboutOrHowToPlayImageIndex > GameScreen.getScaledTextureHeight(screenContents) - Gdx.graphics.getHeight())
-                aboutOrHowToPlayImageIndex = GameScreen.getScaledTextureHeight(screenContents) - Gdx.graphics.getHeight();
         }
 
         if (controller.touching()) {
@@ -502,18 +499,29 @@ public class GameScreen implements Screen {
                     scrolling = true;   // no buttons pressed, start dragging (scrolling)
                 }
             } else {
+                scrollMomentum = controller.getTouchYCoordinate() - scrollIndex;
                 aboutOrHowToPlayImageIndex += controller.getTouchYCoordinate() - scrollIndex;
                 scrollIndex = controller.getTouchYCoordinate();
-                // set boundaries
-                if (aboutOrHowToPlayImageIndex < 0)
-                    aboutOrHowToPlayImageIndex = 0;
-                if (aboutOrHowToPlayImageIndex > GameScreen.getScaledTextureHeight(screenContents) - Gdx.graphics.getHeight())
-                    aboutOrHowToPlayImageIndex = GameScreen.getScaledTextureHeight(screenContents) - Gdx.graphics.getHeight();
             }
         } else {
             if (autoScroll == 0) autoScroll = 1;
             if (scrolling) scrolling = false;  // no touch detected: stop scrolling
+
+            // adjust image height based on scrollMomentum
+            aboutOrHowToPlayImageIndex += scrollMomentum;
+            // make scrollMomentum approach 0
+            if (scrollMomentum < 3 && scrollMomentum > -3)
+                scrollMomentum = 0;
+            else if (scrollMomentum > 0)
+                scrollMomentum -= 3;
+            else
+                scrollMomentum += 3;
         }
+        // set upper and lower position boundaries
+        if (aboutOrHowToPlayImageIndex < 0)
+            aboutOrHowToPlayImageIndex = 0;
+        if (aboutOrHowToPlayImageIndex > GameScreen.getScaledTextureHeight(screenContents) - Gdx.graphics.getHeight())
+            aboutOrHowToPlayImageIndex = GameScreen.getScaledTextureHeight(screenContents) - Gdx.graphics.getHeight();
     }
 
     private void renderMainMenu() {
