@@ -6,6 +6,9 @@ package com.spacejunk.game.interfaces;
 
 public interface SystemServices {
 
+    public void setSpeed(int speed);
+    public int getSpeed();
+
     public void setSettings(boolean sound, boolean record, boolean vibrate);
     public boolean[] getSettings();
 

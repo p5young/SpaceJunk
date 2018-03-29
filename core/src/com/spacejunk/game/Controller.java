@@ -249,29 +249,49 @@ public class Controller {
     public void setupSwipeDetection() {
         Gdx.input.setInputProcessor(new InputAdapter() {
 
-            int yStart = Gdx.graphics.getHeight() / 2;
-            boolean ySet = false;       // true when yStart has valid value
+            int yStart;
+            int xStart;
+            boolean touched = false;       // true when yStart has valid value
             boolean dragged = false;    // true if a drag is detected
 
 
             @Override
             public boolean touchDown (int x, int y, int pointer, int button) {
-                if (gameScreen.getState() == GameScreen.State.RUN
+                if (gameScreen.getState() == GameScreen.State.RUN               // during gameplay
                         && gameScreen.gameActive()
                         && noButtonsPressed()) {
-                    //Gdx.app.log("applog", "TOUCHDOWN");
                     yStart = y;
-                    ySet = true;
+                    touched = true;
                     dragged = false;
                     return true; // return true to indicate the event was handled
+                } else if (gameScreen.getState() == GameScreen.State.RUN        // start game prompt
+                        && !gameScreen.gameActive()) {
+                    Gdx.app.log("applog", "TOUCHDOWN --- X: " + x + " Y: " + y);
+                    Gdx.app.log("applog", "x BOUNDS --- MIN: " + (Gdx.graphics.getWidth() - (int)(300 * GameScreen.SCALE_X_FACTOR)) / 2 + " MAX: " + (Gdx.graphics.getWidth() + (int)(300 * GameScreen.SCALE_X_FACTOR)) / 2);
+                    if (x >= (Gdx.graphics.getWidth() - (int)(300 * GameScreen.SCALE_X_FACTOR)) / 2     // play button pressed
+                        && x <= (Gdx.graphics.getWidth() + (int)(300 * GameScreen.SCALE_X_FACTOR)) / 2
+                        && y >= Gdx.graphics.getHeight() / 3 - (int)(150 * GameScreen.SCALE_X_FACTOR) / 2
+                        && y <= Gdx.graphics.getHeight() / 3 + (int)(150 * GameScreen.SCALE_X_FACTOR) / 2) {
+                            currentGame.getCharacter().setSpeedModifier(gameScreen.getVelocityMod());   // set player speed
+                            currentGame.getSystemServices().setSpeed(gameScreen.getVelocityMod());      // save player speed in SharedPreferences
+                            gameScreen.setGameActive(); // start game
+                            return true;
+                    } else {            // play button not pressed
+                        xStart = x;
+                        touched = true;
+                        dragged = false;
+                        return true;
+                    }
                 }
                 return false;
             }
 
             @Override
             public boolean touchUp (int x, int y, int pointer, int button) {
+                if (!touched) return false;
+
                 if (gameScreen.getState() == GameScreen.State.RUN
-                        && ySet) {
+                        && gameScreen.gameActive()) {
                     //Gdx.app.log("applog", "TOUCHUP");
                     if (!dragged) {
                         currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight() - y);
@@ -281,23 +301,44 @@ public class Controller {
                         currentGame.getCharacter().moveCharacter(0);
                     }
                     yStart = Gdx.graphics.getHeight() / 2;
-                    ySet = false;
+                    touched = false;
                     dragged = false;
                     return true; // return true to indicate the event was handled
+                } else if (gameScreen.getState() == GameScreen.State.RUN        // start game prompt
+                        && !gameScreen.gameActive()) {
+                    touched = false;
+                    dragged = false;
+                    return true;
                 }
-                yStart = Gdx.graphics.getHeight() / 2;
-                ySet = false;
+                touched = false;
                 dragged = false;
                 return false;
             }
 
             @Override
             public boolean touchDragged (int x, int y, int pointer) {
-                if (gameScreen.getState() == GameScreen.State.RUN) {
+                if (!touched) return false;
+
+                if (gameScreen.getState() == GameScreen.State.RUN &&
+                        gameScreen.gameActive()) {
                     if (Math.abs(y - yStart) > 50)
                         dragged = true;
-                    //Gdx.app.log("applog", "TOUCH DRAGGED");
                     return true; // return true to indicate the event was handled
+                } else if (gameScreen.getState() == GameScreen.State.RUN &&
+                        !gameScreen.gameActive()){
+                    if ((x - xStart) > (Gdx.graphics.getHeight() / 9)) {
+                        int currentMod = gameScreen.getVelocityMod();
+                        if (currentMod < 3)
+                            gameScreen.setVelocityMod(currentMod + 1);
+                        xStart = x;
+                        return true; // return true to indicate the event was handled
+                    } else if ((xStart - x) > (Gdx.graphics.getHeight() / 9)) {
+                        int currentMod = gameScreen.getVelocityMod();
+                        if (currentMod > -3)
+                            gameScreen.setVelocityMod(currentMod - 1);
+                        xStart = x;
+                        return true; // return true to indicate the event was handled
+                    }
                 }
                 return false;
             }

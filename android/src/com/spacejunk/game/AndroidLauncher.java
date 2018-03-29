@@ -139,6 +139,23 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
         ed.apply();
     }
 
+    @Override
+    public int getSpeed() {
+	    SharedPreferences sharedPrefs = getSharedPreferences("spaceJunkPrefs", MODE_PRIVATE);
+
+	    return sharedPrefs.getInt("speed", 0);
+    }
+
+    @Override
+    public void setSpeed(int speed) {
+        SharedPreferences sharedPrefs = getSharedPreferences("spaceJunkPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor  ed = sharedPrefs.edit();
+
+        //Set value
+        ed.putInt("speed", speed);
+        ed.apply();
+    }
+
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {

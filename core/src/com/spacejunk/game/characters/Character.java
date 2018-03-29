@@ -1,5 +1,6 @@
 package com.spacejunk.game.characters;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -301,7 +302,7 @@ public abstract class Character {
         return new int[]{ (int)this.getCharacterShape().getX(), (int)this.getCharacterShape().getY()};
     }
 
-    public void setSpeedModifier(int newMod) { this.speedModifier = newMod; }
+    public void setSpeedModifier(int vMod) { this.speedModifier = vMod; }
 
     public int getInitialX() {
         return this.initialX;

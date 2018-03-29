@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.menus.RemainingLivesMenu;
 import com.spacejunk.game.consumables.Consumable;
+import com.spacejunk.game.obstacles.AsteroidObstacle;
 import com.spacejunk.game.obstacles.Obstacle;
 
 import java.math.BigDecimal;
@@ -35,7 +36,11 @@ public class GameScreen implements Screen {
     private boolean vibrationSetting;
     private boolean recordAudioSetting;
 
-    public static final String GAME_START_PROMPT = "Press anywhere on the screen to begin playing";
+    // velocity variables
+    private int velocityModifier;
+    private Obstacle speedSample = null;
+
+    private static final String SPEED_ADJUST_PROMPT = "Move the Slider to Choose Your Speed";
 
 
     public static float SCALE_X_FACTOR = 1;
@@ -150,6 +155,8 @@ public class GameScreen implements Screen {
         soundSetting = settings[0];
         recordAudioSetting = settings[1];
         vibrationSetting = settings[2];
+        velocityModifier = game.getSystemServices().getSpeed();
+        game.getLevel().setVelocityMod(velocityModifier);
 
         backgroundMusic = game.getManager().get("sounds/Retro-Frantic-bkg.mp3");
         backgroundMusic.setLooping(true);
@@ -218,6 +225,8 @@ public class GameScreen implements Screen {
 
         controller.setupSwipeDetection();
 
+        spaceJunk.getLevel().setVelocityMod(velocityModifier);
+
     }
 
     public void stopScreenFlashing() {
@@ -258,6 +267,7 @@ public class GameScreen implements Screen {
         spaceJunk.getCharacter().resetLives();
         isGameActive = false;
         isCrashed = false;
+        spaceJunk.getManager().clear();
         spaceJunk.setUpGame();
         startGame(spaceJunk);
     }
@@ -824,9 +834,6 @@ public class GameScreen implements Screen {
             // Game only starts IF user touches once more
             // If not, we display a prompt on screen telling them to tap anywhere to start
             drawOnScreenGameStartPrompt();
-            if (controller.isTouched()) {
-                isGameActive = true;
-            }
         }
 
         //Code for if crash occurs
@@ -838,14 +845,60 @@ public class GameScreen implements Screen {
 
     }
 
-    public boolean gameActive() {return isGameActive;}
+    public boolean gameActive() { return isGameActive; }
+
+    public void setGameActive() {
+        speedSample = null;
+        isGameActive = true;
+    }
+
+    public void setVelocityMod(int vMod) {
+        this.spaceJunk.getLevel().setVelocityMod(vMod);
+        this.velocityModifier = vMod;
+    }
+
+    public int getVelocityMod() {
+        spaceJunk.getLevel().setVelocityMod(velocityModifier);
+        return this.velocityModifier;
+    }
 
 
     private void drawOnScreenGameStartPrompt() {
-        GlyphLayout layout = new GlyphLayout(promptFont, GAME_START_PROMPT);
-        promptFont.draw(canvas, GAME_START_PROMPT,
-                Gdx.graphics.getWidth() / 2 - layout.width / 2,
-                Gdx.graphics.getHeight() / 2 - layout.height / 2);
+        // Draw play button
+        canvas.draw(play, Gdx.graphics.getWidth() / 2 - GameScreen.getScaledTextureWidth(play) / 2,
+                (2 * Gdx.graphics.getHeight()) / 3 - GameScreen.getScaledTextureHeight(play) / 2,
+                GameScreen.getScaledTextureWidth(play),
+                GameScreen.getScaledTextureHeight(play));
+
+        // write out "Move the slider to choose your speed"
+        GlyphLayout speedPrompt = new GlyphLayout(promptFont, SPEED_ADJUST_PROMPT);
+        promptFont.draw(canvas, SPEED_ADJUST_PROMPT,
+                Gdx.graphics.getWidth() / 2 - speedPrompt.width / 2,
+                Gdx.graphics.getHeight() / 2 - speedPrompt.height / 2);
+
+        // Draw the white slider line (actually a rectangle)
+        shapeRenderer.setColor(Color.WHITE); // make color white
+        shapeRenderer.rect(Gdx.graphics.getWidth() / 6, Gdx.graphics.getHeight() / 4,(2 * Gdx.graphics.getWidth()) / 3,5);
+
+        // place white circle according to Level's current velocity modifier
+        velocityModifier = spaceJunk.getLevel().getVelocityMod();
+        int incrementAmount = (Gdx.graphics.getWidth() * velocityModifier) / 9;
+        shapeRenderer.circle(Gdx.graphics.getWidth() / 2 + incrementAmount, Gdx.graphics.getHeight() / 4, 50);
+
+        if (speedSample == null) {
+            speedSample = new AsteroidObstacle(spaceJunk.getLevel());
+            speedSample.setCoordinates(Gdx.graphics.getWidth(), spaceJunk.getLevel().getTopPlatformY());
+        } else {
+            // move left
+            speedSample.moveLeft();
+            // cycle back to right side when past left side
+            if (speedSample.getX() < -getScaledTextureWidth(speedSample.getTexture()))
+                speedSample.setCoordinates(Gdx.graphics.getWidth(), spaceJunk.getLevel().getTopPlatformY());
+            // draw
+            canvas.draw(speedSample.getTexture(), speedSample.getX(), speedSample.getY(),
+                getScaledTextureWidth(speedSample.getTexture()),
+                getScaledTextureHeight(speedSample.getTexture()));
+        }
     }
 
 
