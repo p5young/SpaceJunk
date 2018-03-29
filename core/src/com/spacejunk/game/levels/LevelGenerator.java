@@ -142,10 +142,10 @@ public class LevelGenerator {
                 int initialx = 0;
                 if (charPlatform == TOP)
                     initialx = 120;
-                int a = makeRandomObstacle(30, TOP);
-                int b = makeRandomObstacle(initialx, MIDDLE);
-                int c = makeRandomObstacle(b + MIN_GAP, BOTTOM);
-                return c + MIN_GAP;
+                makeRandomObstacle(30, TOP);
+                int a = makeRandomObstacle(initialx, MIDDLE);
+                int b = makeRandomObstacle(a + MIN_GAP, BOTTOM);
+                return b + MIN_GAP;
             } case 2: {
                 /*
                 layout 2
