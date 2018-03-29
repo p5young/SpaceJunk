@@ -11,8 +11,7 @@ public class GameConstants {
 
     public static final int TOTAL_NUMBER_OF_OBSTACLE_TYPES = 4;
     public static final int TOTAL_NUMBER_OF_CONSUMABLE_TYPES = 4;
-    public static final int MAX_PLATFORMS = 3;
-    public static final int VELOCITY = 10;
+    public static final int VELOCITY = 12;
     public static final double SCORING_RATE = 0.1;
     public static final double SINGLE_CORRECT_USE_BONUS = 100;
     public static final int MAX_LIVES = 3;

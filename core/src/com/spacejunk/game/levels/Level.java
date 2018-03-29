@@ -46,6 +46,7 @@ public class Level {
 
     // Velocity
     private int velocity = GameConstants.VELOCITY;
+    private int velocityModifier = 0;
 
     private int maxLives = GameConstants.MAX_LIVES;
 
@@ -188,10 +189,6 @@ public class Level {
         this.yMax = yMax;
     }
 
-    public int getVelocity() {
-        return (int) (this.velocity * GameScreen.SCALE_X_FACTOR);
-    }
-
     public int getXMax() {
         return this.xMax;
     }
@@ -204,15 +201,19 @@ public class Level {
         return this.scoringRate;
     }
 
-    //modifier must be in the range -3 to +3
+    public int getVelocity() {
+        return (int) (this.velocity * GameScreen.SCALE_X_FACTOR);
+    }
+
+    //modifier must be in the range -5 to +5
     public void setVelocityMod(int modifier) {
+        this.velocityModifier = modifier;
         this.velocity = GameConstants.VELOCITY + modifier;
     }
 
     //modifier must be in the range -3 to +3
     public int getVelocityMod() {
-        Gdx.app.log("applog", "VELOCITY MODIFIER: " + (this.velocity - GameConstants.VELOCITY));
-        return this.velocity - GameConstants.VELOCITY;
+        return this.velocityModifier;
     }
 
     public int getMaxLives() {

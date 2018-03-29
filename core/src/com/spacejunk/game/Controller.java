@@ -272,8 +272,8 @@ public class Controller {
                         && x <= (Gdx.graphics.getWidth() + (int)(300 * GameScreen.SCALE_X_FACTOR)) / 2
                         && y >= Gdx.graphics.getHeight() / 3 - (int)(150 * GameScreen.SCALE_X_FACTOR) / 2
                         && y <= Gdx.graphics.getHeight() / 3 + (int)(150 * GameScreen.SCALE_X_FACTOR) / 2) {
-                            currentGame.getCharacter().setSpeedModifier(gameScreen.getVelocityMod());   // set player speed
-                            currentGame.getSystemServices().setSpeed(gameScreen.getVelocityMod());      // save player speed in SharedPreferences
+                            currentGame.getCharacter().setSpeedModifier(currentGame.getLevel().getVelocityMod());   // set player speed
+                            currentGame.getSystemServices().setSpeed(currentGame.getLevel().getVelocityMod());      // save player speed in SharedPreferences
                             gameScreen.setGameActive(); // start game
                             return true;
                     } else {            // play button not pressed
@@ -290,9 +290,9 @@ public class Controller {
             public boolean touchUp (int x, int y, int pointer, int button) {
                 if (!touched) return false;
 
+                // move astronaut
                 if (gameScreen.getState() == GameScreen.State.RUN
                         && gameScreen.gameActive()) {
-                    //Gdx.app.log("applog", "TOUCHUP");
                     if (!dragged) {
                         currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight() - y);
                     } else if (y < yStart) {
@@ -327,15 +327,15 @@ public class Controller {
                 } else if (gameScreen.getState() == GameScreen.State.RUN &&
                         !gameScreen.gameActive()){
                     if ((x - xStart) > (Gdx.graphics.getHeight() / 9)) {
-                        int currentMod = gameScreen.getVelocityMod();
-                        if (currentMod < 3)
-                            gameScreen.setVelocityMod(currentMod + 1);
+                        int currentMod = currentGame.getLevel().getVelocityMod();
+                        if (currentMod < 5)
+                            currentGame.getLevel().setVelocityMod(currentMod + 1);
                         xStart = x;
                         return true; // return true to indicate the event was handled
                     } else if ((xStart - x) > (Gdx.graphics.getHeight() / 9)) {
-                        int currentMod = gameScreen.getVelocityMod();
-                        if (currentMod > -3)
-                            gameScreen.setVelocityMod(currentMod - 1);
+                        int currentMod = currentGame.getLevel().getVelocityMod();
+                        if (currentMod > -5)
+                            currentGame.getLevel().setVelocityMod(currentMod - 1);
                         xStart = x;
                         return true; // return true to indicate the event was handled
                     }

@@ -37,7 +37,6 @@ public class GameScreen implements Screen {
     private boolean recordAudioSetting;
 
     // velocity variables
-    private int velocityModifier;
     private Obstacle speedSample = null;
 
     private static final String SPEED_ADJUST_PROMPT = "Move the Slider to Choose Your Speed";
@@ -155,8 +154,7 @@ public class GameScreen implements Screen {
         soundSetting = settings[0];
         recordAudioSetting = settings[1];
         vibrationSetting = settings[2];
-        velocityModifier = game.getSystemServices().getSpeed();
-        game.getLevel().setVelocityMod(velocityModifier);
+        game.getLevel().setVelocityMod(game.getSystemServices().getSpeed());
 
         backgroundMusic = game.getManager().get("sounds/Retro-Frantic-bkg.mp3");
         backgroundMusic.setLooping(true);
@@ -224,8 +222,6 @@ public class GameScreen implements Screen {
         elapsedTime = 0f;
 
         controller.setupSwipeDetection();
-
-        spaceJunk.getLevel().setVelocityMod(velocityModifier);
 
     }
 
@@ -822,7 +818,8 @@ public class GameScreen implements Screen {
                     this.spaceJunk.getLevel().setEquippedConsumable(Consumable.CONSUMABLES.UNEQUIPPED);
                 }
 
-                // If all checks fail, this means the user meant to move the character!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // If all checks fail, this means the user meant to move the character!
+                // now handled by controller
                 //else {
                 //    spaceJunk.getCharacter().moveCharacter(controller.getTouchYCoordinate());
                 //}
@@ -852,16 +849,6 @@ public class GameScreen implements Screen {
         isGameActive = true;
     }
 
-    public void setVelocityMod(int vMod) {
-        this.spaceJunk.getLevel().setVelocityMod(vMod);
-        this.velocityModifier = vMod;
-    }
-
-    public int getVelocityMod() {
-        spaceJunk.getLevel().setVelocityMod(velocityModifier);
-        return this.velocityModifier;
-    }
-
 
     private void drawOnScreenGameStartPrompt() {
         // Draw play button
@@ -881,10 +868,10 @@ public class GameScreen implements Screen {
         shapeRenderer.rect(Gdx.graphics.getWidth() / 6, Gdx.graphics.getHeight() / 4,(2 * Gdx.graphics.getWidth()) / 3,5);
 
         // place white circle according to Level's current velocity modifier
-        velocityModifier = spaceJunk.getLevel().getVelocityMod();
-        int incrementAmount = (Gdx.graphics.getWidth() * velocityModifier) / 9;
+        int incrementAmount = (Gdx.graphics.getWidth() * spaceJunk.getLevel().getVelocityMod()) / 15;
         shapeRenderer.circle(Gdx.graphics.getWidth() / 2 + incrementAmount, Gdx.graphics.getHeight() / 4, 50);
 
+        // animate the asteroid
         if (speedSample == null) {
             speedSample = new AsteroidObstacle(spaceJunk.getLevel());
             speedSample.setCoordinates(Gdx.graphics.getWidth(), spaceJunk.getLevel().getTopPlatformY());
