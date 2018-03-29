@@ -36,6 +36,4 @@ public class GameConstants {
     public static final int X_AXIS_CONSTANT = 2392;
     public static final int Y_AXIS_CONSTANT = 1440;
 
-    public static int speedModifier = 0;
-
 }
