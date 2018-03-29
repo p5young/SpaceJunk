@@ -184,7 +184,7 @@ public abstract class Character {
     public void updateCharacterPosition(boolean toAnimate) {
 
         if(toAnimate) {
-            float moveDistance = (GameConstants.VERTICAL_SPEED + speedModifier) * GameScreen.SCALE_X_FACTOR;
+            float moveDistance = (GameConstants.VERTICAL_SPEED + speedModifier) * GameScreen.SCALE_Y_FACTOR;
             if (this.currentY < this.targetY) {
                 if (this.currentY + (moveDistance) < this.targetY) {
                     this.currentY += (moveDistance);

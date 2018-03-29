@@ -81,6 +81,7 @@ public class Level {
         this.inventoryObjects.add(new InvisibilityConsumable(this));
 
         this.currentGame = currentGame;
+
     }
 
     /**
@@ -92,18 +93,6 @@ public class Level {
         chunkWidth = levelGenerator.generateObstacles();
     }
 
-/*
-    private static class MapGenerator implements Runnable {
-        public void run() {
-            String importantInfo[] = {
-                    "Mares eat oats",
-                    "Does eat oats",
-                    "Little lambs eat ivy",
-                    "A kid will eat ivy too"
-            };
-        }
-    }
-    */
 
     /**
      * Renders the obstacles on screen, while constantly updating positions throughout
