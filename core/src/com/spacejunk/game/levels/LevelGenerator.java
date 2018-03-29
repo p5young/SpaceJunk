@@ -115,7 +115,7 @@ public class LevelGenerator {
         // C: consumable
         // L: life
         //selectedLayout = 9; // FORCE LAYOUT - FOR TESTING
-        switch (9/*selectedLayout*/) {
+        switch (selectedLayout) {
             case 0: {
                 /*
                 layout 0
