@@ -19,19 +19,18 @@ public class Astronaut extends Character  {
 
     public void create() {
 
-        characterTextures[0] = new Texture("astronaut_texture_1.png");
-        characterTextures[1] = new Texture("astronaut_texture_2.png");
-        characterTextures[2] = new Texture("astronaut_texture_3.png");
+        characterTextures[0] = this.currentGame.getManager().get("astronaut_texture_1.png");
+        characterTextures[1] = this.currentGame.getManager().get("astronaut_texture_2.png");
+        characterTextures[2] = this.currentGame.getManager().get("astronaut_texture_3.png");
 
         // Load the sprite sheet as a Texture
-        defaultAnimationSheet = new Texture(Gdx.files.internal("astronaut_animation_sheet.png"));
-        hammerAnimationSheet = new Texture(Gdx.files.internal("hammer_animation_sheet.png"));
-        gasMaskAnimationSheet = new Texture(Gdx.files.internal("gasmask_animation_sheet.png"));
-        fireSuitAnimationSheet = new Texture(Gdx.files.internal("firesuit_animation_sheet.png"));
-        invisibilityAnimationSheet = new Texture(Gdx.files.internal("invisibility_animation_sheet.png"));
+        defaultAnimationSheet = this.currentGame.getManager().get("astronaut_animation_sheet.png");
+        hammerAnimationSheet = this.currentGame.getManager().get("hammer_animation_sheet.png");
+        gasMaskAnimationSheet = this.currentGame.getManager().get("gasmask_animation_sheet.png");
+        fireSuitAnimationSheet = this.currentGame.getManager().get("firesuit_animation_sheet.png");
+        invisibilityAnimationSheet = this.currentGame.getManager().get("invisibility_animation_sheet.png");
 
-        FileHandle handle = Gdx.files.internal("astronaut_texture_1.png");
-        this.pixmap = new Pixmap(handle);
+        this.pixmap = this.currentGame.getManager().getPixmap("astronaut_texture_1.png");
 
         FRAME_COLS = 3;
         FRAME_ROWS = 1;

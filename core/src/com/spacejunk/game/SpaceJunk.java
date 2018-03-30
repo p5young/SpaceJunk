@@ -165,6 +165,7 @@ public class SpaceJunk extends Game implements ApplicationListener, GameServices
         private Pixmap fire;
         private Pixmap alien;
         private Pixmap gas;
+        private Pixmap astronaut;
 
         public MyAssetManager(){
             reload();
@@ -178,6 +179,8 @@ public class SpaceJunk extends Game implements ApplicationListener, GameServices
             fire = new Pixmap(Gdx.files.internal("fire.png"));
             alien = new Pixmap(Gdx.files.internal("alien.png"));
             gas = new Pixmap(Gdx.files.internal("toxic_gas_green.png"));
+            astronaut = new Pixmap(Gdx.files.internal("astronaut_texture_1.png"));
+
             // Textures
             load("asteroid.png", Texture.class);
             load("asteroid_broken.png", Texture.class);
@@ -193,29 +196,77 @@ public class SpaceJunk extends Game implements ApplicationListener, GameServices
             load("firesuit.png", Texture.class);
             load("firesuit_small.png", Texture.class);
             load("heart.png", Texture.class);
+
+            load("background.jpg", Texture.class);
+            load("main_menu_background.jpg", Texture.class);
+            load("main_menu_middle.png", Texture.class);
+            load("howToPlay.png", Texture.class);
+            load("about.png", Texture.class);
+            load("back.png", Texture.class);
+            load("play.png", Texture.class);
+
+            load("gameover.jpg", Texture.class);
+            load("pause_screen.png", Texture.class);
+
+
+            // Settings menu textures
+            load("settings_menu_all_selected.jpg", Texture.class);
+            load("settings_menu_sound_and_record_selected.jpg", Texture.class);
+            load("settings_menu_vibration_and_sound_selected.jpg", Texture.class);
+            load("settings_menu_sound_selected.jpg", Texture.class);
+            load("settings_menu_vibration_record_selected.jpg", Texture.class);
+            load("settings_menu_record_selected.jpg", Texture.class);
+            load("settings_menu_vibration_selected.jpg", Texture.class);
+            load("settings_menu_none_selected.jpg", Texture.class);
+
+            // Options Menu Textures
+            load("main_menu.png", Texture.class);
+            load("pause_button.png", Texture.class);
+            load("play_button.png", Texture.class);
+            load("screen_record.png", Texture.class);
+            load("settings_menu.png", Texture.class);
+
+            // Consumables Menu
+            load("inventory_list.png", Texture.class);
+
+            // Astronaut Textures
+            load("astronaut_texture_1.png", Texture.class);
+            load("astronaut_texture_2.png", Texture.class);
+            load("astronaut_texture_3.png", Texture.class);
+
+            // Astronaut Animation Sheets
+            load("astronaut_animation_sheet.png", Texture.class);
+            load("hammer_animation_sheet.png", Texture.class);
+            load("gasmask_animation_sheet.png", Texture.class);
+            load("firesuit_animation_sheet.png", Texture.class);
+            load("invisibility_animation_sheet.png", Texture.class);
+
             // Sounds
             load("sounds/alien_sound.wav", Sound.class);
             load("sounds/asteroid_sound.mp3", Sound.class);
             load("sounds/fire_sound.mp3", Sound.class);
             load("sounds/gas_sound.mp3", Sound.class);
             load("sounds/consumable_picked_up.mp3", Sound.class);
-            load("sounds/consumable_picked_up.mp3", Sound.class);
-            load("sounds/consumable_picked_up.mp3", Sound.class);
-            load("sounds/consumable_picked_up.mp3", Sound.class);
-            load("sounds/consumable_picked_up.mp3", Sound.class);
             load("sounds/Retro-Frantic-bkg.mp3", Music.class);
+
             finishLoading();
         }
 
         public Pixmap getPixmap(String filename) {
             if (filename.equals("asteroid.png")){
                 return asteroid;
-            } else if (filename.equals("fire.png")) {
+            }
+            else if (filename.equals("fire.png")) {
                 return fire;
-            } else if (filename.equals("alien.png")) {
+            }
+            else if (filename.equals("alien.png")) {
                 return alien;
-            } else {
+            }
+            else if (filename.equals("toxic_gas_green.png")){
                 return gas;
+            }
+            else{
+                return astronaut;
             }
         }
     }

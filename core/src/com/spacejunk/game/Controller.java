@@ -27,7 +27,7 @@ public class Controller {
     public Controller(SpaceJunk currentGame, GameScreen gameScreen) {
         this.currentGame = currentGame;
         this.gameScreen = gameScreen;
-        this.optionsMenu = new OptionsMenu();
+        this.optionsMenu = new OptionsMenu(currentGame);
         this.consumablesMenu = new ConsumablesMenu(currentGame);
     }
 

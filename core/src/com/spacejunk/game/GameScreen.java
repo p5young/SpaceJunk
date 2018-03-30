@@ -171,8 +171,6 @@ public class GameScreen implements Screen {
 
     public void create() {
 
-//        Gdx.app.log("applog", "Create method of gamescreen.java called");
-
         canvas = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         canvas.enableBlending();
@@ -182,7 +180,7 @@ public class GameScreen implements Screen {
 
         spaceJunk.getLevel().getLevelGenerator().setMinGapWithScaleFactor();
 
-        background = new Texture("background.jpg");
+        background = spaceJunk.getManager().get("background.jpg");
         background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 
@@ -191,15 +189,15 @@ public class GameScreen implements Screen {
         }
         updateBackgroundMusic();
 
-        mainMenu = new Texture("main_menu_background.jpg");
+        mainMenu = spaceJunk.getManager().get("main_menu_background.jpg");
         mainMenu.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
-        mainMenuMiddle = new Texture("main_menu_middle.png");
+        mainMenuMiddle = spaceJunk.getManager().get("main_menu_middle.png");
 
-        howToPlay = new Texture("howToPlay.png");
-        about = new Texture("about.png");
-        back = new Texture("back.png");
-        play = new Texture("play.png");
+        howToPlay = spaceJunk.getManager().get("howToPlay.png");
+        about = spaceJunk.getManager().get("about.png");
+        back = spaceJunk.getManager().get("back.png");
+        play = spaceJunk.getManager().get("play.png");
 
         scoreFont = new BitmapFont();
         scoreFont.setColor(Color.WHITE);
@@ -209,8 +207,8 @@ public class GameScreen implements Screen {
         promptFont.setColor(Color.WHITE);
         promptFont.getData().setScale(4 * (GameScreen.SCALE_X_FACTOR));
 
-        gameOver = new Texture("gameover.jpg");
-        pauseScreen = new Texture("pause_screen.png");
+        gameOver = spaceJunk.getManager().get("gameover.jpg");
+        pauseScreen = spaceJunk.getManager().get("pause_screen.png");
 
         updateSettingsMenuTexture();
 
@@ -328,21 +326,21 @@ public class GameScreen implements Screen {
     private void updateSettingsMenuTexture() {
 
         if (soundSetting && recordAudioSetting && vibrationSetting) {
-            settingsMenu = new Texture("settings_menu_all_selected.jpg");
+            settingsMenu = spaceJunk.getManager().get("settings_menu_all_selected.jpg");
         } else if (soundSetting && recordAudioSetting && !vibrationSetting) {
-            settingsMenu = new Texture("settings_menu_sound_and_record_selected.jpg");
+            settingsMenu = spaceJunk.getManager().get("settings_menu_sound_and_record_selected.jpg");
         } else if (soundSetting && !recordAudioSetting && vibrationSetting) {
-            settingsMenu = new Texture("settings_menu_vibration_and_sound_selected.jpg");
+            settingsMenu = spaceJunk.getManager().get("settings_menu_vibration_and_sound_selected.jpg");
         } else if (soundSetting && !recordAudioSetting && !vibrationSetting) {
-            settingsMenu = new Texture("settings_menu_sound_selected.jpg");
+            settingsMenu = spaceJunk.getManager().get("settings_menu_sound_selected.jpg");
         } else if (!soundSetting && recordAudioSetting && vibrationSetting) {
-            settingsMenu = new Texture("settings_menu_vibration_record_selected.jpg");
+            settingsMenu = spaceJunk.getManager().get("settings_menu_vibration_record_selected.jpg");
         } else if (!soundSetting && recordAudioSetting && !vibrationSetting) {
-            settingsMenu = new Texture("settings_menu_record_selected.jpg");
+            settingsMenu = spaceJunk.getManager().get("settings_menu_record_selected.jpg");
         } else if (!soundSetting && !recordAudioSetting && vibrationSetting) {
-            settingsMenu = new Texture("settings_menu_vibration_selected.jpg");
+            settingsMenu = spaceJunk.getManager().get("settings_menu_vibration_selected.jpg");
         } else if (!soundSetting && !recordAudioSetting && !vibrationSetting) {
-            settingsMenu = new Texture("settings_menu_none_selected.jpg");
+            settingsMenu = spaceJunk.getManager().get("settings_menu_none_selected.jpg");
         }
 
         // Save user preferences

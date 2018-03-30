@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.spacejunk.game.GameScreen;
+import com.spacejunk.game.SpaceJunk;
 
 /**
  * Created by vidxyz on 2/9/18.
@@ -20,16 +21,19 @@ public class OptionsMenu {
     private Texture[] optionsMenuTexures;
 
     private Texture screenRecordButton;
+    private SpaceJunk currentGame;
 
-    public OptionsMenu() {
+    public OptionsMenu(SpaceJunk currentGame) {
+
+        this.currentGame = currentGame;
 
         optionsMenuTexures = new Texture[MAX_BUTTONS];
 
-        optionsMenuTexures[0] = new Texture("main_menu.png");
-        optionsMenuTexures[1] = new Texture("pause_button.png");
-        optionsMenuTexures[2] = new Texture("settings_menu.png");
+        optionsMenuTexures[0] = this.currentGame.getManager().get("main_menu.png");
+        optionsMenuTexures[1] = this.currentGame.getManager().get("pause_button.png");
+        optionsMenuTexures[2] = this.currentGame.getManager().get("settings_menu.png");
 
-        screenRecordButton = new Texture("screen_record.png");
+        screenRecordButton = this.currentGame.getManager().get("screen_record.png");
     }
 
     public void render(SpriteBatch canvas) {
@@ -62,11 +66,11 @@ public class OptionsMenu {
     }
 
     public void setMiddleButtonTextureToPlay() {
-        optionsMenuTexures[1] = new Texture("play_button.png");
+        optionsMenuTexures[1] = currentGame.getManager().get("play_button.png");
     }
 
     public void setMiddleButtonTextureToPause() {
-        optionsMenuTexures[1] = new Texture("pause_button.png");
+        optionsMenuTexures[1] = currentGame.getManager().get("pause_button.png");
     }
 
     public Texture getScreenRecordButton() {

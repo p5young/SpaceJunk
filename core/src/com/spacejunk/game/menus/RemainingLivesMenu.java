@@ -25,7 +25,7 @@ public class RemainingLivesMenu {
         // Must use spaceJunk.getLevel().getMaxLives() here
         remainingLivesTextures = new Texture[currentGame.getLevel().getMaxLives()];
         for(int i = 0; i < currentGame.getLevel().getMaxLives(); i++) {
-            remainingLivesTextures[i] = new Texture("heart.png");
+            remainingLivesTextures[i] = this.currentGame.getManager().get("heart.png");
         }
     }
 

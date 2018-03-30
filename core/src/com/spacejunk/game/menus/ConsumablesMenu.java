@@ -29,7 +29,7 @@ public class ConsumablesMenu {
 
         inventoryElementTextures = new Texture[MAX_CONSUMABLES];
 
-        inventoryListTexture = new Texture("inventory_list.png");
+        inventoryListTexture = this.currentGame.getManager().get("inventory_list.png");
     }
 
     public void render(SpriteBatch canvas) {
