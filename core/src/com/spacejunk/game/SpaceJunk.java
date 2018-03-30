@@ -64,7 +64,7 @@ public class SpaceJunk extends Game implements ApplicationListener, GameServices
         // reload all assets in assetManager
         manager.reload();
         // pause the game so the player has time to look at approaching obstacles before continuing
-        if (this.currentGameScreen != null) {
+        if (this.currentGameScreen != null && this.currentGameScreen.getState() == GameScreen.State.RUN) {
             // Only pause if no recording is in progress, else we want to start recording right away
             if(!this.currentGameScreen.isRecordingInProgress()) {
                 this.currentGameScreen.pause();
