@@ -29,8 +29,8 @@ android {
         applicationId "com.spacejunk.game"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 2
-        versionName "1.1"
+        versionCode 4
+        versionName "1.2.1"
     }
     buildTypes {
         release {
