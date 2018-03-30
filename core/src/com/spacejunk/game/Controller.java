@@ -267,7 +267,6 @@ public class Controller {
                 } else if (gameScreen.getState() == GameScreen.State.RUN        // start game prompt
                         && !gameScreen.gameActive()) {
                     Gdx.app.log("applog", "TOUCHDOWN --- X: " + x + " Y: " + y);
-                    Gdx.app.log("applog", "x BOUNDS --- MIN: " + (Gdx.graphics.getWidth() - (int)(300 * GameScreen.SCALE_X_FACTOR)) / 2 + " MAX: " + (Gdx.graphics.getWidth() + (int)(300 * GameScreen.SCALE_X_FACTOR)) / 2);
                     if (x >= (Gdx.graphics.getWidth() - (int)(300 * GameScreen.SCALE_X_FACTOR)) / 2     // play button pressed
                         && x <= (Gdx.graphics.getWidth() + (int)(300 * GameScreen.SCALE_X_FACTOR)) / 2
                         && y >= Gdx.graphics.getHeight() / 3 - (int)(150 * GameScreen.SCALE_X_FACTOR) / 2
@@ -326,16 +325,16 @@ public class Controller {
                     return true; // return true to indicate the event was handled
                 } else if (gameScreen.getState() == GameScreen.State.RUN &&
                         !gameScreen.gameActive()){
-                    if ((x - xStart) > (Gdx.graphics.getHeight() / 9)) {
+                    if ((x - xStart) > (Gdx.graphics.getWidth() / 20)) {
                         int currentMod = currentGame.getLevel().getVelocityMod();
-                        if (currentMod < 5)
-                            currentGame.getLevel().setVelocityMod(currentMod + 1);
+                        if (currentMod < 10)
+                            currentGame.getLevel().setVelocityMod(currentMod + 2);
                         xStart = x;
                         return true; // return true to indicate the event was handled
-                    } else if ((xStart - x) > (Gdx.graphics.getHeight() / 9)) {
+                    } else if ((xStart - x) > (Gdx.graphics.getWidth() / 20)) {
                         int currentMod = currentGame.getLevel().getVelocityMod();
-                        if (currentMod > -5)
-                            currentGame.getLevel().setVelocityMod(currentMod - 1);
+                        if (currentMod > -10)
+                            currentGame.getLevel().setVelocityMod(currentMod - 2);
                         xStart = x;
                         return true; // return true to indicate the event was handled
                     }

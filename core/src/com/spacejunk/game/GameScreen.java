@@ -265,6 +265,7 @@ public class GameScreen implements Screen {
         isCrashed = false;
         spaceJunk.getManager().clear();
         spaceJunk.setUpGame();
+        spaceJunk.getLevel().setVelocityMod(spaceJunk.getSystemServices().getSpeed());
         startGame(spaceJunk);
     }
 
@@ -868,7 +869,7 @@ public class GameScreen implements Screen {
         shapeRenderer.rect(Gdx.graphics.getWidth() / 6, Gdx.graphics.getHeight() / 4,(2 * Gdx.graphics.getWidth()) / 3,5);
 
         // place white circle according to Level's current velocity modifier
-        int incrementAmount = (Gdx.graphics.getWidth() * spaceJunk.getLevel().getVelocityMod()) / 15;
+        int incrementAmount = (Gdx.graphics.getWidth() * spaceJunk.getLevel().getVelocityMod() / 2) / 15;
         shapeRenderer.circle(Gdx.graphics.getWidth() / 2 + incrementAmount, Gdx.graphics.getHeight() / 4, 50);
 
         // animate the asteroid
