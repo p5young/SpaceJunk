@@ -252,7 +252,6 @@ public class Controller {
             int yStart;
             int xStart;
             boolean touched = false;       // true when yStart has valid value
-            boolean dragged = false;    // true if a drag is detected
 
 
             @Override
@@ -262,7 +261,6 @@ public class Controller {
                         && noButtonsPressed()) {
                     yStart = y;
                     touched = true;
-                    dragged = false;
                     return true; // return true to indicate the event was handled
                 } else if (gameScreen.getState() == GameScreen.State.RUN        // start game prompt
                         && !gameScreen.gameActive()) {
@@ -278,7 +276,6 @@ public class Controller {
                     } else {            // play button not pressed
                         xStart = x;
                         touched = true;
-                        dragged = false;
                         return true;
                     }
                 }
@@ -292,25 +289,15 @@ public class Controller {
                 // move astronaut
                 if (gameScreen.getState() == GameScreen.State.RUN
                         && gameScreen.gameActive()) {
-                    if (!dragged) {
-                        currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight() - y);
-                    } else if (y < yStart) {
-                        currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight());
-                    } else {
-                        currentGame.getCharacter().moveCharacter(0);
-                    }
-                    yStart = Gdx.graphics.getHeight() / 2;
+                    currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight() - y);
                     touched = false;
-                    dragged = false;
                     return true; // return true to indicate the event was handled
                 } else if (gameScreen.getState() == GameScreen.State.RUN        // start game prompt
                         && !gameScreen.gameActive()) {
                     touched = false;
-                    dragged = false;
                     return true;
                 }
                 touched = false;
-                dragged = false;
                 return false;
             }
 
@@ -320,8 +307,14 @@ public class Controller {
 
                 if (gameScreen.getState() == GameScreen.State.RUN &&
                         gameScreen.gameActive()) {
-                    if (Math.abs(y - yStart) > 50)
-                        dragged = true;
+                    if (Math.abs(y - yStart) > 50) {
+                        if (y < yStart) {
+                            currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight());
+                        } else {
+                            currentGame.getCharacter().moveCharacter(0);
+                        }
+                        touched = false;
+                    }
                     return true; // return true to indicate the event was handled
                 } else if (gameScreen.getState() == GameScreen.State.RUN &&
                         !gameScreen.gameActive()){
