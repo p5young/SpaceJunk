@@ -325,16 +325,16 @@ public class Controller {
                     return true; // return true to indicate the event was handled
                 } else if (gameScreen.getState() == GameScreen.State.RUN &&
                         !gameScreen.gameActive()){
-                    if ((x - xStart) > (Gdx.graphics.getWidth() / 20)) {
+                    if ((x - xStart) > (Gdx.graphics.getWidth() / 40)) {
                         int currentMod = currentGame.getLevel().getVelocityMod();
                         if (currentMod < 10)
-                            currentGame.getLevel().setVelocityMod(currentMod + 2);
+                            currentGame.getLevel().setVelocityMod(currentMod + 1);
                         xStart = x;
                         return true; // return true to indicate the event was handled
-                    } else if ((xStart - x) > (Gdx.graphics.getWidth() / 20)) {
+                    } else if ((xStart - x) > (Gdx.graphics.getWidth() / 40)) {
                         int currentMod = currentGame.getLevel().getVelocityMod();
                         if (currentMod > -10)
-                            currentGame.getLevel().setVelocityMod(currentMod - 2);
+                            currentGame.getLevel().setVelocityMod(currentMod - 1);
                         xStart = x;
                         return true; // return true to indicate the event was handled
                     }

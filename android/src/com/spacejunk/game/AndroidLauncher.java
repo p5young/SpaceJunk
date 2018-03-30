@@ -143,7 +143,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
     public int getSpeed() {
 	    SharedPreferences sharedPrefs = getSharedPreferences("spaceJunkPrefs", MODE_PRIVATE);
 
-	    return sharedPrefs.getInt("speed", -6);
+	    return sharedPrefs.getInt("speed", -5);
     }
 
     @Override
