@@ -21,8 +21,13 @@ public class GameConstants {
     public static final int MAIN_MENU_BACKGROUND_SPEED = 2;
 
     /* Speed Constants */
+    /* 15 is the middle of our speed range (5 to 25) */
     public static final int VERTICAL_SPEED = 15;
     public static final int VELOCITY = 15;
+    /* Speed modifier is added to VELOCITY to produce actual playing speed
+        The default value is -5, because a playing speed of 10 is good for beginners
+     */
+    public static final int DEFAULT_SPEED_MODIFIER = -5;
 
     public static final int BORDER_WIDTH = 40;
     /* Maximum count of an item in inventory */

@@ -28,6 +28,7 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.ShareVideo;
 import com.facebook.share.model.ShareVideoContent;
 import com.facebook.share.widget.ShareDialog;
+import com.spacejunk.game.constants.GameConstants;
 import com.spacejunk.game.interfaces.SystemServices;
 
 import java.io.File;
@@ -143,7 +144,7 @@ public class AndroidLauncher extends AndroidApplication implements SystemService
     public int getSpeed() {
 	    SharedPreferences sharedPrefs = getSharedPreferences("spaceJunkPrefs", MODE_PRIVATE);
 
-	    return sharedPrefs.getInt("speed", -5);
+	    return sharedPrefs.getInt("speed", GameConstants.DEFAULT_SPEED_MODIFIER);
     }
 
     @Override
