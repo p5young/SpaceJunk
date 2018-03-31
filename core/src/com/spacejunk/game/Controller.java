@@ -251,7 +251,6 @@ public class Controller {
 
             int yStart = Gdx.graphics.getHeight() / 2;
             boolean ySet = false;       // true when yStart has valid value
-            boolean dragged = false;    // true if a drag is detected
 
 
             @Override
@@ -262,7 +261,6 @@ public class Controller {
                     //Gdx.app.log("applog", "TOUCHDOWN");
                     yStart = y;
                     ySet = true;
-                    dragged = false;
                     return true; // return true to indicate the event was handled
                 }
                 return false;
@@ -270,33 +268,29 @@ public class Controller {
 
             @Override
             public boolean touchUp (int x, int y, int pointer, int button) {
-                if (gameScreen.getState() == GameScreen.State.RUN
-                        && ySet) {
+                if (!ySet) return false;
+                if (gameScreen.getState() == GameScreen.State.RUN) {
                     //Gdx.app.log("applog", "TOUCHUP");
-                    if (!dragged) {
-                        currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight() - y);
-                    } else if (y < yStart) {
-                        currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight());
-                    } else {
-                        currentGame.getCharacter().moveCharacter(0);
-                    }
-                    yStart = Gdx.graphics.getHeight() / 2;
+                    currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight() - y);
                     ySet = false;
-                    dragged = false;
                     return true; // return true to indicate the event was handled
                 }
                 yStart = Gdx.graphics.getHeight() / 2;
                 ySet = false;
-                dragged = false;
                 return false;
             }
 
             @Override
             public boolean touchDragged (int x, int y, int pointer) {
+                if (!ySet) return false;
                 if (gameScreen.getState() == GameScreen.State.RUN) {
-                    if (Math.abs(y - yStart) > 50)
-                        dragged = true;
-                    //Gdx.app.log("applog", "TOUCH DRAGGED");
+                    if ((yStart - y) > 50) {
+                        currentGame.getCharacter().moveCharacter(Gdx.graphics.getHeight());
+                        ySet = false;
+                    } else if ((y - yStart) > 50) {
+                        currentGame.getCharacter().moveCharacter(0);
+                        ySet = false;
+                    }
                     return true; // return true to indicate the event was handled
                 }
                 return false;
