@@ -495,6 +495,10 @@ public class GameScreen implements Screen {
                 } else if (controller.howToPlayPlayButtonPressed()) {
                     aboutOrHowToPlayImageIndex = 0;    // return scrolling image to top of screen
                     this.state = State.RUN;
+                    if (thisIsTheFirstTimeMainMenuIsAccessed) {
+                        restartGame();
+                        thisIsTheFirstTimeMainMenuIsAccessed = false;
+                    }
                 } else {
                     scrollIndex = controller.getTouchYCoordinate();
                     scrolling = true;   // no buttons pressed, start dragging (scrolling)
@@ -557,11 +561,11 @@ public class GameScreen implements Screen {
             if (controller.mainMenuPlayButtonIsTouched()) {
                 this.state = State.RUN;
 
-                if (!thisIsTheFirstTimeMainMenuIsAccessed) {
+                if (thisIsTheFirstTimeMainMenuIsAccessed) {
                     restartGame();
-                } else {
                     thisIsTheFirstTimeMainMenuIsAccessed = false;
                 }
+
             } else if (controller.aboutButtonIsTouched()) {
                 autoScroll = 0;
                 this.state = State.ABOUT_SCREEN;

@@ -68,7 +68,7 @@ public class Controller {
     }
 
     // -------------------------------------------------
-    // ABOUT SCREEN INTERACTIONS
+    // ABOUT OR HOW TO PLAY SCREEN INTERACTIONS
     // -------------------------------------------------
 
 
